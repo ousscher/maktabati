@@ -1,0 +1,22 @@
+{
+    "Home": {
+        "title": "Accueil",
+        "description": "Bienvenue sur la page d'accueil"
+    },
+    "About": {
+        "title": "À propos",
+        "description": "Bienvenue sur la page à propos"
+    }, 
+    "Login" : {
+        "getStarted": "Commencez maintenant",
+        "loginToAccount": "Connectez-vous à votre compte",
+        "email": "E-mail",
+        "emailPlaceholder": "ex : example@example.com",
+        "password": "Mot de passe",
+        "passwordPlaceholder": "********",
+        "invalidCredentials": "L'e-mail ou le mot de passe est incorrect",
+        "rememberMe": "Se souvenir de moi",
+        "forgotPassword": "Mot de passe oublié ?",
+        "login": "Se connecter"
+    }
+}

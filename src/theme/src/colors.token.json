@@ -1,0 +1,778 @@
+{
+    "Tokens": {
+        "Dark": {
+            "Background": {
+                "Body": {
+                    "value": "{Colors.Custom.Background-Dark}"
+                },
+                "Overlay Color": {
+                    "value": "{Colors.Custom.Overlay-Dark}"
+                }
+            },
+            "Text": {
+                "Title": {
+                    "value": "{Colors.Custom.Neutral.50}"
+                },
+                "Normal Text": {
+                    "value": "{Colors.Custom.Neutral.50}"
+                },
+                "Description": {
+                    "value": "{Colors.Custom.Neutral.100}"
+                },
+                "Invalid Color": {
+                    "value": "{Colors.Red.500}"
+                },
+                "Success Color": {
+                    "value": "{Colors.Green.500}"
+                }
+            },
+            "Logo": {
+                "Primary": {
+                    "value": "{Colors.Blue.500}"
+                },
+                "Secondary": {
+                    "value": "{Colors.Yellow.500}"
+                },
+                "Neutral": {
+                    "value": "{Colors.Custom.White.100%}"
+                }
+            },
+            "Border": {
+                "Border Color": {
+                    "value": "{Colors.Custom.Neutral.800}"
+                }
+            },
+            "Components": {
+                "Progress": {
+                    "Progress bar color": {
+                        "value": "{Colors.Blue.500}"
+                    },
+                    "Progress bg active color": {
+                        "value": "{Colors.Custom.Neutral.50}"
+                    },
+                    "Progress bg Default color": {
+                        "value": "{Colors.Custom.Neutral.400}"
+                    }
+                },
+                "film roll rectangle": {
+                    "bg color": {
+                        "value": "{Colors.Custom.Neutral.900}"
+                    },
+                    "Shadow color": {
+                        "value": "{Colors.Custom.Neutral.300}"
+                    }
+                },
+                "Button": {
+                    "Solid": {
+                        "Default": {
+                            "Text color": {
+                                "value": "{Colors.Custom.Neutral.950}"
+                            },
+                            "bg color": {
+                                "value": "{Colors.Custom.Neutral.50}"
+                            }
+                        },
+                        "Blue": {
+                            "Text color": {
+                                "value": "{Colors.Custom.Neutral.950}"
+                            },
+                            "bg color": {
+                                "value": "{Colors.Blue.300}"
+                            }
+                        },
+                        "Yellow": {
+                            "Text color": {
+                                "value": "{Colors.Custom.Neutral.950}"
+                            },
+                            "bg color": {
+                                "value": "{Colors.Yellow.500}"
+                            }
+                        }
+                    },
+                    "Outlined": {
+                        "Default": {
+                            "Text color": {
+                                "value": "{Colors.Custom.Neutral.50}"
+                            },
+                            "stroke color": {
+                                "value": "{Colors.Custom.Neutral.50}"
+                            }
+                        },
+                        "Blue": {
+                            "Text color": {
+                                "value": "{Colors.Blue.300}"
+                            },
+                            "stroke color": {
+                                "value": "{Colors.Blue.300}"
+                            }
+                        },
+                        "Yellow": {
+                            "Text color": {
+                                "value": "{Colors.Yellow.500}"
+                            },
+                            "stroke color": {
+                                "value": "{Colors.Yellow.500}"
+                            }
+                        }
+                    },
+                    "Link": {
+                        "Default": {
+                            "Text color": {
+                                "value": "{Colors.Custom.Neutral.50}"
+                            }
+                        },
+                        "Blue": {
+                            "Text color": {
+                                "value": "{Colors.Blue.300}"
+                            }
+                        },
+                        "Yellow": {
+                            "Text color": {
+                                "value": "{Colors.Yellow.500}"
+                            }
+                        }
+                    }
+                },
+                "Navigation": {
+                    "Navbar": {
+                        "Text color": {
+                            "value": "{Colors.Custom.Neutral.50}"
+                        },
+                        "Icon-buttons": {
+                            "icon color": {
+                                "value": "{Colors.Custom.Neutral.50}"
+                            },
+                            "bg color": {
+                                "value": "{Colors.Custom.Overlay-Dark}"
+                            }
+                        }
+                    },
+                    "Nav Item": {
+                        "Hover color": {
+                            "value": "{Colors.Blue.500}"
+                        },
+                        "Description color": {
+                            "value": "{Colors.Blue.300}"
+                        },
+                        "Text": {
+                            "value": "{Colors.Custom.Neutral.950}"
+                        },
+                        "Text Hover": {
+                            "value": "{Colors.Blue.50}"
+                        },
+                        "Border": {
+                            "value": "{Colors.Custom.Neutral.100}"
+                        }
+                    }
+                },
+                "Aspect Ratio Spacer Color": {
+                    "value": "{Colors.Pink.300}"
+                },
+                "Statistics card": {
+                    "Default": {
+                        "bg color": {
+                            "value": "{Colors.Custom.Overlay-Light}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Custom.Neutral.800}"
+                        }
+                    },
+                    "Lime": {
+                        "bg color": {
+                            "value": "{Colors.Lime.500}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Lime.50}"
+                        }
+                    },
+                    "Green": {
+                        "bg color": {
+                            "value": "{Colors.Green.500}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Green.50}"
+                        }
+                    },
+                    "Emerald": {
+                        "bg color": {
+                            "value": "{Colors.Emerald.500}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Emerald.50}"
+                        }
+                    },
+                    "Teal": {
+                        "bg color": {
+                            "value": "{Colors.Teal.500}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Teal.50}"
+                        }
+                    },
+                    "Cyan": {
+                        "bg color": {
+                            "value": "{Colors.Cyan.500}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Cyan.50}"
+                        }
+                    },
+                    "Sky": {
+                        "bg color": {
+                            "value": "{Colors.Sky.500}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Sky.50}"
+                        }
+                    },
+                    "Blue": {
+                        "bg color": {
+                            "value": "{Colors.Blue.500}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Blue.50}"
+                        }
+                    },
+                    "Indigo": {
+                        "bg color": {
+                            "value": "{Colors.Indigo.500}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Indigo.50}"
+                        }
+                    },
+                    "Violet": {
+                        "bg color": {
+                            "value": "{Colors.Violet.500}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Violet.50}"
+                        }
+                    },
+                    "Purple": {
+                        "bg color": {
+                            "value": "{Colors.Purple.500}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Purple.50}"
+                        }
+                    },
+                    "Fuchista": {
+                        "bg color": {
+                            "value": "{Colors.Fuchsia.500}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Fuchsia.50}"
+                        }
+                    },
+                    "Pink": {
+                        "bg color": {
+                            "value": "{Colors.Pink.500}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Pink.50}"
+                        }
+                    },
+                    "Rose": {
+                        "bg color": {
+                            "value": "{Colors.Rose.500}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Rose.50}"
+                        }
+                    },
+                    "Red": {
+                        "bg color": {
+                            "value": "{Colors.Red.500}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Red.50}"
+                        }
+                    },
+                    "Orange": {
+                        "bg color": {
+                            "value": "{Colors.Orange.500}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Orange.50}"
+                        }
+                    },
+                    "Amber": {
+                        "bg color": {
+                            "value": "{Colors.Amber.500}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Amber.50}"
+                        }
+                    },
+                    "Yellow": {
+                        "bg color": {
+                            "value": "{Colors.Yellow.500}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Yellow.50}"
+                        }
+                    }
+                },
+                "Partner card": {
+                    "bg color": {
+                        "value": "{Colors.Custom.Overlay-Light}"
+                    },
+                    "stroke color": {
+                        "value": "{Colors.Custom.Neutral.100}"
+                    }
+                },
+                "Event": {
+                    "Text color": {
+                        "value": "{Colors.Custom.Neutral.50}"
+                    },
+                    "Event Header": {
+                        "Event info": {
+                            "text color": {
+                                "value": "{Colors.Custom.Neutral.700}"
+                            },
+                            "bg color": {
+                                "value": "{Colors.Custom.Neutral.100}"
+                            },
+                            "Icon color": {
+                                "value": "{Colors.Custom.Neutral.600}"
+                            },
+                            "Icon bg color": {
+                                "value": "{Colors.Custom.Neutral.200}"
+                            }
+                        },
+                        "Title color": {
+                            "value": "{Colors.Custom.Neutral.950}"
+                        },
+                        "Description color": {
+                            "value": "{Colors.Custom.Neutral.950}"
+                        },
+                        "Info bg color": {
+                            "value": "{Colors.Custom.Overlay-Light}"
+                        }
+                    }
+                },
+                "Breadcrumb": {
+                    "Default color": {
+                        "value": "{Colors.Custom.Neutral.300}"
+                    },
+                    "Hover color": {
+                        "value": "{Colors.Custom.Neutral.50}"
+                    },
+                    "Active color": {
+                        "value": "{Colors.Custom.Neutral.50}"
+                    }
+                },
+                "Value Card": {
+                    "Title color": {
+                        "value": "{Colors.Custom.Neutral.950}"
+                    },
+                    "Description color": {
+                        "value": "{Colors.Custom.Neutral.950}"
+                    },
+                    "Number color": {
+                        "value": "{Colors.Custom.Neutral.800}"
+                    },
+                    "bg color": {
+                        "value": "{Colors.Custom.Overlay-Light}"
+                    }
+                },
+                "Footer": {
+                    "text": {
+                        "value": "{Colors.Custom.Neutral.950}"
+                    },
+                    "Contact": {
+                        "value": "{Colors.Custom.Neutral.950}"
+                    }
+                }
+            }
+        },
+        "Light": {
+            "Background": {
+                "Body": {
+                    "value": "{Colors.Custom.Background-Light}"
+                },
+                "Overlay Color": {
+                    "value": "{Colors.Custom.Overlay-Light}"
+                }
+            },
+            "Text": {
+                "Title": {
+                    "value": "{Colors.Custom.Neutral.950}"
+                },
+                "Normal Text": {
+                    "value": "{Colors.Custom.Neutral.950}"
+                },
+                "Description": {
+                    "value": "{Colors.Custom.Neutral.800}"
+                },
+                "Invalid Color": {
+                    "value": "{Colors.Red.500}"
+                },
+                "Success Color": {
+                    "value": "{Colors.Green.500}"
+                }
+            },
+            "Logo": {
+                "Primary": {
+                    "value": "{Colors.Blue.500}"
+                },
+                "Secondary": {
+                    "value": "{Colors.Yellow.500}"
+                },
+                "Neutral": {
+                    "value": "{Colors.Custom.Black.100%}"
+                }
+            },
+            "Border": {
+                "Border Color": {
+                    "value": "{Colors.Custom.Neutral.100}"
+                }
+            },
+            "Components": {
+                "Progress": {
+                    "Progress bar color": {
+                        "value": "{Colors.Blue.500}"
+                    },
+                    "Progress bg active color": {
+                        "value": "{Colors.Custom.Neutral.950}"
+                    },
+                    "Progress bg Default color": {
+                        "value": "{Colors.Custom.Neutral.400}"
+                    }
+                },
+                "film roll rectangle": {
+                    "bg color": {
+                        "value": "{Colors.Custom.Neutral.900}"
+                    },
+                    "Shadow color": {
+                        "value": "{Colors.Custom.Neutral.300}"
+                    }
+                },
+                "Button": {
+                    "Solid": {
+                        "Default": {
+                            "Text color": {
+                                "value": "{Colors.Custom.Neutral.50}"
+                            },
+                            "bg color": {
+                                "value": "{Colors.Custom.Neutral.950}"
+                            }
+                        },
+                        "Blue": {
+                            "Text color": {
+                                "value": "{Colors.Custom.Neutral.50}"
+                            },
+                            "bg color": {
+                                "value": "{Colors.Blue.500}"
+                            }
+                        },
+                        "Yellow": {
+                            "Text color": {
+                                "value": "{Colors.Custom.Neutral.50}"
+                            },
+                            "bg color": {
+                                "value": "{Colors.Yellow.600}"
+                            }
+                        }
+                    },
+                    "Outlined": {
+                        "Default": {
+                            "Text color": {
+                                "value": "{Colors.Custom.Neutral.950}"
+                            },
+                            "stroke color": {
+                                "value": "{Colors.Custom.Neutral.950}"
+                            }
+                        },
+                        "Blue": {
+                            "Text color": {
+                                "value": "{Colors.Blue.500}"
+                            },
+                            "stroke color": {
+                                "value": "{Colors.Blue.500}"
+                            }
+                        },
+                        "Yellow": {
+                            "Text color": {
+                                "value": "{Colors.Yellow.600}"
+                            },
+                            "stroke color": {
+                                "value": "{Colors.Yellow.600}"
+                            }
+                        }
+                    },
+                    "Link": {
+                        "Default": {
+                            "Text color": {
+                                "value": "{Colors.Custom.Neutral.950}"
+                            }
+                        },
+                        "Blue": {
+                            "Text color": {
+                                "value": "{Colors.Blue.500}"
+                            }
+                        },
+                        "Yellow": {
+                            "Text color": {
+                                "value": "{Colors.Yellow.600}"
+                            }
+                        }
+                    }
+                },
+                "Navigation": {
+                    "Navbar": {
+                        "Text color": {
+                            "value": "{Colors.Custom.Neutral.50}"
+                        },
+                        "Icon-buttons": {
+                            "icon color": {
+                                "value": "{Colors.Custom.Neutral.50}"
+                            },
+                            "bg color": {
+                                "value": "{Colors.Custom.Overlay-Dark}"
+                            }
+                        }
+                    },
+                    "Nav Item": {
+                        "Hover color": {
+                            "value": "{Colors.Blue.500}"
+                        },
+                        "Description color": {
+                            "value": "{Colors.Blue.300}"
+                        },
+                        "Text": {
+                            "value": "{Colors.Custom.Neutral.950}"
+                        },
+                        "Text Hover": {
+                            "value": "{Colors.Blue.50}"
+                        },
+                        "Border": {
+                            "value": "{Colors.Custom.Neutral.100}"
+                        }
+                    }
+                },
+                "Aspect Ratio Spacer Color": {
+                    "value": "{Colors.Pink.300}"
+                },
+                "Statistics card": {
+                    "Default": {
+                        "bg color": {
+                            "value": "{Colors.Custom.Overlay-Light}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Custom.Neutral.800}"
+                        }
+                    },
+                    "Lime": {
+                        "bg color": {
+                            "value": "{Colors.Lime.600}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Lime.100}"
+                        }
+                    },
+                    "Green": {
+                        "bg color": {
+                            "value": "{Colors.Green.600}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Green.100}"
+                        }
+                    },
+                    "Emerald": {
+                        "bg color": {
+                            "value": "{Colors.Emerald.600}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Emerald.100}"
+                        }
+                    },
+                    "Teal": {
+                        "bg color": {
+                            "value": "{Colors.Teal.600}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Teal.100}"
+                        }
+                    },
+                    "Cyan": {
+                        "bg color": {
+                            "value": "{Colors.Cyan.600}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Cyan.100}"
+                        }
+                    },
+                    "Sky": {
+                        "bg color": {
+                            "value": "{Colors.Sky.600}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Sky.100}"
+                        }
+                    },
+                    "Blue": {
+                        "bg color": {
+                            "value": "{Colors.Blue.600}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Blue.100}"
+                        }
+                    },
+                    "Indigo": {
+                        "bg color": {
+                            "value": "{Colors.Indigo.600}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Indigo.100}"
+                        }
+                    },
+                    "Violet": {
+                        "bg color": {
+                            "value": "{Colors.Violet.600}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Purple.100}"
+                        }
+                    },
+                    "Purple": {
+                        "bg color": {
+                            "value": "{Colors.Purple.600}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Purple.100}"
+                        }
+                    },
+                    "Fuchista": {
+                        "bg color": {
+                            "value": "{Colors.Fuchsia.600}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Fuchsia.100}"
+                        }
+                    },
+                    "Pink": {
+                        "bg color": {
+                            "value": "{Colors.Pink.600}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Pink.100}"
+                        }
+                    },
+                    "Rose": {
+                        "bg color": {
+                            "value": "{Colors.Rose.600}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Rose.100}"
+                        }
+                    },
+                    "Red": {
+                        "bg color": {
+                            "value": "{Colors.Red.600}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Red.100}"
+                        }
+                    },
+                    "Orange": {
+                        "bg color": {
+                            "value": "{Colors.Orange.600}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Orange.100}"
+                        }
+                    },
+                    "Amber": {
+                        "bg color": {
+                            "value": "{Colors.Amber.600}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Amber.100}"
+                        }
+                    },
+                    "Yellow": {
+                        "bg color": {
+                            "value": "{Colors.Yellow.600}"
+                        },
+                        "Text color": {
+                            "value": "{Colors.Yellow.100}"
+                        }
+                    }
+                },
+                "Partner card": {
+                    "bg color": {
+                        "value": "{Colors.Custom.Overlay-Light}"
+                    },
+                    "stroke color": {
+                        "value": "{Colors.Custom.Neutral.100}"
+                    }
+                },
+                "Event": {
+                    "Text color": {
+                        "value": "{Colors.Custom.Neutral.50}"
+                    },
+                    "Event Header": {
+                        "Event info": {
+                            "text color": {
+                                "value": "{Colors.Custom.Neutral.700}"
+                            },
+                            "bg color": {
+                                "value": "{Colors.Custom.Neutral.100}"
+                            },
+                            "Icon color": {
+                                "value": "{Colors.Custom.Neutral.600}"
+                            },
+                            "Icon bg color": {
+                                "value": "{Colors.Custom.Neutral.200}"
+                            }
+                        },
+                        "Title color": {
+                            "value": "{Colors.Custom.Neutral.950}"
+                        },
+                        "Description color": {
+                            "value": "{Colors.Custom.Neutral.950}"
+                        },
+                        "Info bg color": {
+                            "value": "{Colors.Custom.Overlay-Light}"
+                        }
+                    }
+                },
+                "Breadcrumb": {
+                    "Default color": {
+                        "value": "{Colors.Custom.Neutral.700}"
+                    },
+                    "Hover color": {
+                        "value": "{Colors.Custom.Neutral.950}"
+                    },
+                    "Active color": {
+                        "value": "{Colors.Custom.Neutral.950}"
+                    }
+                },
+                "Value Card": {
+                    "Title color": {
+                        "value": "{Colors.Custom.Neutral.950}"
+                    },
+                    "Description color": {
+                        "value": "{Colors.Custom.Neutral.950}"
+                    },
+                    "Number color": {
+                        "value": "{Colors.Custom.Neutral.50}"
+                    },
+                    "bg color": {
+                        "value": "{Colors.Custom.Overlay-Light}"
+                    }
+                },
+                "Footer": {
+                    "text": {
+                        "value": "{Colors.Custom.Neutral.950}"
+                    },
+                    "Contact": {
+                        "value": "{Colors.Custom.Neutral.950}"
+                    }
+                }
+            }
+        }
+    }
+}

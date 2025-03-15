@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap');
+
+/**
+* @license
+*
+* Font Family: Clash Display
+* Designed by: Indian Type Foundry
+* URL: https://www.fontshare.com../../public/fonts/CDV/clash-display
+* © 2024 Indian Type Foundry
+*
+* Clash Display Extralight 
+* Clash Display Light 
+* Clash Display Regular 
+* Clash Display Medium 
+* Clash Display Semibold 
+* Clash Display Bold 
+* Clash Display Variable (Variable font)
+
+*
+*/
+@font-face {
+  font-family: 'CDV';
+  src: url('../../public/fonts/CDV/ClashDisplay-Extralight.woff2') format('woff2'),
+    url('../../public/fonts/CDV/ClashDisplay-Extralight.woff') format('woff'),
+    url('../../public/fonts/CDV/ClashDisplay-Extralight.ttf') format('truetype');
+  font-weight: 200;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'CDV';
+  src: url('../../public/fonts/CDV/ClashDisplay-Light.woff2') format('woff2'),
+    url('../../public/fonts/CDV/ClashDisplay-Light.woff') format('woff'),
+    url('../../public/fonts/CDV/ClashDisplay-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'CDV';
+  src: url('../../public/fonts/CDV/ClashDisplay-Regular.woff2') format('woff2'),
+    url('../../public/fonts/CDV/ClashDisplay-Regular.woff') format('woff'),
+    url('../../public/fonts/CDV/ClashDisplay-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'CDV';
+  src: url('../../public/fonts/CDV/ClashDisplay-Medium.woff2') format('woff2'),
+    url('../../public/fonts/CDV/ClashDisplay-Medium.woff') format('woff'),
+    url('../../public/fonts/CDV/ClashDisplay-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'CDV';
+  src: url('../../public/fonts/CDV/ClashDisplay-Semibold.woff2') format('woff2'),
+    url('../../public/fonts/CDV/ClashDisplay-Semibold.woff') format('woff'),
+    url('../../public/fonts/CDV/ClashDisplay-Semibold.ttf') format('truetype');
+  font-weight: 600;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'CDV';
+  src: url('../../public/fonts/CDV/ClashDisplay-Bold.woff2') format('woff2'),
+    url('../../public/fonts/CDV/ClashDisplay-Bold.woff') format('woff'),
+    url('../../public/fonts/CDV/ClashDisplay-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-display: swap;
+  font-style: normal;
+}
+
+/**
+* This is a variable font
+* You can control variable axes as shown below:
+* font-variation-settings: wght 700.0;
+*
+* available axes:
+'wght' (range from 200.0 to 700.0
+*/
+@font-face {
+  font-family: 'CDV';
+  src: url('../../public/fonts/CDV/ClashDisplay-Variable.woff2') format('woff2'),
+    url('../../public/fonts/CDV/ClashDisplay-Variable.woff') format('woff'),
+    url('../../public/fonts/CDV/ClashDisplay-Variable.ttf') format('truetype');
+  font-weight: 200 700;
+  font-display: swap;
+  font-style: normal;
+}

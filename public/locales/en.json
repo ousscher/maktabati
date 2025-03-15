@@ -1,0 +1,22 @@
+{
+    "Home": {
+        "title": "Home",
+        "description": "Welcome to the home page"
+    },
+    "About": {
+        "title": "About",
+        "description": "Welcome to the about page"
+    },
+    "Login" : {
+        "getStarted": "Get started now",
+        "loginToAccount": "Log in to your account",
+        "email": "Email",
+        "emailPlaceholder": "e.g. example@example.com",
+        "password": "Password",
+        "passwordPlaceholder": "********",
+        "invalidCredentials": "Invalid email or password",
+        "rememberMe": "Remember me",
+        "forgotPassword": "Forgot your password?",
+        "login": "Log in"
+    }
+}

@@ -1,0 +1,17 @@
+### login
+POST http://localhost:3000/api/auth/signup
+Content-Type: application/json
+
+{
+    "email": "lo_cherguelaine@esi.dz",
+}
+
+
+### hello
+GET http://localhost:3000/api/hello
+Content-Type: application/json
+
+{
+    "email": "lo_cherguelaine@esi.dz",
+    "password": "11221122"
+}
