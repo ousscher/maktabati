@@ -59,11 +59,11 @@ export default function Login() {
 
   return (
     <main className="w-full flex">
-      <div className="relative flex-1 hidden items-center justify-center h-screen bg-gray-900 overflow-hidden lg:flex">
+      <div className="relative flex-1 hidden items-center justify-center h-screen bg-maktabati-background-body overflow-hidden lg:flex">
         <div className="relative z-10 w-full max-w-md flex flex-col justify-around items-center">
           {/* <img src="/logo.png" width={250} alt="logo" /> */}
           <div className="mt-16 space-y-3">
-            <h3 className="text-white text-3xl font-bold">
+            <h3 className="text-maktabati-text-title text-3xl font-bold">
               {t("getStarted")}
             </h3>
           </div>
@@ -83,13 +83,13 @@ export default function Login() {
           {/* Language Toggle */}
           <div className="flex gap-2">
             <button 
-              className={`px-3 py-1 rounded text-sm ${locale === 'en' ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300'}`} 
+              className={`px-3 py-1 rounded text-sm ${locale === 'en' ? 'bg-maktabati-logo-primary text-maktabati-components-button-solid-default-text_color' : 'bg-maktabati-components-film_roll_rectangle-bg_color text-maktabati-text-normal_text'}`} 
               onClick={() => switchLocale('en')}
             >
               EN
             </button>
             <button 
-              className={`px-3 py-1 rounded text-sm ${locale === 'fr' ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300'}`} 
+              className={`px-3 py-1 rounded text-sm ${locale === 'fr' ? 'bg-maktabati-logo-primary text-maktabati-components-button-solid-default-text_color' : 'bg-maktabati-components-film_roll_rectangle-bg_color text-maktabati-text-normal_text'}`} 
               onClick={() => switchLocale('fr')}
             >
               FR
@@ -99,12 +99,12 @@ export default function Login() {
           {/* Theme Toggle */}
           <button 
             onClick={toggleTheme} 
-            className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            className="p-2 rounded-full hover:bg-maktabati-components-film_roll_rectangle-bg_color transition-colors"
             aria-label="Toggle theme"
           >
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
-              className="h-5 w-5 text-gray-700 dark:text-gray-300" 
+              className="h-5 w-5 text-maktabati-text-normal_text" 
               fill="none" 
               viewBox="0 0 24 24" 
               stroke="currentColor"
@@ -127,11 +127,11 @@ export default function Login() {
           </button>
         </div>
 
-        <div className="max-w-sm w-full text-gray-600 dark:text-gray-300 space-y-5 px-4">
+        <div className="max-w-sm w-full text-maktabati-text-normal_text space-y-5 px-4">
           <div className="text-center pb-8">
             {/* <img src="/logo.png" width={150} alt="logo" className="mx-auto" /> */}
             <div className="mt-5">
-              <h3 className="text-gray-800 dark:text-white text-2xl font-bold sm:text-3xl">
+              <h3 className="text-maktabati-text-title text-2xl font-bold sm:text-3xl">
                 {t("loginToAccount")}
               </h3>
             </div>
@@ -147,7 +147,7 @@ export default function Login() {
                 type="email"
                 required
                 placeholder={t("emailPlaceholder")}
-                className="w-full mt-2 px-3 py-2 text-black dark:text-white bg-transparent outline-none border focus:border-primary focus:ring-1 focus:ring-primary shadow-sm rounded-lg dark:border-gray-600 dark:bg-gray-800"
+                className="w-full mt-2 px-3 py-2 text-maktabati-text-title bg-transparent outline-none border focus:border-maktabati-logo-primary focus:ring-1 focus:ring-maktabati-logo-primary shadow-sm rounded-lg border-maktabati-border-border_color"
               />
             </div>
             <div>
@@ -161,7 +161,7 @@ export default function Login() {
                   }}
                   placeholder={t("passwordPlaceholder")}
                   required
-                  className="w-full mt-2 px-3 py-2 text-black dark:text-white bg-transparent outline-none border focus:border-primary focus:ring-1 focus:ring-primary shadow-sm rounded-lg dark:border-gray-600 dark:bg-gray-800"
+                  className="w-full mt-2 px-3 py-2 text-maktabati-text-title bg-transparent outline-none border focus:border-maktabati-logo-primary focus:ring-1 focus:ring-maktabati-logo-primary shadow-sm rounded-lg border-maktabati-border-border_color"
                 />
                 <button
                   type="button"
@@ -207,7 +207,7 @@ export default function Login() {
                 </button>
               </div>
               {error && (
-                <p className="text-red-500 text-sm mt-2">
+                <p className="text-maktabati-text-invalid_color text-sm mt-2">
                   {error}
                 </p>
               )}
@@ -219,22 +219,22 @@ export default function Login() {
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
-                  className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600"
+                  className="h-4 w-4 text-maktabati-logo-primary focus:ring-maktabati-logo-primary border-maktabati-border-border_color rounded"
                 />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                <label htmlFor="remember-me" className="ml-2 block text-sm text-maktabati-text-normal_text">
                   {t("rememberMe")}
                 </label>
               </div>
 
               <div className="text-sm">
-                <a href="#" className="font-medium text-primary hover:text-primary-dark">
+                <a href="#" className="font-medium text-maktabati-logo-primary hover:text-maktabati-components-button-solid-green-bg_color">
                   {t("forgotPassword")}
                 </a>
               </div>
             </div>
             
             <button
-              className="w-full px-4 py-2 text-white font-medium bg-primary hover:bg-primary-dark active:bg-primary rounded-lg duration-150"
+              className="w-full px-4 py-2 text-maktabati-components-button-solid-default-text_color font-medium bg-maktabati-logo-primary hover:bg-maktabati-components-button-solid-green-bg_color active:bg-maktabati-components-button-solid-green-bg_color rounded-lg duration-150"
               type="submit"
             >
               {t("login")}
@@ -245,7 +245,6 @@ export default function Login() {
     </main>
   );
 }
-
 export async function getStaticProps(context) {
   return {
       props: {
