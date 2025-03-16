@@ -60,9 +60,9 @@ export default function Library() {
         }, []);
     return (
         <ProtectedLayout>
+             {/* Search Bar */}
+             <SearchBar />
             <div className="p-6">
-                {/* Search Bar */}
-                <SearchBar />
 
                 {/* Header Section */}
                 <div className="flex justify-between items-center py-4  bg-white  rounded-lg">

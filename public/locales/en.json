@@ -63,7 +63,28 @@
         "newFolderTitle": "New Folder",
         "newFolderDescription": "Create a new folder",
         "folderNamePlaceholder": "Enter folder name...",
-        "folderName": "Folder Name"
+        "folderName": "Folder Name",
+        "uploadNewFile": "Upload new file",
+        "downloadThisFolder": "Download this folder",
+        "deleteThisFolder": "Delete this folder",
+        "deleteConfirmationTitle": "Are you absolutely sure?",
+        "deleteConfirmationMessage": "This action cannot be undone. This will permanently delete this folder.",
+        "uploadingFile": "Uploading file...",
+        "fileIconAlt": "File Icon",
+        "moreOptions": "More Options",
+        "download": "Download",
+        "downloadFile": "Download this file",
+        "star": "Star",
+        "starFile": "Star this file",
+        "notstarFile": "Remove star",
+        "delete": "Delete",
+        "deleteFile": "Delete this file",
+        "deleteConfirmation": "Are you absolutely sure?",
+        "deleteWarning": "This action cannot be undone. This will permanently delete this file.",
+        "continue": "Continue",
+        "restoreFile": "Restore this file",
+        "restoreAllFiles": "Restore all files",
+        "deleteAllFiles": "Delete all files"
     },
     "Search": {
         "placeholder": "Search by lorem ipsum lorem..."
@@ -81,5 +102,22 @@
         "example3desc": "(I can talk to you like a natural human)",
         "examplesFooter": "These are just a few examples of what I can do.",
         "inputPlaceholder": "Ask me anything..."
+    },
+    "AIAssistant": {
+        "upload": "Upload",
+        "dragDropFiles": "Drag & drop files or",
+        "browse": "Browse",
+        "supportedFormats": "Supported formats: JPEG, PNG, GIF, MP4, PDF, PSD, AI, Word, PPT",
+        "uploadFiles": "Upload Files",
+        "uploading": "Uploading...",
+        "uploadingFiles": "Uploading files",
+        "uploadedFilesLabel": "Uploaded",
+        "uploadSuccess": "Files Uploaded Successfully!",
+        "uploadedCount": "Uploaded - {count} files",
+        "trainModel": "Train Your Model"
+    },
+    "Training": {
+        "inProgress": "In progress, please wait...",
+        "success": "Success"
     }
 }

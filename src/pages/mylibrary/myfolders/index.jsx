@@ -6,6 +6,7 @@ import SearchBar from "@/components/searchbar";
 import Pagination from "@/components/mylibrary/pagination";
 import { useState, useEffect, useRef } from "react";
 import ChatbotSection from "@/components/mylibrary/chatbot";
+import { router } from "next/router";
 
 export default function MyFolders() {
     const t = useTranslations("Library");
@@ -59,10 +60,10 @@ export default function MyFolders() {
 
     return (
         <ProtectedLayout>
+             {/* Search Bar */}
+             <SearchBar />
             <div className="p-6 flex">
                 <div className={`transition-all duration-500 ${showChat ? "w-2/3" : "w-full"}`}>
-                    {/* Search Bar */}
-                    <SearchBar />
 
                     {/* Header Section */}
                     <div className="flex justify-between items-center py-4">
@@ -164,6 +165,7 @@ export default function MyFolders() {
                             <div
                                 key={index}
                                 className="flex flex-col items-center text-center p-4 rounded-lg cursor-pointer transition hover:shadow-lg"
+                                onClick={() => router.push(`/mylibrary/myfolders/mydocuments?folderName=${folder.name}`)}
                             >
                                 <Image src={folder.icon} alt="Folder Icon" width={100} height={100} />
                                 <h2 className="text-gray-800 font-medium mt-2">{folder.name}</h2>

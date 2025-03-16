@@ -63,7 +63,28 @@
         "newFolderTitle": "Nouveau dossier",
         "newFolderDescription": "Créer un nouveau dossier",
         "folderNamePlaceholder": "Entrez le nom du dossier...",
-        "folderName": "Nom du dossier"
+        "folderName": "Nom du dossier",
+        "uploadNewFile": "Téléverser un nouveau fichier",
+        "downloadThisFolder": "Télécharger ce dossier",
+        "deleteThisFolder": "Supprimer ce dossier",
+        "deleteConfirmationTitle": "Êtes-vous absolument sûr(e) ?",
+        "deleteConfirmationMessage": "Cette action est irréversible. Cela supprimera définitivement ce dossier.",
+        "uploadingFile": "Téléversement en cours...",
+        "continue": "Continuer",
+        "fileIconAlt": "Icône de fichier",
+        "moreOptions": "Plus d'options",
+        "download": "Télécharger",
+        "downloadFile": "Télécharger",
+        "star": "Favori",
+        "starFile": "Mettre en favori",
+        "notstarFile": "défavori",
+        "delete": "Supprimer",
+        "deleteFile": "Supprimer ",
+        "deleteConfirmation": "Êtes-vous absolument sûr ?",
+        "deleteWarning": "Cette action est irréversible. Ce fichier sera définitivement supprimé.",
+        "restoreFile": "Restorer",
+        "restoreAllFiles": "Restorer tous",
+        "deleteAllFiles": "Supprimer tous"
     },
     "Search": {
         "placeholder": "Rechercher par lorem ipsum lorem..."
@@ -81,5 +102,22 @@
         "example3desc": "(Je peux parler avec vous comme un humain naturel)",
         "examplesFooter": "Ce ne sont que quelques exemples de ce que je peux faire.",
         "inputPlaceholder": "Posez-moi une question..."
+    },
+    "AIAssistant": {
+        "upload": "Téléchargement",
+        "dragDropFiles": "Glissez et déposez des fichiers ou",
+        "browse": "Parcourir",
+        "supportedFormats": "Formats pris en charge : JPEG, PNG, GIF, MP4, PDF, PSD, AI, Word, PPT",
+        "uploadFiles": "Téléverser les fichiers",
+        "uploading": "Téléchargement en cours...",
+        "uploadingFiles": "Téléchargement des fichiers",
+        "uploadedFilesLabel": "Téléchargé",
+        "uploadSuccess": "Fichiers téléchargés avec succès !",
+        "uploadedCount": "Téléchargé - {count} fichiers",
+        "trainModel": "Entraîner votre modèle"
+    },
+    "Training": {
+        "inProgress": "En cours, veuillez patienter...",
+        "success": "Succès"
     }
 }
