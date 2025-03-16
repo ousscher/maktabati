@@ -33,7 +33,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white dark:bg-gray-800 shadow-md py-4 px-6">
+    <nav className="bg-white dark:bg-gray-800 shadow-md py-4 px-6 z-20 fixed">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex items-center">
           <Link href="/" className="font-main text-maktabati-text-normal_text dark:text-white text-2xl font-bold">

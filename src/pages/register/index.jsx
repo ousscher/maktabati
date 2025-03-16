@@ -9,12 +9,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import ProtectedLayout from "@/components/layout/ProtectedLayout";
 
-export default function Login() {
+export default function Register() {
   const { isAuthenticated, loading, setAuthToken } = useAuth();
   const [hidePassword, setHidePassword] = useState(true);
   const [error, setError] = useState(null);
   const router = useRouter();
-  const t = useTranslations("Login");
+  const t = useTranslations("Signup");
   const { switchLocale, locale } = useSwitchLang();
   
   useEffect(() => {
@@ -29,7 +29,7 @@ export default function Login() {
     }
   }, [isAuthenticated, router]);
   
-  const [loginForm, setLoginForm] = useState({
+  const [signUpForm, setSignUpForm] = useState({
     email: "",
     password: "",
   });
@@ -38,9 +38,9 @@ export default function Login() {
     e.preventDefault();
     setError(null);
     try {
-      const response = await axios.post("/api/auth/login", {
-        email: loginForm.email,
-        password: loginForm.password,
+      const response = await axios.post("/api/auth/signup", {
+        email: signUpForm.email,
+        password: signUpForm.password,
       });
       const token = response.data.token;
       if (token) {
@@ -160,9 +160,9 @@ export default function Login() {
 
         <div className="max-w-xl w-full mx-auto bg-white p-6 rounded-lg ">
           <div className="text-center pb-4 flex flex-col items-start">
-            <h1 className="text-4xl font-bold">{t("signin")}</h1>
+            <h1 className="text-4xl font-bold">{t("signup")}</h1>
             <p className="text-sm text-gray-500 mt-1">
-              {t("noAccount")} <Link href="/register" className="text-teal-500 font-medium">{t("createAccount")}</Link>
+              {t("haveAccount")} <Link href="/login" className="text-teal-500 font-medium">{t("connect")}</Link>
             </p>
           </div>
 
@@ -170,9 +170,9 @@ export default function Login() {
             <div>
               <label className="text-sm text-gray-600 mb-1 block">{t("email")}</label>
               <input
-                value={loginForm.email}
+                value={signUpForm.email}
                 onChange={(e) => {
-                  setLoginForm({ ...loginForm, email: e.target.value });
+                  setSignUpForm({ ...signUpForm, email: e.target.value });
                 }}
                 type="email"
                 required
@@ -186,9 +186,9 @@ export default function Login() {
               <div className="relative">
                 <input
                   type={hidePassword ? "password" : "text"}
-                  value={loginForm.password}
+                  value={signUpForm.password}
                   onChange={(e) => {
-                    setLoginForm({ ...loginForm, password: e.target.value });
+                    setSignUpForm({ ...signUpForm, password: e.target.value });
                   }}
                   placeholder={`${t("enter")} ${("password")}`}
                   required
