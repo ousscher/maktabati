@@ -1,4 +1,4 @@
-import colors from "../theme/out/palette.token.json" with { type: "json" };
+import colors from "../theme/src/colors.token.json" with { type: "json" };
 
 function formatPrefix(prefix) {
     return prefix.replace(/ /g, '_').toLowerCase();

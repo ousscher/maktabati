@@ -2,55 +2,69 @@ import { useTranslations } from "next-intl";
 import ProtectedLayout from "@/components/layout/ProtectedLayout";
 import useSwitchLang from "@/utils/useSwitchLang";
 import Image from "next/image";
-import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
 import SearchBar from "@/components/searchbar";
+import Pagination from "@/components/mylibrary/pagination";
+import { useState, useEffect, useRef } from "react";
 
-export default function Hero() {
+export default function Library() {
     const t = useTranslations("Library");
     const { switchLocale } = useSwitchLang();
     const [sortBy, setSortBy] = useState("name");
+    const sectionsPerPage = 12; // Set the number of sections per page
+    const [currentPage, setCurrentPage] = useState(1);
+
+    // Sections list with unique IDs
     const sections = [
         { id: 1, name: "Work Documents", folders: 12, icon: "/images/icons/folder.svg" },
         { id: 2, name: "Personal Projects", folders: 19, icon: "/images/icons/folder.svg" },
         { id: 3, name: "Research Papers", folders: 8, icon: "/images/icons/folder.svg" },
         { id: 4, name: "Archived Files", folders: 25, icon: "/images/icons/folder.svg" },
         { id: 5, name: "Financial Reports", folders: 30, icon: "/images/icons/folder.svg" },
-        { id: 6, name: "Team Projects", folders: 15, icon: "/images/icons/folder.svg" }
+        { id: 6, name: "Team Projects", folders: 15, icon: "/images/icons/folder.svg" },
+        { id: 7, name: "AI Development", folders: 22, icon: "/images/icons/folder.svg" },
+        { id: 8, name: "Client Work", folders: 14, icon: "/images/icons/folder.svg" },
     ];
-    const [isFirstModalOpen, setIsFirstModalOpen] = useState(false);
-    const [isSecondModalOpen, setIsSecondModalOpen] = useState(false);
-    const firstModalRef = useRef(null);
-    const secondModalRef = useRef(null);
-    const [selectedIcon, setSelectedIcon] = useState(null);
-    const icons = [
-        "/images/icons/icon1.png",
-        "/images/icons/icon2.png",
-        "/images/icons/icon3.png",
-        "/images/icons/icon4.png",
-        "/images/icons/icon5.png",
-        "/images/icons/icon6.png"
-    ];
-    useEffect(() => {
-        function handleClickOutside(event) {
-            if (firstModalRef.current && !firstModalRef.current.contains(event.target)) {
-                setIsFirstModalOpen(false);
-            }
-            if (secondModalRef.current && !secondModalRef.current.contains(event.target)) {
-                setIsSecondModalOpen(false);
-                setSelectedIcon(null);
-            }
-        }
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
 
+    // Pagination logic
+    const totalPages = Math.ceil(sections.length / sectionsPerPage);
+    const startIndex = (currentPage - 1) * sectionsPerPage;
+    const endIndex = startIndex + sectionsPerPage;
+    const paginatedSections = sections.slice(startIndex, endIndex);
+    const [isFirstModalOpen, setIsFirstModalOpen] = useState(false);
+        const [isSecondModalOpen, setIsSecondModalOpen] = useState(false);
+        const firstModalRef = useRef(null);
+        const secondModalRef = useRef(null);
+        const [selectedIcon, setSelectedIcon] = useState(null);
+        const icons = [
+            "/images/icons/icon1.png",
+            "/images/icons/icon2.png",
+            "/images/icons/icon3.png",
+            "/images/icons/icon4.png",
+            "/images/icons/icon5.png",
+            "/images/icons/icon6.png"
+        ];
+        useEffect(() => {
+            function handleClickOutside(event) {
+                if (firstModalRef.current && !firstModalRef.current.contains(event.target)) {
+                    setIsFirstModalOpen(false);
+                }
+                if (secondModalRef.current && !secondModalRef.current.contains(event.target)) {
+                    setIsSecondModalOpen(false);
+                    setSelectedIcon(null);
+                }
+            }
+            document.addEventListener("mousedown", handleClickOutside);
+            return () => {
+                document.removeEventListener("mousedown", handleClickOutside);
+            };
+        }, []);
     return (
         <ProtectedLayout>
-            <SearchBar/>
-            <section className="p-6">
+             {/* Search Bar */}
+             <SearchBar />
+            <div className="p-6">
+
+                {/* Header Section */}
                 <div className="flex justify-between items-center py-4  bg-white  rounded-lg">
                     {/* Left Side - Library Title */}
                     <div className="flex items-center space-x-2">
@@ -156,60 +170,32 @@ export default function Hero() {
                 </div>
 
                 {/* Sections Grid */}
-                <div className="pt-6 pb-14 relative">
-                    {/* Sections Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-5 mb-4">
-                        {sections.slice(0, 6).map((section) => (
-                            <div
-                                key={section.id}
-                                className="bg-gray-50 p-4 rounded-lg shadow flex items-center transition hover:shadow-md cursor-pointer"
-                            >
-                                <Image src={section.icon} alt="Folder Icon" className="ml-4" width={24} height={24} />
-                                <div className="ml-6">
-                                    <h2 className="text-teal-600 font-semibold">{section.name}</h2>
-                                    <p className="text-gray-500">{section.folders} {t("folders")}</p>
-                                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-6 mb-4">
+                    {paginatedSections.map((section) => (
+                        <div
+                            key={section.id}
+                            className="bg-gray-100 p-4 rounded-lg shadow-md flex items-center hover:shadow-lg cursor-pointer"
+                        >
+                            <Image src={section.icon} alt="Folder Icon" className="ml-4" width={24} height={24} />
+                            <div className="ml-6">
+                                <h2 className="text-teal-600 font-semibold">{section.name}</h2>
+                                <p className="text-gray-500">{section.folders} {t("folders")}</p>
                             </div>
-                        ))}
-                    </div>
-
-                    {/* See More Link */}
-                    <div className="text-right absolute right-5 ">
-                        <Link href="/mylibrary" className="text-black flex items-center">
-                            {t("seeMore")}
-                            <Image src="/images/icons/arrow-right.svg" alt="See More" width={18} height={18} className="ml-1" />
-                        </Link>
-                    </div>
+                        </div>
+                    ))}
                 </div>
 
-                {/* AI Writing Assistant Section */}
-                <div className="mb-6">
-                    <h2 className="text-xl font-semibold">{t("aiWritingAssistant")}</h2>
-                    <p className="text-gray-600 mt-2">
-                        {t("aiDescription")}
-                    </p>
-                </div>
-
-                {/* Upload Section */}
-                <div className="">
-                    <h3 className="text-lg font-medium">{t("trainAiModel")}</h3>
-                    <p className="text-gray-500 mb-4">{t("chooseFile")}</p>
-
-                    <div className="flex space-x-4">
-                        <button className="flex items-center  text-teal-600 px-4 py-2 rounded-lg" style={{ backgroundColor: "#E7F4F3" }}>
-                            <Image src="/images/icons/upload.svg" alt="Upload Icon" width={20} height={20} className="mr-2" />
-                            {t("uploadFromLibrary")}
-                        </button>
-                        <button className="flex items-center bg-teal-600 text-white px-4 py-2 rounded-lg">
-                            <Image src="/images/icons/device.svg" alt="Device Icon" width={20} height={20} className="mr-2" />
-                            {t("uploadFromDevice")}
-                        </button>
-                    </div>
-                </div>
-            </section>
+                {/* Pagination Component */}
+                <Pagination
+                    totalPages={totalPages}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                />
+            </div>
         </ProtectedLayout>
     );
 }
+
 export async function getStaticProps(context) {
     return {
         props: {

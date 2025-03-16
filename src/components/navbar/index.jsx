@@ -15,7 +15,7 @@ const Navbar = () => {
     // Check if user token exists in local storage
     const token = localStorage.getItem('userToken');
     if (token) {
-      setIsAuthenticated(true);
+      setIsAuthenticated(true); 
       // You might want to fetch user profile data here
       // For now we'll use a placeholder
       setUserProfile({

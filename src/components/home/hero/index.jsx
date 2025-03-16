@@ -1,11 +1,9 @@
 import { useTranslations } from "next-intl";
 import ProtectedLayout from "@/components/layout/ProtectedLayout";
-import useSwitchLang from "@/utils/useSwitchLang";
 
 
 export default function Hero() {
     const t = useTranslations("Home");
-    // const { switchLocale } = useSwitchLang();
 
     return (
         <section className="flex flex-col items-center justify-center h-screen bg-blue-500 text-white text-center p-6">
