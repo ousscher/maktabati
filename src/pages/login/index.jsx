@@ -45,7 +45,7 @@ export default function Login() {
       const token = response.data.token;
       if (token) {
         setAuthToken(token);
-        router.push("/admin/dashboard");
+        router.push("/home");
       }
     } catch (err) {
       setError(t("invalidCredentials"));
