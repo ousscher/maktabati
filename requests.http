@@ -1,5 +1,5 @@
 ### login
-POST http://localhost:3000/api/auth/signup
+POST localhost:3000/api/losgin
 Content-Type: application/json
 
 {
@@ -8,10 +8,10 @@ Content-Type: application/json
 
 
 ### hello
-GET http://localhost:3000/api/hello
+POST  http://localhost:3000/api/auth/signup
 Content-Type: application/json
 
 {
-    "email": "lo_cherguelaine@esi.dz",
+    "email": "lala@esi.dz",
     "password": "11221122"
 }

@@ -1,4 +1,4 @@
-// src/pages/api/auth/login.js
+// src/pages/api/login/index.js
 import { auth, signInWithEmailAndPassword } from "@/lib/firebaseConfig";
 
 export default async function handler(req, res) {
@@ -15,10 +15,8 @@ export default async function handler(req, res) {
     } catch (error) {
       return res.status(400).json({ error: error.message });
     }
-  } else if (req.method === "GET") {
-    res.send("Test string");
   } else {
-    res.setHeader("Allow", ["POST", "GET"]);
+    res.setHeader("Allow", ["POST"]);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
