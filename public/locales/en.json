@@ -12,7 +12,7 @@
         "loginToAccount": "Log in to your account",
         "noAccount": "Don't have an account?",
         "createAccount" : "Create now", 
-        "signup" : "Sign Up",
+        "signin" : "Sign In",
         "email": "Email",
         "emailPlaceholder": "e.g. example@example.com",
         "password": "Password",
