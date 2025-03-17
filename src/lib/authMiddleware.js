@@ -1,6 +1,6 @@
 import { admin, db } from "@/lib/firebaseAdminConfig";
 
-export async function verifyToken(req, res, next) {
+async function verifyToken(req, res, next) {
   try {
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith("Bearer ")) {
@@ -15,3 +15,16 @@ export async function verifyToken(req, res, next) {
     return res.status(401).json({ error: "Token invalide ou expiré" });
   }
 }
+
+const runMiddleware = (req, res, fn) => {
+  return new Promise((resolve, reject) => {
+    fn(req, res, (result) => {
+      if (result instanceof Error) {
+        return reject(result);
+      }
+      return resolve(result);
+    });
+  });
+};
+
+export { verifyToken, runMiddleware };

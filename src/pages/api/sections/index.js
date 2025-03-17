@@ -1,17 +1,5 @@
 import { admin, db } from "@/lib/firebaseAdminConfig";
-import { verifyToken } from "@/lib/authMiddleware";
-
-// Fonction pour le middleware dans le contexte des API Routes de Next.js
-const runMiddleware = (req, res, fn) => {
-  return new Promise((resolve, reject) => {
-    fn(req, res, (result) => {
-      if (result instanceof Error) {
-        return reject(result);
-      }
-      return resolve(result);
-    });
-  });
-};
+import { verifyToken, runMiddleware } from "@/lib/authMiddleware";
 
 export default async function handler(req, res) {
   // GET - Récupérer les sections d'un utilisateur
