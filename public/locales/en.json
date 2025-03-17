@@ -155,5 +155,122 @@
     "Training": {
         "inProgress": "In progress, please wait...",
         "success": "Success"
+    },
+    "SignIn": {
+        "title": "Sign in",
+        "noAccount": "Don’t have an account?",
+        "createNow": "Create now",
+        "email": "E-mail",
+        "password": "Password",
+        "enterPassword": "Enter your password",
+        "rememberMe": "Remember me",
+        "forgotPassword": "Forgot Password?",
+        "signIn": "Sign in",
+        "signUp": "Sign up",
+        "uhave": "Sign in",
+        "account": "Already have an account?",
+        "featuresTitle": "Introducing new features",
+        "featuresDescription": "Analyzing previous trends ensures that businesses always make the right decision.",
+        "storage": "Unlimited storage to store your files & books",
+        "design": "A clean and modern design for a smooth user experience.",
+        "upload": "Upload and manage PDFs, Word documents, eBooks, and more.",
+        "Or": "OR",
+        "Google": "Continue with Google",
+        "invalidCredentials": "Invalid email or password",
+        "security": "Your data is securely stored and never shared with third parties."
+    }, 
+    "ResetPassword": {
+        "title": "Reset Password",
+        "description": "Enter your new password",
+        "email": "E-mail",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm the new password",
+        "enterNewPassword": "Enter your new password",
+        "confirmNewPassword": "Confirm your new password",
+        "resetPassword": "Reset Password",
+        "passwordMismatch": "Passwords do not match",
+        "resetError": "An error occurred while resetting the password",
+        "storage": "Unlimited storage to store your files & books",
+        "design": "A clean and modern design for a smooth user experience.",
+        "upload": "Upload and manage PDFs, Word documents, eBooks, and more.",
+        "security": "Your data is securely stored and never shared with third parties.",
+        "featuresTitle": "Introducing new features",
+        "featuresDescription": "Analyzing previous trends ensures that businesses always make the right decision. And as the scale of the decision and its impact magnifies..."
+    },
+    "Hero": {
+        "officialWebsite": "MAKTABATI OFFICIAL WEBSITE",
+        "mainTitle": "Your Personal Library, Reimagined",
+        "mainTitleHighlight": "Organize and enhance",
+        "mainTitleAI": "your documents with AI",
+        "subheading": "Unlock the power of AI to enhance your reading experience. Upload, organize, and discover your collection like never before.",
+        "emailPlaceholder": "Enter your email",
+        "subscribe": "Subscribe",
+        "disclaimer1": "It’s",
+        "disclaimerLink": "100% free",
+        "disclaimer2": " and we will never send more than one email per month."
+    },
+    "Features": {
+        "title": "Maktabati Features",
+        "writingAssistant": {
+        "title": "Personalized AI Writing Assistant",
+        "description": "Generate summaries, enhance your writing, and create high-quality content tailored to your style preferences."
+        },
+        "retrievalAugmented": {
+        "title": "Retrieval-Augmented Generation (RAG)",
+        "description": "Combine AI-generated content with your uploaded files for accurate and context-aware responses."
+        },
+        "documentOrganization": {
+        "title": "Smart Document Organization",
+        "description": "Effortlessly categorize and search your documents for quick access and better management."
+        },
+        "crossPlatform": {
+        "title": "Cross-Platform Accessibility",
+        "description": "Enjoy a seamless experience across web and mobile applications."
+        },
+        "documentTraining": {
+        "title": "Document Training System",
+        "description": "Upload documents to train the AI model, refining its ability to assist you with your unique writing style."
+        },
+        "privacySecurity": {
+        "title": "Enhanced Privacy and Security",
+        "description": "Your data is securely stored and never shared with third parties."
+        }
+    },
+    "FAQ": {
+        "title": "Frequently Asked Questions",
+        "whatIsMaktabati": {
+        "question": "What is Maktabati?",
+        "answer": "Maktabati is an AI-powered platform designed to enhance your document organization and reading experience."
+        },
+        "howAiWorks": {
+        "question": "How does the AI Writing Assistant work?",
+        "answer": "Our AI Writing Assistant analyzes your documents and provides summaries, writing enhancements, and more."
+        },
+        "uploadFormats": {
+        "question": "Can I upload books in any format?",
+        "answer": "Yes, Maktabati supports various formats including PDF, EPUB, and DOCX."
+        },
+        "dataPrivacy": {
+        "question": "Is my data safe and private?",
+        "answer": "Yes, your data is securely stored and never shared with third parties."
+        },
+        "customizeWriting": {
+        "question": "Can I customize the writing style of the AI?",
+        "answer": "Absolutely! Maktabati adapts to your writing style to generate personalized content."
+        },
+        "isFree": {
+        "question": "Is Maktabati free to use?",
+        "answer": "Yes, we offer free access with premium features available for advanced users."
+        }
+    },
+    "CTA": {
+        "title": "Ready to level-up?",
+        "description": "Unlock the power of AI to enhance your reading experience. Upload, organize, and discover your collection like never before.",
+        "button": "Get Started"
+    },
+    "Footer": {
+        "privacy": "Privacy Notice",
+        "terms": "Terms of Service",
+        "status": "Status"
     }
 }

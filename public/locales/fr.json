@@ -155,5 +155,122 @@
     "Training": {
         "inProgress": "En cours, veuillez patienter...",
         "success": "Succès"
+    },
+    "SignIn": {
+        "title": "Se connecter",
+        "noAccount": "Vous n'avez pas de compte ?",
+        "createNow": "Créer maintenant",
+        "email": "E-mail",
+        "password": "Mot de passe",
+        "enterPassword": "Entrez votre mot de passe",
+        "rememberMe": "Se souvenir de moi",
+        "forgotPassword": "Mot de passe oublié ?",
+        "signIn": "Se connecter",
+        "featuresTitle": "Découvrez nos nouvelles fonctionnalités",
+        "featuresDescription": "L'analyse des tendances passées permet aux entreprises de toujours prendre la bonne décision.",
+        "storage": "Stockage illimité pour enregistrer vos fichiers et livres",
+        "design": "Un design propre et moderne pour une expérience utilisateur fluide.",
+        "upload": "Téléchargez et gérez des PDFs, documents Word, eBooks et plus encore.",
+        "Or": "OU",
+        "invalidCredentials": "L'e-mail ou le mot de passe est incorrect",
+        "Google": "Continue avec Google",
+        "signUp": "S'inscrir",
+        "uhave": "se connecter",
+        "account": "Vous-avez un compte?",
+        "security": "Vos données sont stockées en toute sécurité et ne sont jamais partagées avec des tiers."
+    }, 
+    "ResetPassword": {
+        "title": "Réinitialiser le mot de passe",
+        "description": "Entrez votre nouveau mot de passe",
+        "email": "E-mail",
+        "newPassword": "Nouveau mot de passe",
+        "confirmPassword": "Confirmer le nouveau mot de passe",
+        "enterNewPassword": "Entrez votre nouveau mot de passe",
+        "confirmNewPassword": "Confirmez votre nouveau mot de passe",
+        "resetPassword": "Réinitialiser le mot de passe",
+        "passwordMismatch": "Les mots de passe ne correspondent pas",
+        "resetError": "Une erreur s'est produite lors de la réinitialisation du mot de passe",
+        "storage": "Stockage illimité pour vos fichiers et livres",
+        "design": "Un design moderne et épuré pour une meilleure expérience utilisateur.",
+        "upload": "Téléchargez et gérez des PDF, documents Word, eBooks et plus encore.",
+        "security": "Vos données sont stockées en toute sécurité et ne sont jamais partagées avec des tiers.",
+        "featuresTitle": "Présentation des nouvelles fonctionnalités",
+        "featuresDescription": "L'analyse des tendances passées permet aux entreprises de toujours prendre la bonne décision. Et à mesure que l'ampleur de la décision et son impact augmentent..."
+    },
+    "Hero": {
+        "officialWebsite": "SITE OFFICIEL DE MAKTABATI",
+        "mainTitle": "Votre bibliothèque personnelle, réinventée",
+        "mainTitleHighlight": "Organisez et améliorez",
+        "mainTitleAI": "vos documents avec l'IA",
+        "subheading": "Exploitez la puissance de l'IA pour améliorer votre expérience de lecture. Téléchargez, organisez et découvrez votre collection comme jamais auparavant.",
+        "emailPlaceholder": "Entrez votre e-mail",
+        "subscribe": "S'abonner",
+        "disclaimer1": "C’est",
+        "disclaimerLink": "100% gratuit",
+        "disclaimer2": " et nous n'enverrons jamais plus d'un e-mail par mois."
+    },
+    "Features": {
+        "title": "Fonctionnalités de Maktabati",
+        "writingAssistant": {
+        "title": "Assistant d'écriture IA personnalisé",
+        "description": "Générez des résumés, améliorez votre écriture et créez un contenu de haute qualité adapté à vos préférences."
+        },
+        "retrievalAugmented": {
+        "title": "Génération augmentée par récupération",
+        "description": "Combinez du contenu généré par l'IA avec vos fichiers téléchargés pour des réponses adaptées au contexte."
+        },
+        "documentOrganization": {
+        "title": "Organisation intelligente des documents",
+        "description": "Catégorisez et recherchez facilement vos documents pour un accès rapide et une meilleure gestion."
+        },
+        "crossPlatform": {
+        "title": "Accessibilité multiplateforme",
+        "description": "Profitez d'une expérience fluide sur les applications Web et mobiles."
+        },
+        "documentTraining": {
+        "title": "Système de formation des documents",
+        "description": "Téléchargez des documents pour entraîner le modèle d'IA, affinant sa capacité à vous assister avec votre style."
+        },
+        "privacySecurity": {
+        "title": "Confidentialité et sécurité améliorées",
+        "description": "Vos données sont stockées en toute sécurité et ne sont jamais partagées avec des tiers."
+        }
+    },
+    "FAQ": {
+        "title": "Questions Fréquemment Posées",
+        "whatIsMaktabati": {
+        "question": "Qu'est-ce que Maktabati?",
+        "answer": "Maktabati est une plateforme alimentée par l'IA conçue pour améliorer l'organisation de vos documents et votre expérience de lecture."
+        },
+        "howAiWorks": {
+        "question": "Comment fonctionne l'assistant d'écriture IA?",
+        "answer": "Notre assistant d'écriture IA analyse vos documents et fournit des résumés, des améliorations de texte, et bien plus encore."
+        },
+        "uploadFormats": {
+        "question": "Puis-je télécharger des livres dans n'importe quel format?",
+        "answer": "Oui, Maktabati prend en charge plusieurs formats, y compris PDF, EPUB et DOCX."
+        },
+        "dataPrivacy": {
+        "question": "Mes données sont-elles sûres et privées?",
+        "answer": "Oui, vos données sont stockées en toute sécurité et ne sont jamais partagées avec des tiers."
+        },
+        "customizeWriting": {
+        "question": "Puis-je personnaliser le style d'écriture de l'IA?",
+        "answer": "Absolument ! Maktabati s'adapte à votre style d'écriture pour générer du contenu personnalisé."
+        },
+        "isFree": {
+        "question": "Maktabati est-il gratuit?",
+        "answer": "Oui, nous offrons un accès gratuit avec des fonctionnalités premium disponibles pour les utilisateurs avancés."
+        }
+    },
+    "CTA": {
+        "title": "Prêt à passer au niveau supérieur?",
+        "description": "Débloquez la puissance de l'IA pour améliorer votre expérience de lecture. Téléchargez, organisez et découvrez votre collection comme jamais auparavant.",
+        "button": "Commencer"
+    },
+    "Footer": {
+        "privacy": "Avis de confidentialité",
+        "terms": "Conditions d'utilisation",
+        "status": "Statut"
     }
 }

@@ -33,28 +33,29 @@ export default function SignIn() {
       }
     }, [isAuthenticated, router]);
     
-    const [loginForm, setLoginForm] = useState({
-      email: "",
-      password: "",
-    });
-  
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      setError(null);
-      try {
-        const response = await axios.post("/api/auth/login", {
-          email: loginForm.email,
-          password: loginForm.password,
-        });
-        const token = response.data.token;
-        if (token) {
-          setAuthToken(token);
-          router.push("/home");
+    const [signUpForm, setSignUpForm] = useState({
+        email: "",
+        password: "",
+      });
+    
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError(null);
+        try {
+          const response = await axios.post("/api/auth/signup", {
+            email: signUpForm.email,
+            password: signUpForm.password,
+          });
+          const token = response.data.token;
+          if (token) {
+            setAuthToken(token);
+            router.push("/home");
+          }
+        } catch (err) {
+          setError(t("invalidCredentials"));
         }
-      } catch (err) {
-        setError(t("invalidCredentials"));
-      }
-    };
+      };
+    
   
     const toggleTheme = () => {
       document.documentElement.classList.toggle('dark');
@@ -104,22 +105,22 @@ export default function SignIn() {
               </button>
 
               <div className="max-w-md w-full">
-                <h2 className="text-3xl font-bold text-gray-900">{t("title")}</h2>
+                <h2 className="text-3xl font-bold text-gray-900">{t("signUp")}</h2>
                 <p className="mt-2 text-gray-600">
-                    {t("noAccount")} <Link href="/signup" className="text-teal-600 font-semibold">{t("createNow")}</Link>
+                    {t("account")} <Link href="/login" className="text-teal-600 font-semibold">{t("uhave")}</Link>
                 </p>
                 <form onSubmit={handleSubmit} >
                   {/* Email Input */}
                   <div className="mt-6">
                       <label className="block text-gray-700 font-medium">{t("email")}</label>
                       <input
-                          type="email"
-                          className="w-full px-4 py-3 border rounded-lg mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                          placeholder="example@example.com"
-                          value={loginForm.email}
-                          onChange={(e) => {
-                            setLoginForm({ ...loginForm, email: e.target.value });
-                          }}
+                        type="email"
+                        className="w-full px-4 py-3 border rounded-lg mt-1 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        placeholder="example@example.com"
+                        value={signUpForm.email}
+                        onChange={(e) => {
+                            setSignUpForm({ ...signUpForm, email: e.target.value });
+                        }}
                       />
                   </div>
 
@@ -131,9 +132,9 @@ export default function SignIn() {
                         type={showPassword ? "text" : "password"}
                         className="w-full px-4 py-3 border rounded-xl mt-1 focus:outline-none focus:ring-2 focus:ring-teal-400"
                         placeholder={t("enterPassword")}
-                        value={loginForm.password}
+                        value={signUpForm.password}
                         onChange={(e) => {
-                          setLoginForm({ ...loginForm, password: e.target.value });
+                            setSignUpForm({ ...signUpForm, password: e.target.value });
                         }}
                       />
                       {/* Eye Icon */}
@@ -160,17 +161,11 @@ export default function SignIn() {
                     )}
                   </div>
                   
-                  {/* Remember Me & Forgot Password */}
-                  <div className="mt-4 flex justify-between items-center">
-                      <label className="flex items-center text-gray-600">
-                          <input type="checkbox" className="mr-2" /> {t("rememberMe")}
-                      </label>
-                      <Link href="/reset-password"  className="text-teal-600 text-sm underline underline-offset-2">{t("forgotPassword")}</Link>
-                  </div>
+                  
 
                   {/* Sign In Button */}
                   <button className="w-full bg-teal-600 text-white text-lg font-semibold py-3 mt-6 rounded-lg hover:bg-teal-700 transition">
-                      {t("signIn")}
+                      {t("signUp")}
                   </button>
                   {/* OR Divider */}
                   <div className="flex items-center my-6">
