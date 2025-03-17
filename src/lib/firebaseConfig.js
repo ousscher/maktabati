@@ -1,30 +1,16 @@
 import { initializeApp } from "firebase/app";
-import { 
-    getAuth, 
-    signInWithEmailAndPassword, 
-    createUserWithEmailAndPassword, 
-    sendPasswordResetEmail, 
-    confirmPasswordReset, 
-    updatePassword 
-} from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAwyC2Mb5fI4O4kb7R1BpB6GsVj8sPGePo",
-    authDomain: "maktabati-e65bd.firebaseapp.com",
-    projectId: "maktabati-e65bd",
-    storageBucket: "maktabati-e65bd.firebasestorage.app",
-    messagingSenderId: "737197937381",
-    appId: "1:737197937381:web:14d4517767136839e1fa0c"
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-export { 
-    auth, 
-    signInWithEmailAndPassword, 
-    createUserWithEmailAndPassword, 
-    sendPasswordResetEmail, 
-    confirmPasswordReset, 
-    updatePassword 
-};
+export { auth, signInWithEmailAndPassword, createUserWithEmailAndPassword };
