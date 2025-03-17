@@ -28,13 +28,13 @@ export default async function handler(req, res) {
       if (error.code === 'auth/email-already-in-use') {
         return res.status(400).json({ error: "Cette adresse e-mail est déjà utilisée" });
       } else if (error.code === 'auth/weak-password') {
-        return res.status(400).json({ error: "Le mot de passe est trop faible" });
+        return res.status(401).json({ error: "Le mot de passe est trop faible" });
       } else if (error.code === 'auth/invalid-email') {
-        return res.status(400).json({ error: "Adresse e-mail invalide" });
+        return res.status(402).json({ error: "Adresse e-mail invalide" });
       }
       
       // Pour toute autre erreur
-      return res.status(400).json({ error: error.message });
+      return res.status(403).json({ error: error.message });
     }
   } else {
     res.setHeader("Allow", ["POST"]);
