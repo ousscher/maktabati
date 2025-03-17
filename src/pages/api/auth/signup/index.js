@@ -1,4 +1,5 @@
 import { auth, createUserWithEmailAndPassword } from "@/lib/firebaseConfig";
+import { admin, db } from "@/lib/firebaseAdminConfig";
 
 
 export default async function handler(req, res) {
@@ -10,19 +11,34 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "Veuillez remplir tous les champs" });
       }
       
-      // Créer un nouvel utilisateur avec Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       
-      // Générer un token pour l'utilisateur nouvellement créé
-      const token = await user.getIdToken();
+      try {
+        const token = await user.getIdToken();
+        
+        // Définir explicitement la collection et le document
+        await db.collection("users").doc(user.uid).set({
+          email,
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+        
+        return res.status(201).json({ 
+          uid: user.uid, 
+          email: user.email, 
+          token 
+        });
+      } catch (firestoreError) {
+        console.error("Erreur Firestore:", firestoreError);
+        // Retourner l'utilisateur même en cas d'échec Firestore
+        return res.status(206).json({ 
+          uid: user.uid, 
+          email: user.email,
+          warning: "Utilisateur créé mais données non sauvegardées" 
+        });
+      }
       
-      // Renvoyer les informations de l'utilisateur et le token
-      return res.status(201).json({ 
-        uid: user.uid, 
-        email: user.email, 
-        token 
-      });
+
     } catch (error) {
       // Gérer les erreurs spécifiques à Firebase
       if (error.code === 'auth/email-already-in-use') {

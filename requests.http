@@ -1,17 +1,88 @@
 ### login
-POST localhost:3000/api/losgin
+POST localhost:3000/api/login
 Content-Type: application/json
 
 {
     "email": "lo_cherguelaine@esi.dz",
+    "password": "11221122"
 }
 
+### Récupérer le token après la connexion
+@token = "token here"
 
-### hello
+### signup
 POST  http://localhost:3000/api/auth/signup
 Content-Type: application/json
 
 {
-    "email": "lala@esi.dz",
+    "email": "lo_cherguelaine@esi.dz",
     "password": "11221122"
+}
+
+### add section 
+POST  http://localhost:3000/api/sections
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "Studies"
+}
+
+### get all sections
+GET  http://localhost:3000/api/sections
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### Create a new folder
+POST  http://localhost:3000/api/folders
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "folder1",
+    "sectionId": "O1ArD4a6BrGSggk2xeog"
+}
+
+### Create a new folder inside another folder
+POST  http://localhost:3000/api/folders
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "folder1",
+    "sectionId": "O1ArD4a6BrGSggk2xeog", 
+    "parentId": "QE2sa8xnjcxiqFZSLpw4"
+}
+
+### get all folders
+GET http://localhost:3000/api/folders
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "sectionId": "O1ArD4a6BrGSggk2xeog", 
+    "parentId": "QE2sa8xnjcxiqFZSLpw4" 
+}
+
+### Create a new file
+POST http://localhost:3000/api/files
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "sectionId": "O1ArD4a6BrGSggk2xeog",
+  "name": "document.pdf",
+  "fileUrl": "https://storage.googleapis.com/your-bucket/document.pdf",
+  "fileType": "application/pdf",
+  "fileSize": 102400,
+  "folderId": "654321"
+}
+
+### section hierarchy 
+GET http://localhost:3000/api/section-hierarchy
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "sectionId": "O1ArD4a6BrGSggk2xeog"
 }
