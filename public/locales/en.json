@@ -96,6 +96,7 @@
         "myFolders": "My Folders",
         "files": "files",
         "createNewFolder": "Create a new Folder",
+        "createNewFile": "Create a new File",
         "newFolderTitle": "New Folder",
         "newFolderDescription": "Create a new folder",
         "folderNamePlaceholder": "Enter folder name...",
@@ -119,6 +120,7 @@
         "deleteWarning": "This action cannot be undone. This will permanently delete this file.",
         "continue": "Continue",
         "restoreFile": "Restore this file",
+        "myFiles":"My Files",
         "restoreAllFiles": "Restore all files",
         "deleteAllFiles": "Delete all files"
     },

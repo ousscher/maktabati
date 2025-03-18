@@ -6,6 +6,9 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import SearchBar from "@/components/searchbar";
 import axios from "axios"; 
+import { useLibraryStore } from "@/store/libraryStore";
+import API from "@/utils/api-client";
+import { useRouter } from "next/router";
 
 export default function Hero() {
     const t = useTranslations("Library");
@@ -15,6 +18,7 @@ export default function Hero() {
         name: "",
     });
     
+    const router = useRouter();
     const [isFirstModalOpen, setIsFirstModalOpen] = useState(false);
     const [isSecondModalOpen, setIsSecondModalOpen] = useState(false);
     const firstModalRef = useRef(null);
@@ -68,7 +72,6 @@ export default function Hero() {
         }
     };
 
-    const [sections, setSections] = useState([]);
 
     useEffect(() => {
         const fetchSections = async () => {
@@ -90,6 +93,44 @@ export default function Hero() {
         fetchSections();  // Call function to fetch sections
       }, []);
     
+      const { 
+              sections, 
+              setSections, 
+              setCurrentSection, 
+              setHierarchy, 
+              setCurrentPath, 
+              isLoading, 
+              setIsLoading, 
+              error, 
+              setError 
+            } = useLibraryStore();
+
+
+      const handleSectionClick = async (section) => {
+        setCurrentSection(section);
+        setIsLoading(true);
+        setError(null);
+        
+        try {
+            
+          const response = await API.get(`/section-hierarchy?sectionId=${section.id}`, {
+            sectionId: section.id
+        });
+          const hierarchyData = await response.data;
+          setHierarchy(hierarchyData);
+          setCurrentPath([section.id]);
+          
+          // Navigate to folders page
+          router.push('/mylibrary/myfolders');
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'An error occurred');
+          console.error('Error fetching hierarchy:', err);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+
 
     return (
         <ProtectedLayout>
@@ -208,18 +249,18 @@ export default function Hero() {
                     {/* Sections Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-5 mb-4">
                         {sections.slice(0, 6).map((section) => (
-                            <Link href={`/mylibrary/myfolders?sectionid=${section.id}`}>
-                                <div
-                                    key={section.id}
-                                    className="bg-gray-50 p-4 rounded-lg shadow flex items-center transition hover:shadow-md cursor-pointer"
-                                >
-                                    <Image src={section.icon ? section.icon : "/images/icons/folder.svg"} alt="Folder Icon" className="ml-4" width={24} height={24} />
-                                    <div className="ml-6">
-                                        <h2 className="text-teal-600 font-semibold">{section.name}</h2>
-                                        <p className="text-gray-500">{section.folders ? section.folders : `XX ${t("folders")}`}</p>
-                                    </div>
+                            <div
+                                onClick={() => handleSectionClick(section)}
+                                onDoubleClick={() => handleSectionClick(section)}
+                                key={section.id}
+                                className="bg-gray-50 p-4 rounded-lg shadow flex items-center transition hover:shadow-md cursor-pointer"
+                            >
+                                <Image src={section.icon ? section.icon : "/images/icons/folder.svg"} alt="Folder Icon" className="ml-4" width={24} height={24} />
+                                <div className="ml-6">
+                                    <h2 className="text-teal-600 font-semibold">{section.name}</h2>
+                                    <p className="text-gray-500">{section.folders ? section.folders : `XX ${t("folders")}`}</p>
                                 </div>
-                            </Link>
+                            </div> 
                         ))}
                     </div>
 
