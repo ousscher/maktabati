@@ -5,19 +5,16 @@ import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import SearchBar from "@/components/searchbar";
+import axios from "axios"; 
 
 export default function Hero() {
     const t = useTranslations("Library");
     const { switchLocale } = useSwitchLang();
     const [sortBy, setSortBy] = useState("name");
-    const sections = [
-        { id: 1, name: "Work Documents", folders: 12, icon: "/images/icons/folder.svg" },
-        { id: 2, name: "Personal Projects", folders: 19, icon: "/images/icons/folder.svg" },
-        { id: 3, name: "Research Papers", folders: 8, icon: "/images/icons/folder.svg" },
-        { id: 4, name: "Archived Files", folders: 25, icon: "/images/icons/folder.svg" },
-        { id: 5, name: "Financial Reports", folders: 30, icon: "/images/icons/folder.svg" },
-        { id: 6, name: "Team Projects", folders: 15, icon: "/images/icons/folder.svg" }
-    ];
+    const [Form, setForm] = useState({
+        name: "",
+    });
+    
     const [isFirstModalOpen, setIsFirstModalOpen] = useState(false);
     const [isSecondModalOpen, setIsSecondModalOpen] = useState(false);
     const firstModalRef = useRef(null);
@@ -46,6 +43,53 @@ export default function Hero() {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const token = localStorage.getItem("token");
+    
+            if (!token) {
+                console.error("No authentication token found");
+                return;
+            }
+    
+            const response = await axios.post("/api/sections", {
+                name: Form.name
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+    
+            console.log("New section created", response.data);
+        } catch (err) {
+            console.log("Error creating section:", err.response?.data || err.message);
+        }
+    };
+
+    const [sections, setSections] = useState([]);
+
+    useEffect(() => {
+        const fetchSections = async () => {
+          try {
+            // Sending GET request to the backend API
+            const response = await axios.get("/api/sections", {
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem('token')}`, 
+              },
+            });
+    
+            setSections(response.data.sections); 
+          } catch (err) {
+            console.log(err);
+          } 
+        };
+    
+        fetchSections();  // Call function to fetch sections
+      }, []);
+    
 
     return (
         <ProtectedLayout>
@@ -101,56 +145,60 @@ export default function Hero() {
 
                         {/* Step 2: Second Modal - "New Section Form" */}
                         {isSecondModalOpen && (
-                            <div
-                                ref={secondModalRef}
-                                className="absolute top-44 right-10 bg-white shadow-xl rounded-md p-6 w-72 border z-50"
-                            >
-                                <h3 className="text-lg font-semibold">{t("newSectionTitle")}</h3>
-                                <p className="text-sm text-gray-500">{t("newSectionDescription")}</p>
+                            <form onSubmit={handleSubmit}>
+                                <div
+                                    ref={secondModalRef}
+                                    className="absolute top-44 right-10 bg-white shadow-xl rounded-md p-6 w-72 border z-50"
+                                >
+                                    <h3 className="text-lg font-semibold">{t("newSectionTitle")}</h3>
+                                    <p className="text-sm text-gray-500">{t("newSectionDescription")}</p>
 
-                                {/* Section Name Input */}
-                                <label className="block mt-3 text-sm font-medium text-gray-700">{t("sectionName")}</label>
-                                <input
-                                    type="text"
-                                    placeholder={t("sectionNamePlaceholder")}
-                                    className="w-full mt-1 p-2 border rounded-md focus:ring-2 focus:ring-teal-500 focus:outline-none"
-                                />
+                                    {/* Section Name Input */}
+                                    <label className="block mt-3 text-sm font-medium text-gray-700">{t("sectionName")}</label>
+                                    <input
+                                        type="text"
+                                        placeholder={t("sectionNamePlaceholder")}
+                                        className="w-full mt-1 p-2 border rounded-md focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                                        value={Form.name}
+                                    onChange={(e) => setForm({ ...Form, name: e.target.value })}
+                                    />
 
-                                {/* Icon Selection */}
-                                {/* Icon Selection Grid */}
-                                <label className="block mt-3 text-sm font-medium text-gray-700">{t("icon")}</label>
-                                <div className="grid grid-cols-4 gap-2 mt-2">
-                                    {icons.map((icon, index) => (
+                                    {/* Icon Selection */}
+                                    {/* Icon Selection Grid */}
+                                    <label className="block mt-3 text-sm font-medium text-gray-700">{t("icon")}</label>
+                                    <div className="grid grid-cols-4 gap-2 mt-2">
+                                        {icons.map((icon, index) => (
+                                            <button
+                                                key={index}
+                                                className={`p-3 border rounded-md hover:bg-gray-100 transition ${
+                                                    selectedIcon === icon ? "border-teal-500 bg-gray-100" : "border-gray-300"
+                                                }`}
+                                                onClick={() => setSelectedIcon(icon)}
+                                            >
+                                                <Image src={icon} alt={`Icon ${index}`} width={24} height={24} />
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    {/* Buttons */}
+                                    <div className="flex justify-end mt-4 space-x-2">
                                         <button
-                                            key={index}
-                                            className={`p-3 border rounded-md hover:bg-gray-100 transition ${
-                                                selectedIcon === icon ? "border-teal-500 bg-gray-100" : "border-gray-300"
-                                            }`}
-                                            onClick={() => setSelectedIcon(icon)}
+                                            onClick={() => {
+                                                setIsSecondModalOpen(false);
+                                                setSelectedIcon(null); 
+                                            }}
+                                            className="px-4 py-2 text-gray-600 border rounded-md hover:bg-gray-100"
                                         >
-                                            <Image src={icon} alt={`Icon ${index}`} width={24} height={24} />
+                                            {t("cancel")}
                                         </button>
-                                    ))}
+                                        <button
+                                            type="submit" className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700"
+                                        >
+                                            {t("create")}
+                                        </button>
+                                    </div>
                                 </div>
-
-                                {/* Buttons */}
-                                <div className="flex justify-end mt-4 space-x-2">
-                                    <button
-                                        onClick={() => {
-                                            setIsSecondModalOpen(false);
-                                            setSelectedIcon(null); 
-                                        }}
-                                        className="px-4 py-2 text-gray-600 border rounded-md hover:bg-gray-100"
-                                    >
-                                        {t("cancel")}
-                                    </button>
-                                    <button
-                                        className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700"
-                                    >
-                                        {t("create")}
-                                    </button>
-                                </div>
-                            </div>
+                            </form>
                         )}
                     </div>
                 </div>
@@ -160,16 +208,18 @@ export default function Hero() {
                     {/* Sections Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-5 mb-4">
                         {sections.slice(0, 6).map((section) => (
-                            <div
-                                key={section.id}
-                                className="bg-gray-50 p-4 rounded-lg shadow flex items-center transition hover:shadow-md cursor-pointer"
-                            >
-                                <Image src={section.icon} alt="Folder Icon" className="ml-4" width={24} height={24} />
-                                <div className="ml-6">
-                                    <h2 className="text-teal-600 font-semibold">{section.name}</h2>
-                                    <p className="text-gray-500">{section.folders} {t("folders")}</p>
+                            <Link href={`/mylibrary/myfolders?sectionid=${section.id}`}>
+                                <div
+                                    key={section.id}
+                                    className="bg-gray-50 p-4 rounded-lg shadow flex items-center transition hover:shadow-md cursor-pointer"
+                                >
+                                    <Image src={section.icon ? section.icon : "/images/icons/folder.svg"} alt="Folder Icon" className="ml-4" width={24} height={24} />
+                                    <div className="ml-6">
+                                        <h2 className="text-teal-600 font-semibold">{section.name}</h2>
+                                        <p className="text-gray-500">{section.folders ? section.folders : `XX ${t("folders")}`}</p>
+                                    </div>
                                 </div>
-                            </div>
+                            </Link>
                         ))}
                     </div>
 

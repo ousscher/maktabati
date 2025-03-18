@@ -50,7 +50,8 @@ export default function MyFolders() {
         { id: 13, name: "Coding Projects", files: 132, size: "4.5 GB", icon: "/images/icons/folder-large.svg" },
         { id: 14, name: "Event Planning", files: 90, size: "780 MB", icon: "/images/icons/folder-large.svg" },
         { id: 15, name: "Photography", files: 200, size: "5.2 GB", icon: "/images/icons/folder-large.svg" }
-    ];    
+    ];  
+      
 
     // Pagination logic
     const totalPages = Math.ceil(folders.length / foldersPerPage);
@@ -65,7 +66,7 @@ export default function MyFolders() {
             <div className="p-6 flex">
                 <div className={`transition-all duration-500 ${showChat ? "w-2/3" : "w-full"}`}>
 
-                    {/* Header Section */}
+                    {/* Header Section */} 
                     <div className="flex justify-between items-center py-4">
                         {/* Left Side - Title Navigation */}
                         <div className="flex items-center space-x-2">

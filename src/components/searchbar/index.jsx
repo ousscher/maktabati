@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 export default function SearchBar() {
     const t = useTranslations("Search");
@@ -50,14 +51,17 @@ export default function SearchBar() {
                 </button>
 
                 {/* Settings Icon */}
-                <button className="p-2 hover:bg-gray-100 rounded-md transition">
-                    <Image src="/images/icons/settings.svg" alt="Settings" width={24} height={24} />
-                </button>
-
+                <Link href='/settings'>
+                    <button className="p-2 hover:bg-gray-100 rounded-md transition">
+                        <Image src="/images/icons/settings.svg" alt="Settings" width={24} height={24} />
+                    </button>
+                </Link>
                 {/* Profile Image */}
-                <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-200">
-                    <Image src="/images/profile.jpg" alt="User Profile" width={40} height={40} />
-                </div>
+                <Link href='/profile'>
+                    <button className="w-10 h-10 rounded-full overflow-hidden border border-gray-200">
+                        <Image src="/images/profile.jpg" alt="User Profile" width={40} height={40} />
+                    </button>
+                </Link>
             </div>
         </div>
     );

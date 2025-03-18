@@ -17,7 +17,7 @@ export default async function handler(req, res) {
       sectionsSnapshot.forEach(doc => {
         sections.push({
           id: doc.id,
-          ...doc.data()
+          ...doc.data() 
         });
       });
       
