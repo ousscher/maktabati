@@ -1,5 +1,5 @@
 export const SERVER_URL = {
   test: "",
-  development: "",
-  production: "",
+  development: "/api/",
+  production: "/api/",
 }

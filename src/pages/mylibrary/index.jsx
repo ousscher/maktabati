@@ -5,9 +5,12 @@ import Image from "next/image";
 import SearchBar from "@/components/searchbar";
 import Pagination from "@/components/mylibrary/pagination";
 import { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import { useLibraryStore } from "@/store/libraryStore";
+import API from "@/utils/api-client";
+import { useRouter } from "next/router";
 
 export default function Library() {
+    const router = useRouter();
     const t = useTranslations("Library");
     const { switchLocale } = useSwitchLang();
     const [sortBy, setSortBy] = useState("name");
@@ -16,47 +19,45 @@ export default function Library() {
     const [Form, setForm] = useState({
         name: "",
     });
-    const [sections, setSections] = useState([]);
+
+    const { 
+        sections, 
+        setSections, 
+        setCurrentSection, 
+        setHierarchy, 
+        setCurrentPath, 
+        isLoading, 
+        setIsLoading, 
+        error, 
+        setError 
+      } = useLibraryStore();
+    // const [sections, setSections] = useState([]);
 
     useEffect(() => {
         const fetchSections = async () => {
+            setIsLoading(true);
+            setError(null);
           try {
-            // Sending GET request to the backend API
-            const response = await axios.get("/api/sections", {
-              headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${localStorage.getItem('token')}`, 
-              },
-            });
-    
+            const response = await API.get("/sections");
             setSections(response.data.sections); 
           } catch (err) {
             console.log(err);
           } 
         };
     
-        fetchSections();  // Call function to fetch sections
+        fetchSections();  
       }, []);
 
       const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const token = localStorage.getItem("token");
-    
-            if (!token) {
-                console.error("No authentication token found");
-                return;
-            }
-    
-            const response = await axios.post("/api/sections", {
+            const response = await API.post("/sections", {
                 name: Form.name
-            }, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
             });
+            //here we need to add it to the sections array and update the state and close the modal
+            // setSections([...sections, response.data.section]);
+            // setIsFirstModalOpen(false);
     
-            console.log("New section created", response.data);
         } catch (err) {
             console.log("Error creating section:", err.response?.data || err.message);
         }
@@ -80,6 +81,29 @@ export default function Library() {
             "/images/icons/icon5.png",
             "/images/icons/icon6.png"
         ];
+        const handleSectionClick = async (section) => {
+            setCurrentSection(section);
+            setIsLoading(true);
+            setError(null);
+            
+            try {
+                
+              const response = await API.get(`/section-hierarchy?sectionId=${section.id}`, {
+                sectionId: section.id
+            });
+              const hierarchyData = await response.data;
+              setHierarchy(hierarchyData);
+              setCurrentPath([section.id]);
+              
+              // Navigate to folders page
+              router.push('/mylibrary/myfolders');
+            } catch (err) {
+              setError(err instanceof Error ? err.message : 'An error occurred');
+              console.error('Error fetching hierarchy:', err);
+            } finally {
+              setIsLoading(false);
+            }
+          };
         useEffect(() => {
             function handleClickOutside(event) {
                 if (firstModalRef.current && !firstModalRef.current.contains(event.target)) {
@@ -100,7 +124,6 @@ export default function Library() {
              {/* Search Bar */}
              <SearchBar />
             <div className="p-6">
-
                 {/* Header Section */}
                 <div className="flex justify-between items-center py-4  bg-white  rounded-lg">
                     {/* Left Side - Library Title */}
@@ -249,6 +272,8 @@ export default function Library() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-6 mb-4">
                     {paginatedSections.map((section) => (
                         <div
+                            onClick={() => handleSectionClick(section)}
+                            onDoubleClick={() => handleSectionClick(section)}
                             key={section.id}
                             className="bg-gray-100 p-4 rounded-lg shadow-md flex items-center hover:shadow-lg cursor-pointer"
                         >

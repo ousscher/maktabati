@@ -1,32 +1,25 @@
-import { admin, db } from "@/lib/firebaseAdminConfig";
-import { verifyToken } from "@/lib/authMiddleware";
-import formidable from "formidable";
+import { admin,db } from "@/lib/firebaseAdminConfig";
+import { verifyToken, runMiddleware } from "@/lib/authMiddleware";
 import fs from "fs";
-import path from "path";
+import axios from "axios";
 
-// Disable the default body parser to handle file uploads
+const formidable = require('formidable');
+
 export const config = {
   api: {
     bodyParser: false,
   },
 };
 
-// Middleware function for Next.js API Routes
-const runMiddleware = (req, res, fn) => {
-  return new Promise((resolve, reject) => {
-    fn(req, res, (result) => {
-      if (result instanceof Error) {
-        return reject(result);
-      }
-      return resolve(result);
-    });
-  });
-};
-
-// Parse form data with formidable
 const parseForm = (req) => {
   return new Promise((resolve, reject) => {
-    const form = new formidable.IncomingForm();
+    const form = new formidable.IncomingForm({
+      keepExtensions: true, // Conserve les fichiers temporaires
+      filename: (name, ext, part) => {
+        return `${Date.now()}_${part.originalFilename}`;
+      }
+    });
+
     form.parse(req, (err, fields, files) => {
       if (err) return reject(err);
       resolve({ fields, files });
@@ -35,85 +28,91 @@ const parseForm = (req) => {
 };
 
 export default async function handler(req, res) {
-  // Only handle POST requests
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
     return res.status(405).json({ error: `Method ${req.method} not allowed` });
   }
-  
+
   try {
-    // Execute authentication middleware
     await runMiddleware(req, res, verifyToken);
     const userId = req.user.uid;
-    
-    // Parse the form data
+
     const { fields, files } = await parseForm(req);
-    const file = files.file;
+    const file = files.file[0]; // Accès au premier fichier dans le tableau
     const sectionId = fields.sectionId;
     const folderId = fields.folderId || null;
-    
+
     if (!file || !sectionId) {
       return res.status(400).json({ error: "File and section ID are required" });
     }
-    
-    // If folderId is provided, verify it exists
+
+    // Vérification du dossier si spécifié
     if (folderId) {
       const folderDoc = await db.collection("users").doc(userId)
-                             .collection("sections").doc(sectionId)
-                             .collection("folders").doc(folderId).get();
+                               .collection("sections").doc(sectionId)
+                               .collection("folders").doc(folderId).get();
       
       if (!folderDoc.exists) {
         return res.status(404).json({ error: "Folder not found" });
       }
     }
-    
-    // Create a storage reference
-    const bucket = admin.storage().bucket();
-    const fileName = `users/${userId}/sections/${sectionId}/${Date.now()}_${file.name}`;
-    const fileBuffer = fs.readFileSync(file.path);
-    
-    // Upload the file to Firebase Storage
-    const fileUpload = bucket.file(fileName);
-    await fileUpload.save(fileBuffer, {
-      metadata: {
-        contentType: file.type
-      }
+
+    // Lecture du fichier temporaire
+    const fileData = fs.readFileSync(file.filepath);
+
+    // Envoi à l'API externe
+    const formData = new FormData();
+    formData.append('upload', fileData, {
+      filename: file.originalFilename,
+      contentType: file.mimetype
     });
-    
-    // Get the public URL
-    await fileUpload.makePublic();
-    const fileUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
-    
-    // Create file record in Firestore
+
+    const response = await axios.post(
+      'https://octopus-app-i4yg.ondigitalocean.app/upload',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          ...formData.getHeaders()
+        }
+      }
+    );
+
+    const fileUrl = response.data.url;
+
+    // Création du document Firestore
     const fileRef = db.collection("users").doc(userId)
                     .collection("sections").doc(sectionId)
                     .collection("files").doc();
-    
+
     await fileRef.set({
-      name: file.name,
+      name: file.originalFilename,
       fileUrl: fileUrl,
-      fileType: file.type,
+      fileType: file.mimetype,
       fileSize: file.size,
       folderId: folderId,
-      storagePath: fileName,
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      createdAt: admin.firestore.FieldValue.serverTimestamp(), // Utilisation correcte de admin
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     });
-    
+
+    // Nettoyage du fichier temporaire
+    fs.unlinkSync(file.filepath);
+
     return res.status(201).json({
       id: fileRef.id,
-      name: file.name,
+      name: file.originalFilename,
       fileUrl: fileUrl,
-      fileType: file.type,
+      fileType: file.mimetype,
       fileSize: file.size,
       folderId: folderId,
       message: "File uploaded successfully"
     });
   } catch (error) {
-    // If an error was returned by the middleware, it has already been handled
     if (res.statusCode === 401) return;
-    
+
     console.error("Error uploading file:", error);
-    return res.status(500).json({ error: "Error uploading file" });
+    return res.status(500).json({ 
+      error: error.response?.data?.message || error.message || "Error uploading file" 
+    });
   }
 }

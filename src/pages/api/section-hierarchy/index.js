@@ -14,7 +14,9 @@ export default async function handler(req, res) {
     await runMiddleware(req, res, verifyToken);
     const userId = req.user.uid;
     
-    const { sectionId } = req.body;
+    // const { sectionId } = req.body;
+    const { sectionId } = req.query;
+    console.log("sectionId", sectionId);
     
     if (!sectionId) {
       return res.status(400).json({ error: "Section ID is required" });
