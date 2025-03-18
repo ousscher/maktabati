@@ -8,8 +8,7 @@ import { useState, useEffect, useRef } from "react";
 import ChatbotSection from "@/components/mylibrary/chatbot";
 import { useRouter } from 'next/router';
 import { useLibraryStore } from '@/store/libraryStore';
-
-
+import API from "@/utils/api-client";
 export default function MyFolders() {
     const router = useRouter();
     const { 
@@ -18,7 +17,8 @@ export default function MyFolders() {
         setCurrentPath, 
         isLoading, 
         error, 
-        getCurrentFolderContent 
+        getCurrentFolderContent,
+        refreshLibrary 
       } = useLibraryStore();
     const t = useTranslations("Library");
     const { switchLocale } = useSwitchLang();
@@ -26,10 +26,14 @@ export default function MyFolders() {
     const [currentPage, setCurrentPage] = useState(1);
     const [isFirstModalOpen, setIsFirstModalOpen] = useState(false);
     const [isSecondModalOpen, setIsSecondModalOpen] = useState(false);
+    const [newFolderName, setNewFolderName] = useState("");
+    const [isCreatingFolder, setIsCreatingFolder] = useState(false);
+    const [createFolderError, setCreateFolderError] = useState("");
     const firstModalRef = useRef(null);
     const secondModalRef = useRef(null);
     const [showChat, setShowChat] = useState(false);
     const [foldersPerPage, setFoldersPerPage] = useState(10);
+
     useEffect(() => {
         function handleClickOutside(event) {
             if (firstModalRef.current && !firstModalRef.current.contains(event.target)) {
@@ -43,12 +47,13 @@ export default function MyFolders() {
         if (!hierarchy && !isLoading) {
             router.push('/mylibrary');
         }
-        // return () => {
-        //     document.r
-        //     emoveEventListener("mousedown", handleClickOutside);
-        // };
+        
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
         
     }, [hierarchy, isLoading, router]);
+
     const getBreadcrumbName = (id, index) => {
         if (index === 0 && hierarchy) {
           return hierarchy.section.name;
@@ -68,37 +73,82 @@ export default function MyFolders() {
         };
         
         return findFolderName(hierarchy.section.folders, id) || id;
-      };
+    };
+
+    // Create Folder Function
+    const createFolder = async () => {
+        if (!newFolderName.trim()) {
+            setCreateFolderError(t("folderNameRequired"));
+            return;
+        }
+
+        setIsCreatingFolder(true);
+        setCreateFolderError("");
+
+        try {
+            // Get the sectionId (first element in the path) and parent folder id (if any)
+            const sectionId = currentPath[0];
+            const parentId = currentPath.length > 1 ? currentPath[currentPath.length - 1] : null;
+
+            const response = await API.post('/folders', {
+                sectionId: sectionId,
+                parentId: parentId,
+                name: newFolderName
+            });
+
+            // If folder created successfully
+            if (response.data && response.data.id) {
+                // Close the modal
+                setIsSecondModalOpen(false);
+                setNewFolderName("");
+                
+                // Refresh the library data to show the new folder
+                await refreshLibrary();
+                
+                // Show a success notification if you have a notification system
+                // showNotification(t("folderCreatedSuccess"));
+            }
+        } catch (error) {
+            console.error("Error creating folder:", error);
+            setCreateFolderError(error.response?.data?.message || t("folderCreationFailed"));
+        } finally {
+            setIsCreatingFolder(false);
+        }
+    };
+
     // List of folders with unique IDs
     const currentContent = getCurrentFolderContent();
+    
     const handleFolderClick = (folderId) => {
         // Add the folder ID to the current path
         setCurrentPath([...currentPath, folderId]);
-      };
-      const navigateBack = () => {
+    };
+    
+    const navigateBack = () => {
         if (currentPath.length > 1) {
           setCurrentPath(currentPath.slice(0, -1));
         } else {
           router.push('/mylibrary');
         }
-      };
-      const navigateToPathLevel = (index) => {
+    };
+    
+    const navigateToPathLevel = (index) => {
         if (index === currentPath.length - 1) return;
         const newPath = currentPath.slice(0, index + 1);
         setCurrentPath(newPath);
-      };
-      if (isLoading) {
+    };
+    
+    if (isLoading) {
         return <div className="container mx-auto p-4">Loading content...</div>;
-      }
+    }
       
-      if (error) {
+    if (error) {
         return <div className="container mx-auto p-4 text-red-500">Error: {error}</div>;
-      }
+    }
       
-      if (!hierarchy) {
+    if (!hierarchy) {
         return <div className="container mx-auto p-4">Redirecting to sections...</div>;
-      }
-
+    }
 
     const folders = currentContent.folders;    
 
@@ -172,7 +222,7 @@ export default function MyFolders() {
                                 </div>
                             )}
 
-                            {/* Step 2: Second Modal - "New Section Form" */}
+                            {/* Step 2: Second Modal - "New Folder Form" */}
                             {isSecondModalOpen && (
                                 <div
                                     ref={secondModalRef}
@@ -181,28 +231,49 @@ export default function MyFolders() {
                                     <h3 className="text-lg font-semibold">{t("newFolderTitle")}</h3>
                                     <p className="text-sm text-gray-500">{t("newFolderDescription")}</p>
 
-                                    {/* Section Name Input */}
+                                    {/* Folder Name Input */}
                                     <label className="block mt-3 text-sm font-medium text-gray-700">{t("folderName")}</label>
                                     <input
                                         type="text"
+                                        value={newFolderName}
+                                        onChange={(e) => setNewFolderName(e.target.value)}
                                         placeholder={t("folderNamePlaceholder")}
                                         className="w-full mt-1 p-2 border rounded-md focus:ring-2 focus:ring-teal-500 focus:outline-none"
                                     />
+                                    
+                                    {createFolderError && (
+                                        <p className="text-red-500 text-sm mt-1">{createFolderError}</p>
+                                    )}
 
                                     {/* Buttons */}
                                     <div className="flex justify-end mt-4 space-x-2">
                                         <button
                                             onClick={() => {
                                                 setIsSecondModalOpen(false);
+                                                setNewFolderName("");
+                                                setCreateFolderError("");
                                             }}
                                             className="px-4 py-2 text-gray-600 border rounded-md hover:bg-gray-100"
+                                            disabled={isCreatingFolder}
                                         >
                                             {t("cancel")}
                                         </button>
                                         <button
-                                            className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700"
+                                            onClick={createFolder}
+                                            disabled={isCreatingFolder}
+                                            className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 disabled:bg-teal-300"
                                         >
-                                            {t("create")}
+                                            {isCreatingFolder ? (
+                                                <span className="flex items-center">
+                                                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                    </svg>
+                                                    {t("creating")}
+                                                </span>
+                                            ) : (
+                                                t("create")
+                                            )}
                                         </button>
                                     </div>
                                 </div>
@@ -243,7 +314,6 @@ export default function MyFolders() {
                                 className="flex flex-col items-center text-center p-4 rounded-lg cursor-pointer transition hover:shadow-lg"
                                 onClick={() => handleFolderClick(folder.id)}
                                 onDoubleClick={() => handleFolderClick(folder.id)}
-                                // onClick={() => router.push(`/mylibrary/myfolders/mydocuments?folderName=${folder.name}`)}
                             >
                                 <Image src="/images/icons/folder-large.svg" alt="Folder Icon" width={100} height={100} />
                                 <h2 className="text-gray-800 font-medium mt-2">{folder.name}</h2>
@@ -304,7 +374,7 @@ function formatFileSize(bytes) {
     if (bytes < 1024) return bytes + ' B';
     if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
     return (bytes / 1024 / 1024).toFixed(1) + ' MB';
-  }
+}
 
 export async function getStaticProps(context) {
     return {
