@@ -32,7 +32,9 @@ export default function MyFolders() {
     const firstModalRef = useRef(null);
     const secondModalRef = useRef(null);
     const [showChat, setShowChat] = useState(false);
-    const [foldersPerPage, setFoldersPerPage] = useState(10);
+    const [foldersPerPage, setFoldersPerPage] = useState(5);
+    const [showMenu, setShowMenu] = useState(null);
+    const [showDeleteAlert, setShowDeleteAlert] = useState(false);
 
     useEffect(() => {
         function handleClickOutside(event) {
@@ -138,9 +140,7 @@ export default function MyFolders() {
         setCurrentPath(newPath);
     };
     
-    if (isLoading) {
-        return <div className="container mx-auto p-4">Loading content...</div>;
-    }
+    
       
     if (error) {
         return <div className="container mx-auto p-4 text-red-500">Error: {error}</div>;
@@ -172,8 +172,20 @@ export default function MyFolders() {
                             <h1 onClick={navigateBack}
                              className="text-2xl cursor-pointer font-medium text-gray-500">{t("myLibrary")}</h1>
                             <Image src="/images/icons/chevron-down.svg" alt="Dropdown" width={12} height={12} />
-                            <h1 className="text-2xl font-semibold">{t("myFolders")}</h1>
-                            <Image src="/images/icons/chevron-down.svg" alt="Dropdown" width={12} height={12} />
+                            
+                            {currentPath.map((id, index) => (
+                                <div key={id} className="flex items-center">
+                                    
+                                    <span 
+                                        className={`text-2xl font-semibold mr-2 ${index !== currentPath.length - 1 ? 'cursor-pointer' : ''}`}
+                                        onClick={() => navigateToPathLevel(index)}
+                                    >
+                                        {getBreadcrumbName(id, index)}
+                                    </span>
+                                    <Image src="/images/icons/chevron-down.svg" alt="Dropdown" width={12} height={12} />
+                                </div>
+                                
+                            ))}
                         </div>
 
                         {/* Right Side - Sorting & View Options */}
@@ -207,7 +219,7 @@ export default function MyFolders() {
                             {isFirstModalOpen && (
                                 <div
                                     ref={firstModalRef}
-                                    className="absolute top-44 right-10 bg-white shadow-lg rounded-md p-4 w-64 border z-50"
+                                    className="absolute top-44 right-10 bg-white shadow-lg rounded-md p-4 w-64 border z-50 space-y-2"
                                 >
                                     <button
                                         onClick={() => {
@@ -219,7 +231,18 @@ export default function MyFolders() {
                                         <Image src="/images/icons/folder-add.svg" alt="Folder Icon" width={18} height={18} />
                                         <span className="text-sm text-gray-700">{t("createNewFolder")}</span>
                                     </button>
+                                    <button
+                                        onClick={() => {
+                                            setIsFirstModalOpen(false);
+                                            setIsSecondModalOpen(true); 
+                                        }}
+                                        className="w-full flex items-center justify-between px-3 py-2 border rounded-md hover:bg-gray-100"
+                                    >
+                                        <Image src="/images/icons/folder-add.svg" alt="Folder Icon" width={18} height={18} />
+                                        <span className="text-sm text-gray-700">{t("createNewFile")}</span>
+                                    </button>
                                 </div>
+                                
                             )}
 
                             {/* Step 2: Second Modal - "New Folder Form" */}
@@ -271,40 +294,32 @@ export default function MyFolders() {
                                                     </svg>
                                                     {t("creating")}
                                                 </span>
+                                                
                                             ) : (
                                                 t("create")
                                             )}
                                         </button>
+                                        {isCreatingFolder && <div className="fixed bottom-6 right-6 bg-white text-teal-600 shadow-lg rounded-lg px-6 py-3 flex items-center space-x-3 border border-gray-200 animate-fadeIn">
+                                            <svg className="w-6 h-6 animate-spin text-teal-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                                            </svg>
+                                            <span className="font-semibold">Loading content...</span>
+                                        </div>}
                                     </div>
                                 </div>
                             )}
                         </div>
                     </div>
-                    <div className="flex items-center mb-6 text-sm">
-                        <button 
-                        onClick={navigateBack}
-                        className="mr-2 p-1 rounded hover:bg-gray-100"
-                        >
-                        ← Back
-                        </button>
-                        
-                        <div className="flex items-center flex-wrap">
-                        {currentPath.map((id, index) => (
-                            <div key={id} className="flex items-center">
-                            {index > 0 && <span className="mx-1">/</span>}
-                            <span 
-                                className={`font-medium ${index !== currentPath.length - 1 ? 'cursor-pointer text-blue-600 hover:underline' : ''}`}
-                                onClick={() => navigateToPathLevel(index)}
-                            >
-                                {getBreadcrumbName(id, index)}
-                            </span>
-                            </div>
-                        ))}
-                        </div>
-                    </div>
+                    
                     {/* Summary */}
                     <div className="mb-6 text-sm text-gray-500">
                         <p>Total: {hierarchy.counts.totalFolders} folders, {hierarchy.counts.totalFiles} files</p>
+                    </div>
+                    <div className="flex items-center space-x-2 mb-2">
+                        <h1 onClick={navigateBack}
+                            className="text-2xl cursor-pointer font-medium ">{t("myFolders")}</h1>
+
                     </div>
                     {/* Folders Grid */}
                     <div className={`grid ${showChat ? 'grid-cols-4' : 'grid-cols-5'} gap-x-6 gap-y-6 mb-4`}>
@@ -324,30 +339,58 @@ export default function MyFolders() {
                     </div>
 
                     {/* Files */}
+                    <div className="flex items-center space-x-2 mb-2">
+                        <h1 onClick={navigateBack}
+                            className="text-2xl cursor-pointer font-medium ">{t("myFiles")}</h1>
+
+                    </div>
                         {currentContent && (
                             <div>
-                            <h2 className="text-lg font-semibold mb-3">Files</h2>
+                            
                             
                             {currentContent.files.length > 0 ? (
                                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                {currentContent.files.map((file) => (
-                                    <div 
-                                    key={file.id}
-                                    className="border rounded-lg p-4 cursor-pointer hover:bg-gray-50 transition"
-                                    >
-                                    <div className="flex items-center">
-                                        <span className="mr-2">
-                                        {file.fileType === 'pdf' ? '📄' : 
-                                        file.fileType === 'image' ? '🖼️' : '📝'}
-                                        </span>
-                                        <h3 className="font-medium">{file.name}</h3>
-                                    </div>
-                                    <p className="text-xs text-gray-500 mt-1">
-                                        {file.fileType.toUpperCase()} • {formatFileSize(file.fileSize)}
-                                    </p>
-                                    </div>
-                                ))}
+                                    {currentContent.files.map((file, index) => (
+                                        <div key={file.id} className="relative flex flex-col items-center text-center p-4 rounded-lg cursor-pointer transition hover:shadow-lg">
+                                            <Image src="/images/icons/file.svg" alt={t("fileIconAlt")} width={80} height={80} />
+                                            <h2 className="text-gray-800 font-medium mt-2">{file.name}</h2>
+                                            <p className="text-gray-500 text-sm">{file.fileType.toUpperCase()} • {formatFileSize(file.fileSize)}</p>
+            
+                                            {/* Three dots button */}
+                                            <button
+                                                className="absolute top-2 right-2 p-1 text-gray-500 hover:bg-gray-200 rounded-full"
+                                                onClick={() => setShowMenu(showMenu === index ? null : index)}
+                                            >
+                                                <Image src="/images/icons/threedots.svg" alt={t("moreOptions")} width={20} height={20} />
+                                            </button>
+            
+                                            {/* File options pop-up */}
+                                            {showMenu === index && (
+                                                <div className="absolute top-10 right-2 bg-white shadow-lg rounded-md p-2 border z-50">
+                                                    <button className="flex items-center w-full px-3 py-2 hover:bg-gray-100">
+                                                        <Image src="/images/icons/download.svg" alt={t("download")} width={16} height={16} className="mr-2" />
+                                                        {t("downloadFile")}
+                                                    </button>
+                                                    <button className="flex items-center w-full px-3 py-2 hover:bg-gray-100">
+                                                        <Image src="/images/icons/star.svg" alt={t("star")} width={16} height={16} className="mr-2" />
+                                                        {t("starFile")}
+                                                    </button>
+                                                    <button
+                                                        className="flex items-center w-full px-3 py-2 hover:bg-gray-100"
+                                                        onClick={() => {
+                                                            setShowMenu(null);
+                                                            setShowDeleteAlert(true);
+                                                        }}
+                                                    >
+                                                        <Image src="/images/icons/trash.svg" alt={t("delete")} width={16} height={16} className="mr-2" />
+                                                        {t("deleteFile")}
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
                                 </div>
+                                
                             ) : (
                                 <p className="text-gray-500">No files found at this level.</p>
                             )}
