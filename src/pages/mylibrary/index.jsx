@@ -14,7 +14,7 @@ export default function Library() {
     const t = useTranslations("Library");
     const { switchLocale } = useSwitchLang();
     const [sortBy, setSortBy] = useState("name");
-    const sectionsPerPage = 12; // Set the number of sections per page
+    const sectionsPerPage = 12; 
     const [currentPage, setCurrentPage] = useState(1);
     const [Form, setForm] = useState({
         name: "",
@@ -269,22 +269,32 @@ export default function Library() {
                 </div>
 
                 {/* Sections Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-6 mb-4">
-                    {paginatedSections.map((section) => (
+                {paginatedSections.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-6 mb-4">
+                        {paginatedSections.map((section) => (
                         <div
                             onClick={() => handleSectionClick(section)}
                             onDoubleClick={() => handleSectionClick(section)}
                             key={section.id}
                             className="bg-gray-100 p-4 rounded-lg shadow-md flex items-center hover:shadow-lg cursor-pointer"
                         >
-                            <Image src={section.icon ? section.icon : "/images/icons/folder.svg"} alt="Folder Icon" className="ml-4" width={24} height={24} />
+                            <Image
+                            src={section.icon ? section.icon : "/images/icons/folder.svg"}
+                            alt="Folder Icon"
+                            className="ml-4"
+                            width={24}
+                            height={24}
+                            />
                             <div className="ml-6">
-                                <h2 className="text-teal-600 font-semibold">{section.name}</h2>
-                                <p className="text-gray-500">{section.folders ? section.folders : `XX ${t("folders")}`}</p>
+                            <h2 className="text-teal-600 font-semibold">{section.name}</h2>
+                            <p className="text-gray-500">{section.folders ? section.folders : `XX ${t("folders")}`}</p>
                             </div>
                         </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                    ) : (
+                    <p className="text-gray-500 text-center">No sections found. Create your first section to get started.</p>
+                    )}
 
                 {/* Pagination Component */}
                 <Pagination

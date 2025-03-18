@@ -6,9 +6,20 @@ import SearchBar from "@/components/searchbar";
 import Pagination from "@/components/mylibrary/pagination";
 import { useState, useEffect, useRef } from "react";
 import ChatbotSection from "@/components/mylibrary/chatbot";
-import { router } from "next/router";
+import { useRouter } from 'next/router';
+import { useLibraryStore } from '@/store/libraryStore';
+
 
 export default function MyFolders() {
+    const router = useRouter();
+    const { 
+        hierarchy, 
+        currentPath, 
+        setCurrentPath, 
+        isLoading, 
+        error, 
+        getCurrentFolderContent 
+      } = useLibraryStore();
     const t = useTranslations("Library");
     const { switchLocale } = useSwitchLang();
     const [sortBy, setSortBy] = useState("name");
@@ -29,29 +40,67 @@ export default function MyFolders() {
             }
         }
         document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
+        if (!hierarchy && !isLoading) {
+            router.push('/mylibrary');
+        }
+        // return () => {
+        //     document.r
+        //     emoveEventListener("mousedown", handleClickOutside);
+        // };
+        
+    }, [hierarchy, isLoading, router]);
+    const getBreadcrumbName = (id, index) => {
+        if (index === 0 && hierarchy) {
+          return hierarchy.section.name;
+        }
+        
+        if (!hierarchy) return id;
+        
+        // Find folder name based on ID
+        const findFolderName = (folders, targetId) => {
+          for (const folder of folders) {
+            if (folder.id === targetId) return folder.name;
+            
+            const found = findFolderName(folder.folders, targetId);
+            if (found) return found;
+          }
+          return null;
         };
-    }, []);
+        
+        return findFolderName(hierarchy.section.folders, id) || id;
+      };
     // List of folders with unique IDs
-    const folders = [
-        { id: 1, name: "Work Files", files: 120, size: "999 MB", icon: "/images/icons/folder-large.svg" },
-        { id: 2, name: "Personal Projects", files: 85, size: "650 MB", icon: "/images/icons/folder-large.svg" },
-        { id: 3, name: "Research Papers", files: 200, size: "1.5 GB", icon: "/images/icons/folder-large.svg" },
-        { id: 4, name: "Archived Files", files: 45, size: "320 MB", icon: "/images/icons/folder-large.svg" },
-        { id: 5, name: "Financial Reports", files: 73, size: "890 MB", icon: "/images/icons/folder-large.svg" },
-        { id: 6, name: "Team Documents", files: 150, size: "2.2 GB", icon: "/images/icons/folder-large.svg" },
-        { id: 7, name: "AI Research", files: 98, size: "1.1 GB", icon: "/images/icons/folder-large.svg" },
-        { id: 8, name: "Marketing Strategies", files: 60, size: "540 MB", icon: "/images/icons/folder-large.svg" },
-        { id: 9, name: "Course Materials", files: 230, size: "3.4 GB", icon: "/images/icons/folder-large.svg" },
-        { id: 10, name: "Client Presentations", files: 33, size: "400 MB", icon: "/images/icons/folder-large.svg" },
-        { id: 11, name: "Legal Documents", files: 77, size: "870 MB", icon: "/images/icons/folder-large.svg" },
-        { id: 12, name: "Design Assets", files: 105, size: "2 GB", icon: "/images/icons/folder-large.svg" },
-        { id: 13, name: "Coding Projects", files: 132, size: "4.5 GB", icon: "/images/icons/folder-large.svg" },
-        { id: 14, name: "Event Planning", files: 90, size: "780 MB", icon: "/images/icons/folder-large.svg" },
-        { id: 15, name: "Photography", files: 200, size: "5.2 GB", icon: "/images/icons/folder-large.svg" }
-    ];  
+    const currentContent = getCurrentFolderContent();
+    const handleFolderClick = (folderId) => {
+        // Add the folder ID to the current path
+        setCurrentPath([...currentPath, folderId]);
+      };
+      const navigateBack = () => {
+        if (currentPath.length > 1) {
+          setCurrentPath(currentPath.slice(0, -1));
+        } else {
+          router.push('/mylibrary');
+        }
+      };
+      const navigateToPathLevel = (index) => {
+        if (index === currentPath.length - 1) return;
+        const newPath = currentPath.slice(0, index + 1);
+        setCurrentPath(newPath);
+      };
+      if (isLoading) {
+        return <div className="container mx-auto p-4">Loading content...</div>;
+      }
       
+      if (error) {
+        return <div className="container mx-auto p-4 text-red-500">Error: {error}</div>;
+      }
+      
+      if (!hierarchy) {
+        return <div className="container mx-auto p-4">Redirecting to sections...</div>;
+      }
+
+
+    const folders = currentContent.folders;    
 
     // Pagination logic
     const totalPages = Math.ceil(folders.length / foldersPerPage);
@@ -70,7 +119,8 @@ export default function MyFolders() {
                     <div className="flex justify-between items-center py-4">
                         {/* Left Side - Title Navigation */}
                         <div className="flex items-center space-x-2">
-                            <h1 className="text-2xl font-medium text-gray-500">{t("myLibrary")}</h1>
+                            <h1 onClick={navigateBack}
+                             className="text-2xl cursor-pointer font-medium text-gray-500">{t("myLibrary")}</h1>
                             <Image src="/images/icons/chevron-down.svg" alt="Dropdown" width={12} height={12} />
                             <h1 className="text-2xl font-semibold">{t("myFolders")}</h1>
                             <Image src="/images/icons/chevron-down.svg" alt="Dropdown" width={12} height={12} />
@@ -159,22 +209,80 @@ export default function MyFolders() {
                             )}
                         </div>
                     </div>
-
+                    <div className="flex items-center mb-6 text-sm">
+                        <button 
+                        onClick={navigateBack}
+                        className="mr-2 p-1 rounded hover:bg-gray-100"
+                        >
+                        ← Back
+                        </button>
+                        
+                        <div className="flex items-center flex-wrap">
+                        {currentPath.map((id, index) => (
+                            <div key={id} className="flex items-center">
+                            {index > 0 && <span className="mx-1">/</span>}
+                            <span 
+                                className={`font-medium ${index !== currentPath.length - 1 ? 'cursor-pointer text-blue-600 hover:underline' : ''}`}
+                                onClick={() => navigateToPathLevel(index)}
+                            >
+                                {getBreadcrumbName(id, index)}
+                            </span>
+                            </div>
+                        ))}
+                        </div>
+                    </div>
+                    {/* Summary */}
+                    <div className="mb-6 text-sm text-gray-500">
+                        <p>Total: {hierarchy.counts.totalFolders} folders, {hierarchy.counts.totalFiles} files</p>
+                    </div>
                     {/* Folders Grid */}
                     <div className={`grid ${showChat ? 'grid-cols-4' : 'grid-cols-5'} gap-x-6 gap-y-6 mb-4`}>
                         {paginatedFolders.map((folder, index) => (
                             <div
                                 key={index}
                                 className="flex flex-col items-center text-center p-4 rounded-lg cursor-pointer transition hover:shadow-lg"
-                                onClick={() => router.push(`/mylibrary/myfolders/mydocuments?folderName=${folder.name}`)}
+                                onClick={() => handleFolderClick(folder.id)}
+                                onDoubleClick={() => handleFolderClick(folder.id)}
+                                // onClick={() => router.push(`/mylibrary/myfolders/mydocuments?folderName=${folder.name}`)}
                             >
-                                <Image src={folder.icon} alt="Folder Icon" width={100} height={100} />
+                                <Image src="/images/icons/folder-large.svg" alt="Folder Icon" width={100} height={100} />
                                 <h2 className="text-gray-800 font-medium mt-2">{folder.name}</h2>
                                 <p className="text-gray-500 text-sm">{folder.files} {t("files")}</p>
                                 <p className="text-gray-500 text-sm">{folder.size}</p>
                             </div>
                         ))}
                     </div>
+
+                    {/* Files */}
+                        {currentContent && (
+                            <div>
+                            <h2 className="text-lg font-semibold mb-3">Files</h2>
+                            
+                            {currentContent.files.length > 0 ? (
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                {currentContent.files.map((file) => (
+                                    <div 
+                                    key={file.id}
+                                    className="border rounded-lg p-4 cursor-pointer hover:bg-gray-50 transition"
+                                    >
+                                    <div className="flex items-center">
+                                        <span className="mr-2">
+                                        {file.fileType === 'pdf' ? '📄' : 
+                                        file.fileType === 'image' ? '🖼️' : '📝'}
+                                        </span>
+                                        <h3 className="font-medium">{file.name}</h3>
+                                    </div>
+                                    <p className="text-xs text-gray-500 mt-1">
+                                        {file.fileType.toUpperCase()} • {formatFileSize(file.fileSize)}
+                                    </p>
+                                    </div>
+                                ))}
+                                </div>
+                            ) : (
+                                <p className="text-gray-500">No files found at this level.</p>
+                            )}
+                            </div>
+                        )}
 
                     {/* Pagination Component */}
                     <Pagination
@@ -191,6 +299,12 @@ export default function MyFolders() {
         </ProtectedLayout>
     );
 }
+
+function formatFileSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+  }
 
 export async function getStaticProps(context) {
     return {
