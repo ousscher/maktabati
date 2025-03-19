@@ -103,12 +103,15 @@
         "newFolderDescription": "Créer un nouveau dossier",
         "folderNamePlaceholder": "Entrez le nom du dossier...",
         "folderName": "Nom du dossier",
+        "folderNameRequired": "Le nom du dossier est requis",
+        "folderNameExists": "Le nom du dossier existe déjà",
         "uploadNewFile": "Téléverser un nouveau fichier",
         "downloadThisFolder": "Télécharger ce dossier",
         "deleteThisFolder": "Supprimer ce dossier",
         "deleteConfirmationTitle": "Êtes-vous absolument sûr(e) ?",
         "deleteConfirmationMessage": "Cette action est irréversible. Cela supprimera définitivement ce dossier.",
         "uploadingFile": "Téléversement en cours...",
+        "fileNameExists":"Le nom du fichier existe déjà",
         "continue": "Continuer",
         "fileIconAlt": "Icône de fichier",
         "moreOptions": "Plus d'options",
@@ -131,7 +134,7 @@
         "fileRequired": "Veuillez sélectionner un fichier à téléverser",
         "fileUploadFailed": "Échec du téléversement du fichier",
         "uploading": "Téléversement en cours...", 
-        "noFilesFound" : "No files Found"
+        "noFilesFound" : "Aucun fichier trouvé"
 
     },
     "Search": {

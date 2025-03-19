@@ -66,7 +66,6 @@ export default function Hero() {
                 }
             });
     
-            console.log("New section created", response.data);
         } catch (err) {
             console.log("Error creating section:", err.response?.data || err.message);
         }

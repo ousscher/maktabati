@@ -28,6 +28,7 @@ export default function MyFolders() {
   const [isSecondModalOpen, setIsSecondModalOpen] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
   const [isCreatingFolder, setIsCreatingFolder] = useState(false);
+  const [folderExists, setFolderExists] = useState(false);
   const [createFolderError, setCreateFolderError] = useState("");
   const firstModalRef = useRef(null);
   const secondModalRef = useRef(null);
@@ -42,14 +43,8 @@ export default function MyFolders() {
   const [isDragging, setIsDragging] = useState(false);
   const [uploadError, setUploadError] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const [fileExists, setFileExists] = useState(false);
   const fileModalRef = useRef(null);
-
-  // useEffect(() => {
-  //     if (currentContent) {
-  //       console.log('Current content structure:', JSON.stringify(currentContent, null, 2));
-  //       console.log('Files structure:', JSON.stringify(currentContent.files, null, 2));
-  //     }
-  //   }, [currentContent]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -143,8 +138,6 @@ export default function MyFolders() {
 
   // List of folders with unique IDs
   const currentContent = getCurrentFolderContent();
-  console.log(JSON.stringify(currentContent));
-
   const handleFolderClick = (folderId) => {
     // Add the folder ID to the current path
     setCurrentPath([...currentPath, folderId]);
@@ -189,9 +182,20 @@ export default function MyFolders() {
   };
 
   const handleFileInput = (e) => {
+    setFileExists(false);
+    setUploadError("");
     const file = e.target.files[0];
     if (file) {
       setSelectedFile(file);
+      const isDuplicate = currentContent.files.some(
+        (f) => f.name.toLowerCase() === file.name.trim().toLowerCase()
+      );
+
+      if (isDuplicate) {
+        setFileExists(true);
+        setUploadError(t("fileNameExists"));
+        return;
+      }
     }
   };
 
@@ -216,8 +220,6 @@ export default function MyFolders() {
         currentPath.length > 1 ? currentPath[currentPath.length - 1] : null;
       if (folderId) formData.append("folderId", folderId);
 
-      console.log("Uploading file to section:", sectionId, "folder:", folderId);
-
       const response = await API.post("/files-upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -227,7 +229,6 @@ export default function MyFolders() {
       });
 
       if (response.data) {
-        console.log("Upload successful:", response.data);
         setIsFileModalOpen(false);
         setSelectedFile(null);
         await refreshLibrary();
@@ -423,7 +424,22 @@ export default function MyFolders() {
                   <input
                     type="text"
                     value={newFolderName}
-                    onChange={(e) => setNewFolderName(e.target.value)}
+                    onChange={(e) => {
+                      setCreateFolderError("");
+                      setFolderExists(false);
+                      setNewFolderName(e.target.value);
+                      const isDuplicate = currentContent.folders.some(
+                        (folder) =>
+                          folder.name.toLowerCase() ===
+                          e.target.value.trim().toLowerCase()
+                      );
+
+                      if (isDuplicate) {
+                        setFolderExists(true);
+                        setCreateFolderError(t("folderNameExists"));
+                        return;
+                      }
+                    }}
                     placeholder={t("folderNamePlaceholder")}
                     className="w-full mt-1 p-2 border rounded-md focus:ring-2 focus:ring-teal-500 focus:outline-none"
                   />
@@ -449,7 +465,7 @@ export default function MyFolders() {
                     </button>
                     <button
                       onClick={createFolder}
-                      disabled={isCreatingFolder}
+                      disabled={isCreatingFolder || folderExists}
                       className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 disabled:bg-teal-300"
                     >
                       {isCreatingFolder ? (
@@ -576,7 +592,7 @@ export default function MyFolders() {
                     </button>
                     <button
                       onClick={uploadFile}
-                      disabled={!selectedFile || isUploading}
+                      disabled={!selectedFile || isUploading || fileExists}
                       className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 disabled:bg-teal-300"
                     >
                       {isUploading ? (
