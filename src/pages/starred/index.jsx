@@ -70,12 +70,10 @@ export default function Starred() {
         const file = event.target.files[0];
         if (file) {
             setIsUploading(true); // Show loading popup
-            console.log("Uploading file:", file.name);
 
             // Simulate upload delay
             setTimeout(() => {
                 setIsUploading(false); // Hide loading popup after upload
-                console.log("File uploaded successfully:", file.name);
             }, 3000);
         }
     };

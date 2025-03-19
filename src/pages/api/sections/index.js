@@ -55,7 +55,8 @@ export default async function handler(req, res) {
     return res.status(201).json({ 
       id: sectionRef.id, 
       name,
-      message: "Section created successfully" 
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      // message: "Section created successfully" 
     });
     } catch (error) {
       // Si une erreur a été renvoyée par le middleware, elle a déjà été gérée
