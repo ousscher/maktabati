@@ -66,23 +66,6 @@ export default async function handler(req, res) {
         // Index the document
         indexResult = await indexDocument(file.filepath, metadata);
         
-        // Create an index record in Firestore
-        const indexRef = db.collection("users").doc(userId)
-                        .collection("sections").doc(sectionId)
-                        .collection("indices").doc();
-                        
-        await indexRef.set({
-          documentId: metadata.documentId,
-          documentName: metadata.documentName,
-          documentType: metadata.documentType,
-          totalChunks: indexResult.totalChunks,
-          successful: indexResult.successful,
-          createdAt: admin.firestore.FieldValue.serverTimestamp(),
-          updatedAt: admin.firestore.FieldValue.serverTimestamp()
-        });
-        
-        // Clean up temporary file
-        fs.unlinkSync(file.filepath);
       } else {
         // Index text content
         indexResult = await indexText(text, {
@@ -90,19 +73,6 @@ export default async function handler(req, res) {
           text
         });
         
-        // Create an index record in Firestore
-        const indexRef = db.collection("users").doc(userId)
-                        .collection("sections").doc(sectionId)
-                        .collection("indices").doc();
-                        
-        await indexRef.set({
-          documentId: metadata.documentId,
-          documentName: metadata.documentName,
-          documentType: "text/plain",
-          textContent: text.substring(0, 200) + (text.length > 200 ? '...' : ''),
-          createdAt: admin.firestore.FieldValue.serverTimestamp(),
-          updatedAt: admin.firestore.FieldValue.serverTimestamp()
-        });
       }
       
       return res.status(201).json({
