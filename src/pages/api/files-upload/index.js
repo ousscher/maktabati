@@ -4,6 +4,7 @@ import fs from "fs";
 import axios from "axios";
 // import formidable from 'formidable';
 import { Readable } from "stream";
+import { indexDocument } from "@/lib/rag/indexing";
 import FormData from "form-data";
 const formidable = require("formidable");
 
@@ -132,9 +133,22 @@ export default async function handler(req, res) {
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    // Nettoyage du fichier temporaire
-    fs.unlinkSync(file.filepath);
 
+
+    // Upserting to Pinecone
+    const vectdb_metadata = {
+      userId,
+      sectionId,
+      documentId: `doc_${Date.now()}`,
+      documentName: file ? file.originalFilename : (fields.title || "Text Document"),
+      documentType: file ? file.mimetype : "text/plain",
+      indexed: true
+    };
+
+    await indexDocument(file.filepath, vectdb_metadata);
+
+      // Nettoyage du fichier temporaire
+      fs.unlinkSync(file.filepath);
     return res.status(201).json({
       id: fileRef.id,
       name: file.originalFilename || file.newFilename,
