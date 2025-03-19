@@ -137,7 +137,9 @@
         "fileRequired": "Veuillez sélectionner un fichier à téléverser",
         "fileUploadFailed": "Échec du téléversement du fichier",
         "uploading": "Téléversement en cours...", 
-        "noFilesFound" : "Aucun fichier trouvé"
+        "noFilesFound" : "Aucun fichier trouvé", 
+        "totalItems": "Total :  {folders} dossiers et {files} fichiers"
+
     },
     "Search": {
         "placeholder": "Rechercher par lorem ipsum lorem..."

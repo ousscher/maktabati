@@ -138,7 +138,8 @@
         "fileRequired": "Please select a file to upload",
         "fileUploadFailed": "File upload failed",
         "uploading": "Uploading...", 
-        "noFilesFound" : "No files Found"
+        "noFilesFound" : "No files Found", 
+        "totalItems": "Total : {folders} folders and {files} files"
     },
     "Search": {
         "placeholder": "Search by lorem ipsum lorem..."
