@@ -37,6 +37,26 @@ export default function MyFolders() {
   const [foldersPerPage, setFoldersPerPage] = useState(5);
   const [showMenu, setShowMenu] = useState(null);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+  const getBreadcrumbName = (id, index) => {
+    if (index === 0 && hierarchy) {
+      return hierarchy.section.name;
+    }
+
+    if (!hierarchy) return id;
+
+    // Find folder name based on ID
+    const findFolderName = (folders, targetId) => {
+      for (const folder of folders) {
+        if (folder.id === targetId) return folder.name;
+
+        const found = findFolderName(folder.folders, targetId);
+        if (found) return found;
+      }
+      return null;
+    };
+
+    return findFolderName(hierarchy.section.folders, id) || id;
+  };
 
   // File upload states
   const [isFileModalOpen, setIsFileModalOpen] = useState(false);
@@ -243,6 +263,8 @@ export default function MyFolders() {
                 <Image src="/images/icons/folder-large.svg" alt="Folder" width={100} height={100} />
                 <h2 className="text-gray-800 font-medium mt-2">{folder.name}</h2>
                 <p className="text-gray-500 text-sm">{folder.files.length} {t("files")}</p>
+                <p className="text-gray-500 text-sm">{folder.folders.length} {t("folders")}</p>
+
                 
                 <button onClick={(e) => { e.stopPropagation(); setShowMenu(folder.id); }}
                   className="absolute top-3 right-3 p-1 hover:bg-gray-200 rounded-full">
