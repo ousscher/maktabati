@@ -7,10 +7,12 @@ import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import GoogleAuthButton from "@/components/GoogleAuthButton";
+import { loginWithEmail } from "@/services/authService";
 
 export default function SignIn() {
   const t = useTranslations("SignIn");
-  const { isAuthenticated, loading, setAuthToken } = useAuth();
+  const { isAuthenticated, setAuthToken } = useAuth();
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const router = useRouter();
   const { locale, pathname, asPath, query } = router;
@@ -26,7 +28,6 @@ export default function SignIn() {
     if (isAuthenticated === true) {
       router.push("/home");
     }
-
     // Check if there's a theme preference
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme === "dark") {
@@ -42,18 +43,18 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+    setLoading(true);
     try {
-      const response = await axios.post("/api/auth/login", {
-        email: loginForm.email,
-        password: loginForm.password,
-      });
-      const token = response.data.token;
-      if (token) {
-        setAuthToken(token);
+      const response = await loginWithEmail(
+        loginForm.email,
+        loginForm.password
+      );
+      if (response.token) {
         router.push("/home");
       }
     } catch (err) {
       setError(t("invalidCredentials"));
+      setLoading(false);
     }
   };
 
@@ -204,9 +205,45 @@ export default function SignIn() {
             </div>
 
             {/* Sign In Button */}
-            <button className="w-full bg-teal-600 text-white text-lg font-semibold py-3 mt-6 rounded-lg hover:bg-teal-700 transition">
-              {t("signIn")}
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full text-white text-lg font-semibold py-3 mt-6 rounded-lg transition 
+              ${
+                loading
+                  ? "bg-yellow-500 cursor-not-allowed"
+                  : "bg-teal-600 hover:bg-teal-700"
+              }`}
+            >
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <svg
+                    className="animate-spin h-5 w-5 mr-2 text-white"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 11-8 8z"
+                    ></path>
+                  </svg>
+                  {t("Loading")}
+                </div>
+              ) : (
+                t("signIn")
+              )}
             </button>
+
             {/* OR Divider */}
             <div className="flex items-center my-6">
               <div className="w-full h-px bg-gray-300"></div>

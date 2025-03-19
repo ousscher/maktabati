@@ -197,6 +197,7 @@
         "signUp": "S'inscrir",
         "uhave": "se connecter",
         "account": "Vous-avez un compte?",
+        "userExists": "L'utilisateur existe déjà",
         "security": "Vos données sont stockées en toute sécurité et ne sont jamais partagées avec des tiers."
     }, 
     "ResetPassword": {
