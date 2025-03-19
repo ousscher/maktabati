@@ -117,9 +117,12 @@
         "starFile": "Mettre en favori",
         "notstarFile": "défavori",
         "delete": "Supprimer",
+        "noFilesFound": "Pas de fichiers ici",
+        "noFoldersFound": "Pas de dossiers ici",
+        "noSectionsFound": "Pas de sections ici",
         "deleteFile": "Supprimer ",
         "deleteConfirmation": "Êtes-vous absolument sûr ?",
-        "deleteWarning": "Cette action est irréversible. Ce fichier sera définitivement supprimé.",
+        "deleteWarning": "Cette action est irréversible. Ca sera définitivement supprimé.",
         "restoreFile": "Restorer",
         "restoreAllFiles": "Restorer tous",
         "deleteAllFiles": "Supprimer tous"

@@ -47,7 +47,7 @@ export default function WritingAssistant() {
     return (
         <ProtectedLayout>
             <SearchBar />
-            <section className="p-6">
+            <section className="p-6 max-md:mt-14">
                 {/* AI Writing Assistant Section */}
                 <div className="mb-6">
                     <h2 className="text-xl font-semibold">{t("aiWritingAssistant")}</h2>

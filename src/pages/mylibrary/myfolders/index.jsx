@@ -35,6 +35,8 @@ export default function MyFolders() {
     const [foldersPerPage, setFoldersPerPage] = useState(5);
     const [showMenu, setShowMenu] = useState(null);
     const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+    const [deleteSection, setDeleteSection] = useState(null);
+    const [menuSection, setMenuSection] = useState(null);
 
     useEffect(() => {
         function handleClickOutside(event) {
@@ -158,26 +160,109 @@ export default function MyFolders() {
     const endIndex = startIndex + foldersPerPage;
     const paginatedFolders = folders.slice(startIndex, endIndex);
 
+
+    const [isUploading, setIsUploading] = useState(false);
+    
+
+    const [files, setFiles] = useState([]);
+
+// Fetch files when section or folder changes
+useEffect(() => {
+    const fetchFiles = async () => {
+        if (!currentPath.length) return;
+
+        const sectionId = currentPath[0]; 
+        const folderId = currentPath.length > 1 ? currentPath[currentPath.length - 1] : null;
+
+        try {
+            const response = await API.get('/files', {
+                params: { sectionId, folderId }, 
+                headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` },
+            });
+
+            setFiles(response.data.files);
+        } catch (error) {
+            console.error("Error fetching files:", error);
+        }
+    };
+
+    fetchFiles();
+}, [currentPath]); // Refetch files when the path changes
+
+const handleFileUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    setIsUploading(true);
+
+    try {
+        const sectionId = currentPath[0]; 
+        const folderId = currentPath.length > 1 ? currentPath[currentPath.length - 1] : null;
+
+        
+        const storageRef = firebase.storage().ref(); 
+        const fileRef = storageRef.child(`uploads/${file.name}`); 
+        await fileRef.put(file); // Upload file
+        const fileUrl = await fileRef.getDownloadURL(); 
+
+        const formData = new FormData();
+        formData.append("sectionId", sectionId);
+        formData.append("name", file.name);
+        formData.append("fileUrl", fileUrl); 
+        formData.append("fileType", file.type);
+        formData.append("fileSize", file.size);
+        if (folderId) formData.append("folderId", folderId);
+
+        const response = await API.post("/files", formData, {
+            headers: { 
+                "Authorization": `Bearer ${localStorage.getItem("token")}` 
+            }
+        });
+
+        console.log("File uploaded successfully", response.data);
+        setFiles([...files, response.data]); 
+    } catch (error) {
+        console.error("Error uploading file:", error);
+    } finally {
+        setIsUploading(false);
+    }
+};
+
+
+const deleteFile = async (fileId) => {
+    const sectionId = currentPath[0];
+
+    try {
+        await API.delete(`/files?sectionId=${sectionId}&fileId=${fileId}`, {
+            headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` },
+        });
+
+        setFiles(files.filter(file => file.id !== fileId)); // Remove file from state
+    } catch (error) {
+        console.error("Error deleting file:", error);
+    }
+};
+
     return (
         <ProtectedLayout>
              {/* Search Bar */}
              <SearchBar />
-            <div className="p-6 flex">
-                <div className={`transition-all duration-500 ${showChat ? "w-2/3" : "w-full"}`}>
+            <div className="p-6 flex max-md:pt-14">
+                <div className={`transition-all duration-500 ${showChat ? "max-md:hidden md:w-2/3" : "md:w-full "}`}>
 
                     {/* Header Section */} 
                     <div className="flex justify-between items-center py-4">
                         {/* Left Side - Title Navigation */}
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center md:space-x-2">
                             <h1 onClick={navigateBack}
-                             className="text-2xl cursor-pointer font-medium text-gray-500">{t("myLibrary")}</h1>
-                            <Image src="/images/icons/chevron-down.svg" alt="Dropdown" width={12} height={12} />
+                             className="max-md:hidden text-sm md:text-2xl cursor-pointer font-medium text-gray-500">{t("myLibrary")}</h1>
+                            <Image src="/images/icons/chevron-down.svg" alt="Dropdown" className="max-md:hidden" width={12} height={12} />
                             
                             {currentPath.map((id, index) => (
                                 <div key={id} className="flex items-center">
                                     
                                     <span 
-                                        className={`text-2xl font-semibold mr-2 ${index !== currentPath.length - 1 ? 'cursor-pointer' : ''}`}
+                                        className={`text-sm md:text-2xl font-semibold mr-2 ${index !== currentPath.length - 1 ? 'cursor-pointer' : ''}`}
                                         onClick={() => navigateToPathLevel(index)}
                                     >
                                         {getBreadcrumbName(id, index)}
@@ -189,7 +274,7 @@ export default function MyFolders() {
                         </div>
 
                         {/* Right Side - Sorting & View Options */}
-                        <div className="flex items-center space-x-4">
+                        <div className="flex items-center md:space-x-4">
                             {/* AI Assistant Button */}
                             <button className="p-2" onClick={() => {
                                 setShowChat(!showChat);
@@ -200,14 +285,14 @@ export default function MyFolders() {
 
                             {/* Grid View Button */}
                             <button className="p-2">
-                                <Image src="/images/icons/grid.svg" alt="Grid View" width={20} height={20} />
+                                <Image src="/images/icons/grid.svg" alt="Grid View" className="max-md:w-4" width={20} height={20} />
                             </button>
 
                             {/* Sorting Dropdown */}
                             <select
                                 value={sortBy}
                                 onChange={(e) => setSortBy(e.target.value)}
-                                className="bg-gray-100 text-gray-700 text-sm py-2 px-5 rounded-md focus:ring-2 focus:ring-teal-500 outline-none"
+                                className="bg-gray-100 text-gray-700 text-xs px-2 py-1 md:text-sm md:py-2 md:px-5 rounded-md focus:ring-2 focus:ring-teal-500 outline-none"
                             >
                                 <option value="name">{t("sortByName")}</option>
                                 <option value="date">{t("sortByDate")}</option>
@@ -231,16 +316,19 @@ export default function MyFolders() {
                                         <Image src="/images/icons/folder-add.svg" alt="Folder Icon" width={18} height={18} />
                                         <span className="text-sm text-gray-700">{t("createNewFolder")}</span>
                                     </button>
-                                    <button
-                                        onClick={() => {
-                                            setIsFirstModalOpen(false);
-                                            setIsSecondModalOpen(true); 
-                                        }}
+                                    <label
+                                        htmlFor="file-upload"
                                         className="w-full flex items-center justify-between px-3 py-2 border rounded-md hover:bg-gray-100"
                                     >
-                                        <Image src="/images/icons/folder-add.svg" alt="Folder Icon" width={18} height={18} />
-                                        <span className="text-sm text-gray-700">{t("createNewFile")}</span>
-                                    </button>
+                                        <Image src="/images/icons/folder-add.svg" alt="Upload Icon" width={18} height={18} />
+                                        <span className="text-sm">{t("uploadNewFile")}</span>
+                                        <input
+                                            id="file-upload"
+                                            type="file"
+                                            className="hidden"
+                                            onChange={handleFileUpload}
+                                        />
+                                    </label>
                                 </div>
                                 
                             )}
@@ -322,64 +410,143 @@ export default function MyFolders() {
 
                     </div>
                     {/* Folders Grid */}
-                    <div className={`grid ${showChat ? 'grid-cols-4' : 'grid-cols-5'} gap-x-6 gap-y-6 mb-4`}>
-                        {paginatedFolders.map((folder, index) => (
-                            <div
-                                key={index}
-                                className="flex flex-col items-center text-center p-4 rounded-lg cursor-pointer transition hover:shadow-lg"
-                                onClick={() => handleFolderClick(folder.id)}
-                                onDoubleClick={() => handleFolderClick(folder.id)}
-                            >
-                                <Image src="/images/icons/folder-large.svg" alt="Folder Icon" width={100} height={100} />
-                                <h2 className="text-gray-800 font-medium mt-2">{folder.name}</h2>
-                                <p className="text-gray-500 text-sm">{folder.files} {t("files")}</p>
-                                <p className="text-gray-500 text-sm">{folder.size}</p>
-                            </div>
-                        ))}
-                    </div>
+                    {paginatedFolders.length > 0 ? (
+                        <div className={`grid grid-cols-2 ${showChat ? 'md:grid-cols-4' : 'md:grid-cols-5'} gap-x-6 gap-y-6 mb-4`}>
+                            {paginatedFolders.map((folder, index) => (
+                                <div
+                                    key={index}
+                                    className="relative flex flex-col items-center text-center p-4 rounded-lg cursor-pointer transition hover:shadow-lg"
+                                    onClick={() => handleFolderClick(folder.id)}
+                                    onDoubleClick={() => handleFolderClick(folder.id)}
+                                >
+                                    <Image src="/images/icons/folder-large.svg" alt="Folder Icon" width={100} height={100} />
+                                    <h2 className="text-gray-800 font-medium mt-2">{folder.name}</h2>
+                                    <p className="text-gray-500 text-sm">{folder.files} {t("files")}</p>
+                                    <p className="text-gray-500 text-sm">{folder.size}</p>
+                                    <button 
+                                        className=" absolute right-3 top-3"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setMenuSection(menuSection === folder.id ? null : folder.id);
+                                        }}
+                                    >
+                                        <Image src="/images/icons/threedots.svg" width={20} height={20}/>
+                                    </button>
+                                    {/* Dropdown Menu */}
+                                    {menuSection === folder.id && (
+                                        <div key={folder.id} className="absolute top-10 right-4 bg-white shadow-lg rounded-md p-2 border z-50">
+                                            <button className="flex items-center w-full px-3 py-2 hover:bg-gray-100">
+                                                <Image src="/images/icons/download.svg" alt={t("download")} width={16} height={16} className="mr-2" />
+                                                {t("downloadFile")}
+                                            </button>
+                                            <button
+                                                className="flex items-center w-full px-3 py-2 hover:bg-gray-100"
+                                                onClick={(e) => {
+                                                    e.stopPropagation(); // Prevents accidental section opening
+                                                    setMenuSection(null);
+                                                    setDeleteSection(folder.id);
+                                                }}
+                                            >
+                                                <Image src="/images/icons/trash.svg" alt={t("delete")} width={16} height={16} className="mr-2" />
+                                                {t("deleteFile")}
+                                            </button>
+                                        </div>
+                                    )}
 
+                                    {/* Delete Confirmation Modal */}
+                                    {deleteSection === folder.id && (
+                                        <div className="fixed inset-0 flex items-center justify-center z-50">
+                                            <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                                                <h3 className="text-lg font-semibold">{t("deleteConfirmation")}</h3>
+                                                <p className="text-gray-600 mt-2">{t("deleteWarning")}</p>
+                                                <div className="flex justify-end mt-4 space-x-2">
+                                                    <button
+                                                        onClick={(e) => {e.stopPropagation(); setDeleteSection(null)}}
+                                                        className="px-4 py-2 text-gray-600 border rounded-md hover:bg-gray-100"
+                                                    >
+                                                        {t("cancel")}
+                                                    </button>
+                                                    <button 
+                                                        className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                                                        onClick={(e) => {e.stopPropagation(); {/*hereDeleteSection(folder.id);*/} setDeleteSection(null)}}
+                                                    >
+                                                        {t("continue")}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )} 
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-gray-500">{t("noFoldersFound")}</p>
+                    )}
                     {/* Files */}
                     <div className="flex items-center space-x-2 mb-2">
-                        <h1 onClick={navigateBack}
-                            className="text-2xl cursor-pointer font-medium ">{t("myFiles")}</h1>
-
+                        <h1 onClick={navigateBack} className="text-2xl cursor-pointer font-medium">
+                            {t("myFiles")}
+                        </h1>
                     </div>
-                        {currentContent && (
-                            <div>
-                            
-                            
+
+                    {currentContent && (
+                        <div>
                             {currentContent.files.length > 0 ? (
-                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                     {currentContent.files.map((file, index) => (
-                                        <div key={file.id} className="relative flex flex-col items-center text-center p-4 rounded-lg cursor-pointer transition hover:shadow-lg">
+                                        <div
+                                            key={file.id}
+                                            className="relative flex flex-col items-center text-center p-4 rounded-lg cursor-pointer transition hover:shadow-lg"
+                                        >
+                                            {/* File Icon */}
                                             <Image src="/images/icons/file.svg" alt={t("fileIconAlt")} width={80} height={80} />
+                                            
+                                            {/* File Name & Details */}
                                             <h2 className="text-gray-800 font-medium mt-2">{file.name}</h2>
                                             <p className="text-gray-500 text-sm">{file.fileType.toUpperCase()} • {formatFileSize(file.fileSize)}</p>
-            
-                                            {/* Three dots button */}
+
+                                            {/* Three dots button (Options Menu) */}
                                             <button
                                                 className="absolute top-2 right-2 p-1 text-gray-500 hover:bg-gray-200 rounded-full"
-                                                onClick={() => setShowMenu(showMenu === index ? null : index)}
+                                                onClick={(e) => {
+                                                    e.stopPropagation(); // Prevent file from opening
+                                                    setShowMenu(showMenu === file.id ? null : file.id);
+                                                }}
                                             >
                                                 <Image src="/images/icons/threedots.svg" alt={t("moreOptions")} width={20} height={20} />
                                             </button>
-            
-                                            {/* File options pop-up */}
-                                            {showMenu === index && (
+
+                                            {/* File options pop-up (Download, Favorite, Delete) */}
+                                            {showMenu === file.id && (
                                                 <div className="absolute top-10 right-2 bg-white shadow-lg rounded-md p-2 border z-50">
-                                                    <button className="flex items-center w-full px-3 py-2 hover:bg-gray-100">
+                                                    {/* Download File */}
+                                                    <button
+                                                        className="flex items-center w-full px-3 py-2 hover:bg-gray-100"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            window.open(file.fileUrl, "_blank"); // Opens the file in a new tab
+                                                        }}
+                                                    >
                                                         <Image src="/images/icons/download.svg" alt={t("download")} width={16} height={16} className="mr-2" />
                                                         {t("downloadFile")}
                                                     </button>
-                                                    <button className="flex items-center w-full px-3 py-2 hover:bg-gray-100">
+
+                                                    {/* Star File (Placeholder for future functionality) */}
+                                                    <button
+                                                        className="flex items-center w-full px-3 py-2 hover:bg-gray-100"
+                                                        onClick={(e) => e.stopPropagation()}
+                                                    >
                                                         <Image src="/images/icons/star.svg" alt={t("star")} width={16} height={16} className="mr-2" />
                                                         {t("starFile")}
                                                     </button>
+
+                                                    {/* Delete File */}
                                                     <button
                                                         className="flex items-center w-full px-3 py-2 hover:bg-gray-100"
-                                                        onClick={() => {
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
                                                             setShowMenu(null);
-                                                            setShowDeleteAlert(true);
+                                                            deleteFile(file.id); // Calls the delete function
                                                         }}
                                                     >
                                                         <Image src="/images/icons/trash.svg" alt={t("delete")} width={16} height={16} className="mr-2" />
@@ -390,12 +557,11 @@ export default function MyFolders() {
                                         </div>
                                     ))}
                                 </div>
-                                
                             ) : (
-                                <p className="text-gray-500">No files found at this level.</p>
+                                <p className="text-gray-500">{t("noFilesFound")}</p>
                             )}
-                            </div>
-                        )}
+                        </div>
+                    )}
 
                     {/* Pagination Component */}
                     <Pagination
