@@ -37,12 +37,8 @@ async function indexDocument(filePath, metadata = {}) {
       });
     }
     
-    return {
-      documentId: metadata.documentId || uuidv4(),
-      totalChunks: chunks.length,
-      successful: results.filter(r => r.success).length,
-      failed: results.filter(r => !r.success).length
-    };
+    return;
+    
   } catch (error) {
     console.error("Error indexing document:", error);
     throw new Error(`Failed to index document: ${error.message}`);

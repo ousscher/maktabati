@@ -86,3 +86,28 @@ Content-Type: application/json
 {
     "sectionId": "O1ArD4a6BrGSggk2xeog"
 }
+
+
+
+### Query chatbot 
+POST http://localhost:3000/api/rag/query
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "what is my grade from the 1st semester of the second year  ?",
+  "sectionId": "TS3pRA3xJ9iuSLNa3xXe",
+  "useRAG": true,
+  "topK": 5,
+  "historyLimit" : 5
+}
+
+### Get conversation
+POST http://localhost:3000/api/rag/conversation
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "sectionId" : "TS3pRA3xJ9iuSLNa3xXe",
+    "limit" : 10 
+}

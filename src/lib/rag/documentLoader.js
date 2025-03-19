@@ -18,7 +18,7 @@ async function loadDocument(filePath) {
         loader = new TextLoader(filePath);
         break;
       default:
-        throw new Error(`Unsupported file type: ${extension}`);
+        return "";
     }
     
     // Load and split the document
@@ -74,7 +74,9 @@ function splitDocument(document, chunkSize = 1000, overlap = 200) {
 async function processDocument(filePath) {
   try {
     const document = await loadDocument(filePath);
-    
+    if (document == ""){ // this document type is not handeled yet
+      return []
+    }
     // Process each page/section
     const allChunks = [];
     for (const doc of document) {
