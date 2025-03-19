@@ -68,42 +68,40 @@ export default function Recent() {
         const file = event.target.files[0];
         if (file) {
             setIsUploading(true); // Show loading popup
-            console.log("Uploading file:", file.name);
 
             // Simulate upload delay
             setTimeout(() => {
                 setIsUploading(false); // Hide loading popup after upload
-                console.log("File uploaded successfully:", file.name);
             }, 3000);
         }
     };
     return (
         <ProtectedLayout>
             <SearchBar />
-            <div className="p-6 flex">
+            <div className="p-6 flex max-md:pt-14">
                 <div className="transition-all duration-500 w-full">
 
                     {/* Header Section */}
                     <div className="flex justify-between items-center py-4">
                         {/* Left Side - Title Navigation */}
                         <div className="flex items-center space-x-2">
-                            <h1 className="text-2xl font-medium">{tr("trash")}</h1>
+                            <h1 className="text-sm md:text-2xl font-medium">{tr("trash")}</h1>
                             <Image src="/images/icons/chevron-down.svg" alt="Dropdown" width={12} height={12} />
                         </div>
 
                         {/* Right Side - Sorting & View Options */}
-                        <div className="flex items-center space-x-4">
+                        <div className="flex items-center md:space-x-4">
 
                             {/* Grid View Button */}
                             <button className="p-2">
-                                <Image src="/images/icons/grid.svg" alt="Grid View" width={20} height={20} />
+                                <Image src="/images/icons/grid.svg" alt="Grid View" className="max-md:w-4" width={20} height={20} />
                             </button>
 
                             {/* Sorting Dropdown */}
                             <select
                                 value={sortBy}
                                 onChange={(e) => setSortBy(e.target.value)}
-                                className="bg-gray-100 text-gray-700 text-sm py-2 px-5 rounded-md focus:ring-2 focus:ring-teal-500 outline-none"
+                                className="bg-gray-100 text-gray-700 text-xs px-2 py-1 md:text-sm md:py-2 md:px-5 rounded-md focus:ring-2 focus:ring-teal-500 outline-none"
                             >
                                 <option value="name">{t("sortByName")}</option>
                                 <option value="date">{t("sortByDate")}</option>
@@ -218,7 +216,7 @@ export default function Recent() {
                     </div>
                 
                     {/* Files Grid */}
-                    <div className='grid grid-cols-5 gap-x-8 gap-y-8 mb-4'>
+                    <div className='grid grid-cols-2 md:grid-cols-5 gap-x-8 gap-y-8 mb-4'>
                         {paginatedFiles.map((file, index) => (
                             <div key={index} className="relative flex flex-col items-center text-center p-4 rounded-lg cursor-pointer transition hover:shadow-lg">
                                 <Image src={file.icon} alt={t("fileIconAlt")} width={80} height={80} />

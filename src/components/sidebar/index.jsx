@@ -26,7 +26,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="w-64 h-screen bg-gray-100 p-5 flex flex-col justify-between shadow-md">
+    <div className="max-md:hidden w-64 h-screen bg-gray-100 p-5 flex flex-col justify-between shadow-md">
       <div className="flex flex-col items-center mb-6">
         <Image src="/images/logo.png" alt="Maktabati Logo" width={120} height={120} />
       </div>

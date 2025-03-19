@@ -1,9 +1,11 @@
-import { admin,db } from "@/lib/firebaseAdminConfig";
+import { admin, db } from "@/lib/firebaseAdminConfig";
 import { verifyToken, runMiddleware } from "@/lib/authMiddleware";
 import fs from "fs";
 import axios from "axios";
-
-const formidable = require('formidable');
+// import formidable from 'formidable';
+import { Readable } from "stream";
+import FormData from "form-data";
+const formidable = require("formidable");
 
 export const config = {
   api: {
@@ -14,10 +16,10 @@ export const config = {
 const parseForm = (req) => {
   return new Promise((resolve, reject) => {
     const form = new formidable.IncomingForm({
-      keepExtensions: true, // Conserve les fichiers temporaires
+      keepExtensions: true,
       filename: (name, ext, part) => {
         return `${Date.now()}_${part.originalFilename}`;
-      }
+      },
     });
 
     form.parse(req, (err, fields, files) => {
@@ -38,20 +40,41 @@ export default async function handler(req, res) {
     const userId = req.user.uid;
 
     const { fields, files } = await parseForm(req);
-    const file = files.file[0]; // Accès au premier fichier dans le tableau
-    const sectionId = fields.sectionId;
-    const folderId = fields.folderId || null;
 
-    if (!file || !sectionId) {
-      return res.status(400).json({ error: "File and section ID are required" });
+    // Gestion compatible avec différentes versions de formidable
+    const file =
+      files.file && Array.isArray(files.file) ? files.file[0] : files.file;
+
+    if (!file) {
+      return res.status(400).json({ error: "File is required" });
+    }
+
+    const sectionId = fields.sectionId?.[0] || fields.sectionId;
+    // Accepter soit folderId soit parentId
+    const folderId =
+      fields.folderId?.[0] ||
+      fields.folderId ||
+      fields.parentId?.[0] ||
+      fields.parentId ||
+      null;
+
+    console.log("Processing upload - Section:", sectionId, "Folder:", folderId);
+
+    if (!sectionId) {
+      return res.status(400).json({ error: "Section ID is required" });
     }
 
     // Vérification du dossier si spécifié
     if (folderId) {
-      const folderDoc = await db.collection("users").doc(userId)
-                               .collection("sections").doc(sectionId)
-                               .collection("folders").doc(folderId).get();
-      
+      const folderDoc = await db
+        .collection("users")
+        .doc(userId)
+        .collection("sections")
+        .doc(sectionId)
+        .collection("folders")
+        .doc(folderId)
+        .get();
+
       if (!folderDoc.exists) {
         return res.status(404).json({ error: "Folder not found" });
       }
@@ -62,37 +85,51 @@ export default async function handler(req, res) {
 
     // Envoi à l'API externe
     const formData = new FormData();
-    formData.append('upload', fileData, {
-      filename: file.originalFilename,
-      contentType: file.mimetype
+    const fileStream = Readable.from(fileData);
+
+    formData.append("upload", fileStream, {
+      filename: file.originalFilename || file.newFilename,
+      contentType: file.mimetype,
+      knownLength: fileData.length,
     });
 
+    // Utiliser axios pour envoyer le fichier à l'API externe
     const response = await axios.post(
-      'https://octopus-app-i4yg.ondigitalocean.app/upload',
+      "https://octopus-app-i4ylg.ondigitalocean.app/upload",
       formData,
       {
         headers: {
-          'Content-Type': 'multipart/form-data',
-          ...formData.getHeaders()
-        }
+          ...formData.getHeaders(),
+          // Ne pas utiliser getLengthSync() qui peut ne pas exister
+        },
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity,
       }
     );
+
+    if (!response.data || !response.data.url) {
+      throw new Error("Invalid response from upload service");
+    }
 
     const fileUrl = response.data.url;
 
     // Création du document Firestore
-    const fileRef = db.collection("users").doc(userId)
-                    .collection("sections").doc(sectionId)
-                    .collection("files").doc();
+    const fileRef = db
+      .collection("users")
+      .doc(userId)
+      .collection("sections")
+      .doc(sectionId)
+      .collection("files")
+      .doc();
 
     await fileRef.set({
-      name: file.originalFilename,
+      name: file.originalFilename || file.newFilename,
       fileUrl: fileUrl,
       fileType: file.mimetype,
       fileSize: file.size,
       folderId: folderId,
-      createdAt: admin.firestore.FieldValue.serverTimestamp(), // Utilisation correcte de admin
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
     // Nettoyage du fichier temporaire
@@ -100,19 +137,25 @@ export default async function handler(req, res) {
 
     return res.status(201).json({
       id: fileRef.id,
-      name: file.originalFilename,
+      name: file.originalFilename || file.newFilename,
       fileUrl: fileUrl,
       fileType: file.mimetype,
       fileSize: file.size,
       folderId: folderId,
-      message: "File uploaded successfully"
+      message: "File uploaded successfully",
     });
   } catch (error) {
     if (res.statusCode === 401) return;
 
     console.error("Error uploading file:", error);
-    return res.status(500).json({ 
-      error: error.response?.data?.message || error.message || "Error uploading file" 
+
+    // Fournir plus de détails sur l'erreur pour le débogage
+    return res.status(500).json({
+      error:
+        error.response?.data?.message ||
+        error.message ||
+        "Error uploading file",
+      details: error.stack,
     });
   }
 }

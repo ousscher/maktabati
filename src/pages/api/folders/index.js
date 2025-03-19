@@ -10,8 +10,6 @@ export default async function handler(req, res) {
     // GET - Retrieve folders
     if (req.method === "GET") {
       const { sectionId, parentId = null } = req.body;
-      console.log(req.query);
-      console.log("sectionId", sectionId);
       if (!sectionId) {
         return res.status(400).json({ error: "Section ID is required" });
       }
