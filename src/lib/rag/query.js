@@ -8,23 +8,6 @@ import { querySimilarDocuments } from './pinecone';
  * @returns {Promise<Object>} The query results
  */
 
-async function extractContext(query, topK = 5) {
-  try {
-    console.log("--------------------------------------Processing query--------------------------------------");
-    
-    // Query Pinecone for similar documents
-    const similarDocuments = await querySimilarDocuments(query, topK);
-    
-    // Extract text from similar documents
-    const contextTexts = similarDocuments.map(doc => doc.metadata.text);
-    
-    return contextTexts
-  } catch (error) {
-    console.error("Error extracting cotext", error);
-    throw new Error(`Failed to extract context from query: ${error.message}`);
-  }
-}
-
 async function processQuery(query, topK = 5) {
   try {
     console.log("--------------------------------------Processing query--------------------------------------");
@@ -34,7 +17,7 @@ async function processQuery(query, topK = 5) {
     
     // Extract text from similar documents
     const contextTexts = similarDocuments.map(doc => doc.metadata.text);
-
+    console.log("Text context : ",contextTexts);
     // Generate a response using the retrieved context
     const response = await generateResponse(query, contextTexts);
     console.log("LLM answer : ",response);
@@ -44,7 +27,7 @@ async function processQuery(query, topK = 5) {
       sources: similarDocuments.map(doc => ({
         id: doc.id,
         score: doc.score,
-        metadata: doc.metadata
+        text_context: doc.metadata.text,
       }))
     };
   } catch (error) {
