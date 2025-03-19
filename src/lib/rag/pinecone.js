@@ -54,7 +54,7 @@ async function storeEmbedding(documentId, text, metadata) {
  * @param {number} topK - Number of results to return
  * @returns {Promise<Array<Object>>} Array of similar documents
  */
-async function querySimilarDocuments(queryText, topK = 5) {
+async function querySimilarDocuments(queryText, sectionId, topK = 5) {
   try {
     console.log("--------------------------------------Querying documents in pinecone--------------------------------------");
     const index = await getIndex();
@@ -66,8 +66,10 @@ async function querySimilarDocuments(queryText, topK = 5) {
       vector: queryEmbedding.data[0].values,
       topK: topK,
       includeValues: false,
-      includeMetadata: true
-    });
+      includeMetadata: true,
+      filter: {
+        "sectionId" : sectionId
+      }});
 
     console.log('Query response : ',queryResponse);
     return queryResponse.matches;

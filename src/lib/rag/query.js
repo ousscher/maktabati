@@ -8,12 +8,12 @@ import { querySimilarDocuments } from './pinecone';
  * @returns {Promise<Object>} The query results
  */
 
-async function processQuery(query, topK = 5,conversationHistory) {
+async function processQuery(query, topK = 5,conversationHistory,sectionID) {
   try {
     console.log("--------------------------------------Processing query--------------------------------------");
     
     // Query Pinecone for similar documents
-    const similarDocuments = await querySimilarDocuments(query, topK);
+    const similarDocuments = await querySimilarDocuments(query,sectionID, topK);
     
     // Extract text from similar documents
     const contextTexts = similarDocuments.map(doc => doc.metadata.text);

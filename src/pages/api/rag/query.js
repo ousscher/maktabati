@@ -51,7 +51,7 @@ export default async function handler(req, res) {
     // Process the query with or without RAG
     if (useRAG && sectionId) {
       // Use RAG with document retrieval and conversation history
-      result = await processQuery(query, topK, conversationHistory);
+      result = await processQuery(query, topK, conversationHistory,sectionId);
     } else {
       // Direct query with conversation history
       result = await processDirectQuery(query, conversationHistory);
