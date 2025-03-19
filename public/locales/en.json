@@ -90,6 +90,7 @@
         "starIcon": "Star",
         "bookIcon": "Book",
         "cancel": "Cancel",
+        "upload":"Upload",
         "create": "Create",
         "previous": "Previous",
         "next": "Next",
@@ -122,7 +123,15 @@
         "restoreFile": "Restore this file",
         "myFiles":"My Files",
         "restoreAllFiles": "Restore all files",
-        "deleteAllFiles": "Delete all files"
+        "deleteAllFiles": "Delete all files",
+        "uploadFile": "Upload File",
+        "uploadFileDesc": "Drag and drop your file here or click to browse",
+        "dragDrop": "Drag and drop files or",
+        "browse": "browse",
+        "fileRequired": "Please select a file to upload",
+        "fileUploadFailed": "File upload failed",
+        "uploading": "Uploading...", 
+        "noFilesFound" : "No files Found"
     },
     "Search": {
         "placeholder": "Search by lorem ipsum lorem..."
