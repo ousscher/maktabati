@@ -122,6 +122,15 @@
         "starFile": "Mettre en favori",
         "notstarFile": "Retirer des favoris",
         "delete": "Supprimer",
+        "noFilesFound": "Pas de fichiers ici",
+        "noFoldersFound": "Pas de dossiers ici",
+        "noSectionsFound": "Pas de sections ici",
+        "deleteFile": "Supprimer ",
+        "deleteConfirmation": "Êtes-vous absolument sûr ?",
+        "deleteWarning": "Cette action est irréversible. Ca sera définitivement supprimé.",
+        "restoreFile": "Restorer",
+        "restoreAllFiles": "Restorer tous",
+        "deleteAllFiles": "Supprimer tous"
         "deleteFile": "Supprimer",
         "deleteConfirmation": "Êtes-vous absolument sûr(e) ?",
         "deleteWarning": "Cette action est irréversible. Ce fichier sera définitivement supprimé.",
@@ -136,7 +145,6 @@
         "fileUploadFailed": "Échec du téléversement du fichier",
         "uploading": "Téléversement en cours...", 
         "noFilesFound" : "Aucun fichier trouvé"
-
     },
     "Search": {
         "placeholder": "Rechercher par lorem ipsum lorem..."

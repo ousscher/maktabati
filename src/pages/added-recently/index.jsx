@@ -14,10 +14,12 @@ export default function Recent() {
     const { switchLocale } = useSwitchLang();
     const [sortBy, setSortBy] = useState("name");
     const [currentPage, setCurrentPage] = useState(1);
+    const [foldersPerPage, setFoldersPerPage] = useState(5);
     const router = useRouter();
     const { folderName } = router.query; 
     const [isFirstModalOpen, setIsFirstModalOpen] = useState(false);
     const [isSecondModalOpen, setIsSecondModalOpen] = useState(false);
+    const [newFolderName, setNewFolderName] = useState("");
     const firstModalRef = useRef(null);
     const secondModalRef = useRef(null);
     const [showChat, setShowChat] = useState(false);
@@ -79,7 +81,7 @@ export default function Recent() {
         <ProtectedLayout>
             {/* Search Bar */}
             <SearchBar />
-            <div className="p-6 flex">
+            <div className="p-6 flex max-md:pt-14">
                 <div className={`transition-all duration-500 ${showChat ? "w-2/3" : "w-full"}`}>
                     
 
@@ -87,30 +89,30 @@ export default function Recent() {
                     <div className="flex justify-between items-center py-4">
                         {/* Left Side - Title Navigation */}
                         <div className="flex items-center space-x-2">
-                            <h1 className="text-2xl font-medium">{tr("addedRecently")}</h1>
+                            <h1 className="text-sm md:text-2xl font-medium">{tr("addedRecently")}</h1>
                             <Image src="/images/icons/chevron-down.svg" alt="Dropdown" width={12} height={12} />
                         </div>
 
                         {/* Right Side - Sorting & View Options */}
-                        <div className="flex items-center space-x-4">
+                        <div className="flex items-center md:space-x-4">
                             {/* AI Assistant Button */}
                             <button className="p-2" onClick={() => {
                                 setShowChat(!showChat);
-                                setItemsPerPage(8);
+                                setFoldersPerPage(8);
                             }}>
                                 <Image src="/images/icons/ai-assistant.svg" alt="AI Assistant" width={20} height={20} />
                             </button>
 
                             {/* Grid View Button */}
                             <button className="p-2">
-                                <Image src="/images/icons/grid.svg" alt="Grid View" width={20} height={20} />
+                                <Image src="/images/icons/grid.svg" alt="Grid View" className="max-md:w-4" width={20} height={20} />
                             </button>
 
                             {/* Sorting Dropdown */}
                             <select
                                 value={sortBy}
                                 onChange={(e) => setSortBy(e.target.value)}
-                                className="bg-gray-100 text-gray-700 text-sm py-2 px-5 rounded-md focus:ring-2 focus:ring-teal-500 outline-none"
+                                className="bg-gray-100 text-gray-700 text-xs px-2 py-1 md:text-sm md:py-2 md:px-5 rounded-md focus:ring-2 focus:ring-teal-500 outline-none"
                             >
                                 <option value="name">{t("sortByName")}</option>
                                 <option value="date">{t("sortByDate")}</option>
@@ -122,12 +124,21 @@ export default function Recent() {
                             {isFirstModalOpen && (
                                 <div
                                     ref={firstModalRef}
-                                    className="absolute top-44 right-10 bg-white shadow-lg rounded-md p-2  border z-50"
+                                    className="absolute top-44 right-10 bg-white shadow-lg rounded-md p-4 w-64 border z-50 space-y-2"
                                 >
-                                    {/* Upload New File */}
+                                    <button
+                                        onClick={() => {
+                                            setIsFirstModalOpen(false);
+                                            setIsSecondModalOpen(true); 
+                                        }}
+                                        className="w-full flex items-center justify-between px-3 py-2 border rounded-md hover:bg-gray-100"
+                                    >
+                                        <Image src="/images/icons/folder-add.svg" alt="Folder Icon" width={18} height={18} />
+                                        <span className="text-sm text-gray-700">{t("createNewFolder")}</span>
+                                    </button>
                                     <label
                                         htmlFor="file-upload"
-                                        className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-md transition cursor-pointer"
+                                        className="w-full flex items-center justify-between px-3 py-2 border rounded-md hover:bg-gray-100"
                                     >
                                         <Image src="/images/icons/folder-add.svg" alt="Upload Icon" width={18} height={18} />
                                         <span className="text-sm">{t("uploadNewFile")}</span>
@@ -138,70 +149,11 @@ export default function Recent() {
                                             onChange={handleFileUpload}
                                         />
                                     </label>
-                                
-                                    {/* Download This Folder */}
-                                    <button
-                                        onClick={() => {
-                                            setIsFirstModalOpen(false);
-                                            // Add your function for downloading this folder
-                                        }}
-                                        className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-md transition"
-                                    >
-                                        <Image src="/images/icons/download.svg" alt="Download Icon" width={18} height={18} />
-                                        <span className="text-sm">{t("downloadFile")}</span>
-                                    </button>
-                                
-                                    {/* Delete This Folder */}
-                                    <button
-                                        onClick={() => {
-                                            setIsFirstModalOpen(false);
-                                            setIsDeleteConfirmOpen(true);
-                                        }}
-                                        className="w-full flex items-center space-x-3 px-4 py-3 hover:bg-red-100 rounded-md transition"
-                                    >
-                                        <Image src="/images/icons/trash.svg" alt="Delete Icon" width={18} height={18} />
-                                        <span className="text-sm">{t("deleteFile")}</span>
-                                    </button>
-                                    
                                 </div>
                                 
                             )}
-                            {/* Delete Confirmation Modal */}
-                            {isDeleteConfirmOpen && (
-                                <div className="fixed inset-0 flex items-center justify-center  z-50">
-                                    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-                                        <h2 className="text-lg font-semibold">{t("deleteConfirmationTitle")}</h2>
-                                        <p className="text-gray-500 text-sm mt-2">{t("deleteConfirmationMessage")}</p>
 
-                                        <div className="flex justify-end space-x-3 mt-6">
-                                            <button
-                                                onClick={() => setIsDeleteConfirmOpen(false)}
-                                                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition"
-                                            >
-                                                {t("cancel")}
-                                            </button>
-                                            <button
-                                                onClick={() => {
-                                                    setIsDeleteConfirmOpen(false);
-                                                    // Add your delete function here
-                                                    console.log("Folder deleted!");
-                                                }}
-                                                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
-                                            >
-                                                {t("continue")}
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-                            {/* Small Uploading Pop-up */}
-                            {isUploading && (
-                                <div className="fixed bottom-5 right-5 bg- text-black px-4 py-2 rounded-md shadow-lg flex items-center space-x-2">
-                                    <Image src="/images/icons/loading.svg" alt="Loading" width={16} height={16} className="animate-spin" />
-                                    <span className="text-sm">{t("uploadingFile")}</span>
-                                </div>
-                            )}
-                            {/* Step 2: Second Modal - "New Section Form" */}
+                            {/* Step 2: Second Modal - "New Folder Form" */}
                             {isSecondModalOpen && (
                                 <div
                                     ref={secondModalRef}
@@ -210,29 +162,58 @@ export default function Recent() {
                                     <h3 className="text-lg font-semibold">{t("newFolderTitle")}</h3>
                                     <p className="text-sm text-gray-500">{t("newFolderDescription")}</p>
 
-                                    {/* Section Name Input */}
+                                    {/* Folder Name Input */}
                                     <label className="block mt-3 text-sm font-medium text-gray-700">{t("folderName")}</label>
                                     <input
                                         type="text"
+                                        value={newFolderName}
+                                        onChange={(e) => setNewFolderName(e.target.value)}
                                         placeholder={t("folderNamePlaceholder")}
                                         className="w-full mt-1 p-2 border rounded-md focus:ring-2 focus:ring-teal-500 focus:outline-none"
                                     />
+                                    
+                                    {createFolderError && (
+                                        <p className="text-red-500 text-sm mt-1">{createFolderError}</p>
+                                    )}
 
                                     {/* Buttons */}
                                     <div className="flex justify-end mt-4 space-x-2">
                                         <button
                                             onClick={() => {
                                                 setIsSecondModalOpen(false);
+                                                setNewFolderName("");
+                                                setCreateFolderError("");
                                             }}
                                             className="px-4 py-2 text-gray-600 border rounded-md hover:bg-gray-100"
+                                            disabled={isCreatingFolder}
                                         >
                                             {t("cancel")}
                                         </button>
                                         <button
-                                            className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700"
+                                            onClick={createFolder}
+                                            disabled={isCreatingFolder}
+                                            className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 disabled:bg-teal-300"
                                         >
-                                            {t("create")}
+                                            {isCreatingFolder ? (
+                                                <span className="flex items-center">
+                                                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                    </svg>
+                                                    {t("creating")}
+                                                </span>
+                                                
+                                            ) : (
+                                                t("create")
+                                            )}
                                         </button>
+                                        {isCreatingFolder && <div className="fixed bottom-6 right-6 bg-white text-teal-600 shadow-lg rounded-lg px-6 py-3 flex items-center space-x-3 border border-gray-200 animate-fadeIn">
+                                            <svg className="w-6 h-6 animate-spin text-teal-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                                            </svg>
+                                            <span className="font-semibold">Loading content...</span>
+                                        </div>}
                                     </div>
                                 </div>
                             )}
@@ -240,7 +221,7 @@ export default function Recent() {
                     </div>
                 
                     {/* Files Grid */}
-                    <div className={`grid ${showChat ? 'grid-cols-4' : 'grid-cols-5'} gap-x-8 gap-y-8 mb-4`}>
+                    <div className={`grid grid-cols-2 ${showChat ? 'md:grid-cols-4' : 'md:grid-cols-5'} gap-x-8 gap-y-8 mb-4`}>
                         {paginatedFiles.map((file, index) => (
                             <div key={index} className="relative flex flex-col items-center text-center p-4 rounded-lg cursor-pointer transition hover:shadow-lg">
                                 <Image src={file.icon} alt={t("fileIconAlt")} width={80} height={80} />

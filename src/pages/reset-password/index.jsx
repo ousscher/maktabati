@@ -63,7 +63,7 @@ export default function ResetPassword() {
     return (
         <div className="flex h-screen">
             {/* Left Side - Reset Password Form */}
-            <div className="w-1/2 flex flex-col items-center justify-center p-12 relative">
+            <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-12 relative">
                 {/* Language Switcher */}
                 <button 
                     className="absolute top-5 right-20 text-gray-800 px-4 py-1 rounded-lg border"
@@ -191,7 +191,7 @@ export default function ResetPassword() {
             </div>
 
             {/* Right Side - Features Section (Same as Before) */}
-            <div className="w-1/2 text-white flex flex-col justify-center px-24 py-20 bg-cover bg-center" style={{ backgroundImage: "url('/images/loginbg.png')" }}>
+            <div className="max-lg:hidden w-1/2 text-white flex flex-col justify-center px-24 py-20 bg-cover bg-center" style={{ backgroundImage: "url('/images/loginbg.png')" }}>
                 <div className="flex flex-col space-y-6 ">
                     {/* Cards Layout */}
                     <div className="bg-white text-gray-800 p-4 shadow-lg rounded-lg w-64 flex items-center self-start">
