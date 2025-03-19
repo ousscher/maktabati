@@ -303,7 +303,8 @@
         "fullName": "Full Name",
         "occupation": "Occupation",
         "myEmailAddress": "My email Address",
-        "addEmailAddress": "+ Add Email Address"
+        "addEmailAddress": "+ Add Email Address", 
+        "Loading": "Loading User Data..."
     },
     "Settings":{
         "welcomeBack": "Welcome back",

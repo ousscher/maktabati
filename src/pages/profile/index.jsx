@@ -2,17 +2,17 @@ import { useTranslations } from "next-intl";
 import ProtectedLayout from "@/components/layout/ProtectedLayout";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { useRouter } from "next/router";
-import { FiX, FiSettings, FiGlobe } from "react-icons/fi"; // Import icons
+import { FiX, FiSettings, FiGlobe } from "react-icons/fi";
 import { motion } from "framer-motion";
-
+import { useProfile } from "@/contexts/ProfileContext";
 
 export default function Profile() {
     const router = useRouter();
     const { locale, pathname, asPath, query } = router;
+    const { profile, isLoading, error, updateProfile } = useProfile();
 
-    // Function to toggle between English and French
     const toggleLanguage = () => {
         const newLocale = locale === "en" ? "fr" : "en";
         router.replace({ pathname, query }, asPath, { locale: newLocale });
@@ -20,17 +20,38 @@ export default function Profile() {
 
     const t = useTranslations("Profile");
     const tr = useTranslations("Sidebar");
-    const user = {
-        name: "Meriem Lamri",
-        email: "meriem030333@gmail.com",
-        joinDate: "12/12/2024",
-        occupation: "Student",
-        profileImage: "/images/profile.jpg", // Update with the actual profile image path
+    
+    const [editMode, setEditMode] = useState(false);
+    const [formData, setFormData] = useState({});
+
+    useEffect(() => {
+        if (profile) {
+            setFormData({
+                name: profile.name,
+                occupation: profile.occupation,
+                email: profile.email
+            });
+        }
+    }, [profile]);
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value
+        });
     };
 
-    const [editMode, setEditMode] = useState(false);
+    const handleSaveChanges = async () => {
+        try {
+            await updateProfile(formData);
+            setEditMode(false);
+        } catch (error) {
+            console.error("Erreur lors de la sauvegarde:", error);
+        }
+    };
 
-    const [menu , showMenu] = useState(false);
+    const [menu, showMenu] = useState(false);
     const menuItems = [
         { id: 'home', label: tr('home'), path: '/home', icon: '/images/icons/home.svg' },
         { id: 'library', label: tr('library'), path: '/mylibrary', icon: '/images/icons/library.svg' },
@@ -51,16 +72,34 @@ export default function Profile() {
         router.push('/login');
     };
 
+    // Afficher un état de chargement pendant la récupération des données
+    if (isLoading) return (
+        <ProtectedLayout>
+            <div className="flex justify-center items-center h-screen">
+                <p>{t("Loading")}</p>
+            </div>
+        </ProtectedLayout>
+    );
+
+    // Afficher un message d'erreur si la récupération a échoué
+    if (error) return (
+        <ProtectedLayout>
+            <div className="flex justify-center items-center h-screen">
+                <p>Erreur lors du chargement du profil. Veuillez réessayer.</p>
+            </div>
+        </ProtectedLayout>
+    );
+
     return (
         <ProtectedLayout>
             <div className="max-md:fixed max-md:bg-white max-md:z-10 top-0 left-0 flex items-center justify-between px-4 py-6 md:py-2 w-full">
                 <button className="md:hidden "
                 onClick={()=>showMenu(true)}
                 >
-                    <Image src="/images/icons/menu.svg" width={26} height={26}/>
+                    <Image src="/images/icons/menu.svg" width={26} height={26} alt="Menu" />
                 </button>
                 <h1 className="text-sm md:text-xl font-semibold text-gray-800">
-                    {t("welcomeBack")}, {user.name}!
+                    {t("welcomeBack")}, {profile.name ?? "Guest"}!
                 </h1>
     
                 {/* Action Icons */}
@@ -78,7 +117,7 @@ export default function Profile() {
                     </Link>
                     <Link href='/profile'>
                         <button className="w-10 h-10 rounded-full overflow-hidden border border-gray-200">
-                            <Image src="/images/profile.jpg" alt="User Profile" width={40} height={40} />
+                            <Image src={profile.profileImage??"/images/profile.jpg"} alt="User Profile" width={40} height={40} />
                         </button>
                     </Link>
                 </div>
@@ -96,36 +135,42 @@ export default function Profile() {
                 <div className="md:flex justify-between items-center my-8 rounded-lg">
                     <div className="flex items-center space-x-4">
                         <Image
-                            src={user.profileImage}
-                            alt={user.name}
+                            src={profile.profileImage ?? "/images/profile.jpg"}
+                            alt={profile.name}
                             width={80}
                             height={80}
                             className="rounded-full"
                         />
                         <div>
-                            <h1 className="text-xl font-semibold">{user.name}</h1>
-                            <p className="text-gray-600">{user.email}</p>
+                            <h1 className="text-xl font-semibold">{profile.name}</h1>
+                            <p className="text-gray-600">{profile.email}</p>
                         </div>
                     </div>
-                    <div className="md:space-x-4  max-md:mt-4">
+                    <div className="md:space-x-4 max-md:mt-4">
                         {editMode &&
                             <button
-                                onClick={() => setEditMode(!editMode)}
-                                className="max-md:hidden bg-white text-teal-600  py-2 rounded-full"
+                                onClick={() => setEditMode(false)}
+                                className="max-md:hidden bg-white text-teal-600 py-2 rounded-full"
                             >
                                 {t("cancel")}
                             </button>
                         }
                         <button
-                            onClick={() => setEditMode(!editMode)}
+                            onClick={() => {
+                                if (editMode) {
+                                    handleSaveChanges();
+                                } else {
+                                    setEditMode(true);
+                                }
+                            }}
                             className="bg-teal-600 text-white px-6 p-2 rounded-full"
                         >
                             {editMode === false ? t("edit") : t("saveChanges")}
                         </button>
                         {editMode &&
                             <button
-                                onClick={() => setEditMode(!editMode)}
-                                className="md:hidden bg-white text-teal-600 ml-4  py-2 rounded-full"
+                                onClick={() => setEditMode(false)}
+                                className="md:hidden bg-white text-teal-600 ml-4 py-2 rounded-full"
                             >
                                 {t("cancel")}
                             </button>
@@ -138,17 +183,23 @@ export default function Profile() {
                         <label className="text-gray-600 text-sm">{t("fullName")}</label>
                         <input
                             type="text"
-                            defaultValue={user.name}
+                            name="name"
+                            placeholder="Username"
+                            value={formData.name || ''}
+                            onChange={handleInputChange}
                             disabled={!editMode}
                             className="px-4 py-2 rounded-md border border-gray-300 w-full"
                         />
                     </div>
 
                     <div className="flex flex-col max-md:mt-4 space-y-2 w-full md:ml-4">
-                        <label className="text-gray-600 text-sm ">{t("occupation")}</label>
+                        <label className="text-gray-600 text-sm">{t("occupation")}</label>
                         <input
                             type="text"
-                            defaultValue={user.occupation}
+                            name="occupation"
+                            placeholder="Occupation"
+                            value={formData.occupation || ''}
+                            onChange={handleInputChange}
                             disabled={!editMode}
                             className="px-4 py-2 rounded-md border border-gray-300 w-full"
                         />
@@ -162,8 +213,8 @@ export default function Profile() {
                             <Image src="/images/icons/email.svg" alt="Email Icon" width={24} height={20} />
                         </div>
                         <div>
-                            <p className="text-gray-600">{user.email}</p>
-                            <p className="text-gray-400 text-sm">{user.joinDate}</p>
+                            <p className="text-gray-600">{profile.email}</p>
+                            <p className="text-gray-400 text-sm">{profile.joinDate}</p>
                         </div>
                     </div>
 
@@ -173,7 +224,7 @@ export default function Profile() {
                 </div>
             </section>
             {menu && 
-                <div className=" z-10">
+                <div className="z-10">
                     {/* Background Overlay to Close Menu */}
                     {menu && (
                         <div
@@ -221,7 +272,7 @@ export default function Profile() {
         
                         {/* More Section */}
                         <div className="px-6 mt-4">
-                            <p className="text-gray-500 text-sm mb-2">{t('more')}</p>
+                            <p className="text-gray-500 text-sm mb-2">{tr('more')}</p>
                             <div className="space-y-2">
                                 {extraItems.map((item) => (
                                     <Link
@@ -230,7 +281,7 @@ export default function Profile() {
                                         className={`flex items-center p-3 rounded-lg transition ${
                                             router.pathname.startsWith(item.path) ? 'text-teal-500' : 'text-gray-700'
                                         }`}
-                                        onClick={() => setMenu(false)}
+                                        onClick={() => showMenu(false)}
                                     >
                                         <Image src={item.icon} alt={item.label} width={20} height={20} />
                                         <span className="ml-3">{item.label}</span>
