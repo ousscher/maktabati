@@ -669,6 +669,9 @@ export default function MyFolders() {
                 <p className="text-gray-500 text-sm">
                   {folder.files.length} {t("files")}
                 </p>
+                <p className="text-gray-500 text-sm">
+                  {folder.folders.length} {t("folders")}
+                </p>
                 <p className="text-gray-500 text-sm">{folder.size}</p>
               </div>
             ))}

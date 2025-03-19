@@ -112,6 +112,7 @@
         "deleteConfirmationMessage": "Cette action est irréversible. Cela supprimera définitivement ce dossier.",
         "uploadingFile": "Téléversement en cours...",
         "fileNameExists":"Le nom du fichier existe déjà",
+        "sectionNameExists":"Le nom du section existe déjà",
         "continue": "Continuer",
         "fileIconAlt": "Icône de fichier",
         "moreOptions": "Plus d'options",

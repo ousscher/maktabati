@@ -111,6 +111,7 @@
         "deleteConfirmationMessage": "This action cannot be undone. This will permanently delete this folder.",
         "uploadingFile": "Uploading file...",
         "fileNameExists":"File name already exists",
+        "sectionNameExists":"Section name already exists",
         "fileIconAlt": "File Icon",
         "moreOptions": "More Options",
         "download": "Download",
