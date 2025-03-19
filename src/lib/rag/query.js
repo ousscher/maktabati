@@ -7,17 +7,37 @@ import { querySimilarDocuments } from './pinecone';
  * @param {number} topK - Number of similar documents to retrieve
  * @returns {Promise<Object>} The query results
  */
-async function processQuery(query, topK = 5) {
+
+async function extractContext(query, topK = 5) {
   try {
-    // Generate embedding for the query
-    const queryEmbedding = await generateEmbeddings(query);
+    console.log("--------------------------------------Processing query--------------------------------------");
     
     // Query Pinecone for similar documents
-    const similarDocuments = await querySimilarDocuments(queryEmbedding, topK);
+    const similarDocuments = await querySimilarDocuments(query, topK);
     
     // Extract text from similar documents
     const contextTexts = similarDocuments.map(doc => doc.metadata.text);
     
+    // Generate a response using the retrieved context
+    const response = await generateResponse(query, contextTexts);
+    
+    return contextTexts
+  } catch (error) {
+    console.error("Error extracting cotext", error);
+    throw new Error(`Failed to extract context from query: ${error.message}`);
+  }
+}
+
+async function processQuery(query, topK = 5) {
+  try {
+    console.log("--------------------------------------Processing query--------------------------------------");
+    
+    // Query Pinecone for similar documents
+    const similarDocuments = await querySimilarDocuments(query, topK);
+    
+    // Extract text from similar documents
+    const contextTexts = similarDocuments.map(doc => doc.metadata.text);
+    console.log("TTTTTTTTTTTTTTTTTTTT / ",contextTexts);
     // Generate a response using the retrieved context
     const response = await generateResponse(query, contextTexts);
     

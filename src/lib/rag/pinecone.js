@@ -56,18 +56,22 @@ async function storeEmbedding(documentId, text, metadata) {
  */
 async function querySimilarDocuments(queryText, topK = 5) {
   try {
+    console.log("--------------------------------------Querying documents in pinecone--------------------------------------");
     const index = await getIndex();
+        
     
-    // Generate embedding for the query text
-    const queryEmbedding = await pinecone.inference.embed(MODEL_NAME, [queryText], { inputType: 'query', truncate: 'END' });
-    
-    const queryResponse = await index.query({
-      vector: queryEmbedding[0].values,
+    const queryEmbedding = await pinecone.inference.embed(MODEL_NAME, [queryText], { inputType: 'query' });
+    console.log('the query embedding : ',queryEmbedding)
+    const queryResponse = await index.namespace(NAMESPACE).query({
+      vector: queryEmbedding.data[0].values,
       topK: topK,
+      includeValues: false,
       includeMetadata: true
     });
-    
+
+    console.log('Query response : ',queryResponse);
     return queryResponse.matches;
+
   } catch (error) {
     console.error("Error querying Pinecone:", error);
     throw new Error("Failed to query similar documents");
