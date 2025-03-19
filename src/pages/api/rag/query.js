@@ -12,21 +12,49 @@ export default async function handler(req, res) {
     await runMiddleware(req, res, verifyToken);
     const userId = req.user.uid;
     
-    const { query, sectionId, useRAG = true, topK = 5 } = req.body;
+    const { query, sectionId, useRAG = true, topK = 5, historyLimit = 5 } = req.body;
     
     if (!query) {
       return res.status(400).json({ error: "Query is required" });
     }
     
     let result;
+    let conversationHistory = [];
+    
+    // Fetch conversation history if sectionId is provided
+    if (sectionId) {
+      const historySnapshot = await db.collection("users").doc(userId)
+                             .collection("sections").doc(sectionId)
+                             .collection("conversations")
+                             .orderBy("timestamp", "desc")
+                             .limit(historyLimit)
+                             .get();
+      
+      // Format conversation history
+      historySnapshot.forEach(doc => {
+        const data = doc.data();
+        conversationHistory.push({
+          role: "user", 
+          content: data.query
+        });
+        conversationHistory.push({
+          role: "assistant", 
+          content: data.response,
+          sources: data.sources || []
+        });
+      });
+      
+      // Reverse to get chronological order
+      conversationHistory = conversationHistory.reverse();
+    }
     
     // Process the query with or without RAG
     if (useRAG && sectionId) {
-      // Use RAG with document retrieval
-      result = await processQuery(query, topK);
+      // Use RAG with document retrieval and conversation history
+      result = await processQuery(query, topK, conversationHistory);
     } else {
-      // Direct query without document retrieval
-      result = await processDirectQuery(query);
+      // Direct query with conversation history
+      result = await processDirectQuery(query, conversationHistory);
     }
     
     // Save the conversation to Firestore if sectionId is provided
@@ -38,7 +66,7 @@ export default async function handler(req, res) {
       await chatRef.set({
         query,
         response: result.response,
-        sources: result.sources,
+        sources: result.sources || [],
         timestamp: admin.firestore.FieldValue.serverTimestamp()
       });
     }

@@ -8,7 +8,7 @@ import { querySimilarDocuments } from './pinecone';
  * @returns {Promise<Object>} The query results
  */
 
-async function processQuery(query, topK = 5) {
+async function processQuery(query, topK = 5,conversationHistory) {
   try {
     console.log("--------------------------------------Processing query--------------------------------------");
     
@@ -19,7 +19,8 @@ async function processQuery(query, topK = 5) {
     const contextTexts = similarDocuments.map(doc => doc.metadata.text);
     console.log("Text context : ",contextTexts);
     // Generate a response using the retrieved context
-    const response = await generateResponse(query, contextTexts);
+    const formattedHistory = formatConversationHistory(conversationHistory);
+    const response = await generateResponse(query, contextTexts,formattedHistory);
     console.log("LLM answer : ",response);
     return {
       query,
@@ -55,6 +56,34 @@ async function processDirectQuery(query) {
     console.error("Error processing direct query:", error);
     throw new Error(`Failed to process direct query: ${error.message}`);
   }
+}
+
+function formatConversationHistory(history) {
+  if (!history || history.length === 0) return "";
+  
+  let formattedHistory = "";
+  
+  for (const msg of history) {
+    if (msg.role === "user") {
+      formattedHistory += `User: ${msg.content}\n`;
+    } else if (msg.role === "assistant") {
+      formattedHistory += `Assistant: ${msg.content}\n`;
+      
+      // Include sources text_context if available
+      if (msg.sources && msg.sources.length > 0) {
+        formattedHistory += "Reference contexts:\n";
+        msg.sources.forEach((source) => {
+          if (source.text_context) {
+            formattedHistory += `${source.text_context}\n`;
+          }
+        });
+      }
+      
+      formattedHistory += "\n";
+    }
+  }
+  
+  return formattedHistory.trim();
 }
 
 export { processQuery, processDirectQuery };

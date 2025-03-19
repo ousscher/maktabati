@@ -7,19 +7,29 @@ export default async function handler(req, res) {
     const userId = req.user.uid;
     
     // GET - Fetch conversation history
-    if (req.method === "GET") {
-      const { sectionId, limit = 50 } = req.query;
+    if (req.method === "POST") {
+      const { sectionId, limit = 50, startAfter = null } = req.body;
       
       if (!sectionId) {
         return res.status(400).json({ error: "Section ID is required" });
       }
       
       // Get conversations for the section
-      const conversationsRef = db.collection("users").doc(userId)
+      let conversationsRef = db.collection("users").doc(userId)
                              .collection("sections").doc(sectionId)
                              .collection("conversations")
                              .orderBy("timestamp", "desc")
                              .limit(parseInt(limit));
+
+      // Support pagination with startAfter
+      if (startAfter) {
+        const startAfterDoc = await db.collection("users").doc(userId)
+                                    .collection("sections").doc(sectionId)
+                                    .collection("conversations").doc(startAfter).get();
+        if (startAfterDoc.exists) {
+          conversationsRef = conversationsRef.startAfter(startAfterDoc);
+        }
+      }
                              
       const conversationsSnapshot = await conversationsRef.get();
       
@@ -31,8 +41,12 @@ export default async function handler(req, res) {
         });
       });
       
-      return res.status(200).json({ conversations: conversations.reverse() });
+      return res.status(200).json({ 
+        conversations: conversations.reverse(),
+        hasMore: conversations.length === parseInt(limit)
+      });
     }
+    
     
     // DELETE - Delete a conversation or clear all conversations
     else if (req.method === "DELETE") {
@@ -77,7 +91,7 @@ export default async function handler(req, res) {
     }
     
     else {
-      res.setHeader("Allow", ["GET", "DELETE"]);
+      res.setHeader("Allow", ["GET", "DELETE", "PATCH"]);
       return res.status(405).json({ error: `Method ${req.method} not allowed` });
     }
   } catch (error) {
@@ -85,6 +99,6 @@ export default async function handler(req, res) {
     if (res.statusCode === 401) return;
     
     console.error("Error in RAG conversations API:", error);
-    return res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Server error", message: error.message });
   }
 }

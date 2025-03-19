@@ -22,24 +22,32 @@ const generationConfig = {
  * @param {Array} context - Array of context chunks to include
  * @returns {Promise<string>} The generated response
  */
-async function generateResponse(prompt, context = []) {
+async function generateResponse(prompt, context = [], formattedHistory) {
   try {
     const chatSession = model.startChat({
       generationConfig,
-      history: [],
+      history: [], // Model might track internally, but we pass history in the prompt
     });
-    
-    // Build the prompt with context
-    let fullPrompt = "You are a helpful assistant. ";
-    
-    if (context && context.length > 0) {
-      fullPrompt += "Use the following information to answer the question:\n\n";
-      fullPrompt += context.join("\n\n");
-      fullPrompt += "\n\nQuestion: " + prompt;
-    } else {
-      fullPrompt += "Answer the following question: " + prompt;
+
+    // Build the structured prompt
+    let fullPrompt = "You are a helpful and knowledgeable assistant.\n\n";
+
+    // Append chat history if available
+    if (formattedHistory && formattedHistory.length > 0) {
+      fullPrompt += "Here is the conversation history to maintain context:\n";
+      fullPrompt += formattedHistory;
     }
-    
+
+    // Append context if provided
+    if (context && context.length > 0) {
+      fullPrompt += "Use the following relevant information when answering:\n";
+      fullPrompt += context.join("\n") + "\n\n";
+    }
+
+    // Append the current user query
+    fullPrompt += `User: ${prompt}\nAssistant:`;
+
+    // Send prompt to chat model
     const result = await chatSession.sendMessage(fullPrompt);
     return result.response.text();
   } catch (error) {
@@ -47,6 +55,7 @@ async function generateResponse(prompt, context = []) {
     throw new Error("Failed to generate response from Gemini API");
   }
 }
+
 
 /**
  * Generate embeddings for a text using Gemini       USLESS FOR NOW
