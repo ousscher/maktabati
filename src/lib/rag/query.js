@@ -18,9 +18,6 @@ async function extractContext(query, topK = 5) {
     // Extract text from similar documents
     const contextTexts = similarDocuments.map(doc => doc.metadata.text);
     
-    // Generate a response using the retrieved context
-    const response = await generateResponse(query, contextTexts);
-    
     return contextTexts
   } catch (error) {
     console.error("Error extracting cotext", error);
@@ -37,10 +34,10 @@ async function processQuery(query, topK = 5) {
     
     // Extract text from similar documents
     const contextTexts = similarDocuments.map(doc => doc.metadata.text);
-    console.log("TTTTTTTTTTTTTTTTTTTT / ",contextTexts);
+
     // Generate a response using the retrieved context
     const response = await generateResponse(query, contextTexts);
-    
+    console.log("LLM answer : ",response);
     return {
       query,
       response,

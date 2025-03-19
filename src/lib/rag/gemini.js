@@ -1,16 +1,20 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 
 // Initialize the Gemini API client
 const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(API_KEY);
 
-/**
- * Get a Gemini model instance
- * @returns {GenerativeModel} The Gemini model
- */
-function getGeminiModel() {
-  return genAI.getGenerativeModel({ model: "gemini-pro" });
-}
+const model = genAI.getGenerativeModel({
+  model: "gemini-1.5-flash",
+});
+
+const generationConfig = {
+  temperature: 1,
+  topP: 0.95,
+  topK: 40,
+  maxOutputTokens: 8192,
+  responseMimeType: "text/plain",
+};
 
 /**
  * Generate a response using the Gemini model
@@ -20,7 +24,10 @@ function getGeminiModel() {
  */
 async function generateResponse(prompt, context = []) {
   try {
-    const model = getGeminiModel();
+    const chatSession = model.startChat({
+      generationConfig,
+      history: [],
+    });
     
     // Build the prompt with context
     let fullPrompt = "You are a helpful assistant. ";
@@ -33,9 +40,8 @@ async function generateResponse(prompt, context = []) {
       fullPrompt += "Answer the following question: " + prompt;
     }
     
-    const result = await model.generateContent(fullPrompt);
-    const response = result.response;
-    return response.text();
+    const result = await chatSession.sendMessage(fullPrompt);
+    return result.response.text();
   } catch (error) {
     console.error("Error generating response:", error);
     throw new Error("Failed to generate response from Gemini API");
@@ -43,7 +49,7 @@ async function generateResponse(prompt, context = []) {
 }
 
 /**
- * Generate embeddings for a text using Gemini
+ * Generate embeddings for a text using Gemini       USLESS FOR NOW
  * @param {string} text - The text to generate embeddings for
  * @returns {Promise<Array<number>>} The generated embeddings
  */
