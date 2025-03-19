@@ -195,6 +195,7 @@
         "upload": "Upload and manage PDFs, Word documents, eBooks, and more.",
         "Or": "OR",
         "Google": "Continue with Google",
+        "Loading" : "Loading...",
         "invalidCredentials": "Invalid email or password",
         "security": "Your data is securely stored and never shared with third parties."
     }, 

@@ -193,6 +193,7 @@
         "Or": "OU",
         "invalidCredentials": "L'e-mail ou le mot de passe est incorrect",
         "Google": "Continue avec Google",
+        "Loading" : "Chargement...", 
         "signUp": "S'inscrir",
         "uhave": "se connecter",
         "account": "Vous-avez un compte?",
