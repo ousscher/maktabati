@@ -13,7 +13,9 @@ async function indexDocument(filePath, metadata = {}) {
   try {
     // Process the document into chunks
     const chunks = await processDocument(filePath);
-    
+    console.log("--------------------------------------Indexing the document--------------------------------------");
+    console.log("THE GENERATED CHUNKS : ", chunks);
+
     // Track the indexing results
     const results = [];
     
@@ -22,20 +24,13 @@ async function indexDocument(filePath, metadata = {}) {
       // Generate a unique ID for this chunk
       const chunkId = uuidv4();
       
-      // Generate embedding for the chunk
-      const embedding = await generateEmbeddings(chunk.pageContent);
-      
-      // Combine metadata
-      const combinedMetadata = {
+      // Store the embedding directly using Pinecone's inference
+      const result = await storeEmbedding(chunkId, chunk.pageContent, {
         ...metadata,
         ...chunk.metadata,
-        text: chunk.pageContent,
         indexedAt: new Date().toISOString()
-      };
-      
-      // Store the embedding in Pinecone
-      const result = await storeEmbedding(chunkId, embedding, combinedMetadata);
-      
+      });
+      console.log("the results we got : ",result);
       results.push({
         chunkId,
         success: !!result
@@ -53,6 +48,7 @@ async function indexDocument(filePath, metadata = {}) {
     throw new Error(`Failed to index document: ${error.message}`);
   }
 }
+
 
 /**
  * Index a text string

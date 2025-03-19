@@ -1,39 +1,47 @@
 import { Pinecone } from '@pinecone-database/pinecone';
+import { v4 as uuidv4 } from 'uuid';
 
 // Initialize Pinecone client
 const pinecone = new Pinecone({
   apiKey: process.env.NEXT_PUBLIC_PINECONE_API_KEY,
 });
 
-// Set your index name
-const INDEX_NAME = 'hackathon-docs';
+// Set your index name and namespace
+const INDEX_NAME = 'salam-hack';
+const NAMESPACE = 'ns1';
+const MODEL_NAME = 'llama-text-embed-v2';
 
 /**
  * Initialize the Pinecone index
  * @returns {Promise<Object>} The Pinecone index
  */
 async function getIndex() {
-  return pinecone.index(INDEX_NAME);
+  return pinecone.index(INDEX_NAME).namespace(NAMESPACE);
 }
 
 /**
- * Store document embeddings in Pinecone
+ * Store document embeddings using Pinecone's inference service
  * @param {string} documentId - Unique identifier for the document
- * @param {Array<number>} embedding - Vector embedding of the document
+ * @param {string} text - The text content to embed
  * @param {Object} metadata - Document metadata
  * @returns {Promise<Object>} Result of the upsert operation
  */
-async function storeEmbedding(documentId, embedding, metadata) {
+async function storeEmbedding(documentId, text, metadata) {
   try {
     const index = await getIndex();
-    
-    const upsertResponse = await index.upsert([{
-      id: documentId,
-      values: embedding,
-      metadata: metadata
-    }]);
-    
-    return upsertResponse;
+    console.log("--------------------------------------Indexing the document in pinecone--------------------------------------");
+    // Generate embedding using Pinecone Inference
+    const embedding = await pinecone.inference.embed(MODEL_NAME, [text], { inputType: 'passage', truncate: 'END' });
+    console.log("text : ",text);
+    console.log("embedding : ",embedding);
+    await index.upsert([
+      {
+        id: documentId,
+        values: embedding.data[0].values,
+        metadata: { ...metadata, text }
+      }
+    ]);
+    return true;
   } catch (error) {
     console.error("Error storing embedding:", error);
     throw new Error("Failed to store embedding in Pinecone");
@@ -42,16 +50,19 @@ async function storeEmbedding(documentId, embedding, metadata) {
 
 /**
  * Query Pinecone for similar documents
- * @param {Array<number>} queryEmbedding - Vector embedding of the query
+ * @param {string} queryText - The query text
  * @param {number} topK - Number of results to return
  * @returns {Promise<Array<Object>>} Array of similar documents
  */
-async function querySimilarDocuments(queryEmbedding, topK = 5) {
+async function querySimilarDocuments(queryText, topK = 5) {
   try {
     const index = await getIndex();
     
+    // Generate embedding for the query text
+    const queryEmbedding = await pinecone.inference.embed(MODEL_NAME, [queryText], { inputType: 'query', truncate: 'END' });
+    
     const queryResponse = await index.query({
-      vector: queryEmbedding,
+      vector: queryEmbedding[0].values,
       topK: topK,
       includeMetadata: true
     });

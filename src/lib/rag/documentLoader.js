@@ -1,7 +1,5 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
-import { DocxLoader } from 'langchain/document_loaders/fs/docx';
 import { TextLoader } from 'langchain/document_loaders/fs/text';
 
 /**
@@ -16,12 +14,6 @@ async function loadDocument(filePath) {
     
     // Select appropriate loader based on file extension
     switch (extension) {
-      case '.pdf':
-        loader = new PDFLoader(filePath);
-        break;
-      case '.docx':
-        loader = new DocxLoader(filePath);
-        break;
       case '.txt':
         loader = new TextLoader(filePath);
         break;
