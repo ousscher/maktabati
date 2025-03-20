@@ -324,7 +324,9 @@
         "occupation": "Occupation",
         "myEmailAddress": "My email Address",
         "addEmailAddress": "+ Add Email Address", 
-        "Loading": "Loading User Data..."
+        "Loading": "Loading User Data...", 
+        "profileUpdated": "Profile updated successfully",
+        "loading":"Loading..."
     },
     "Settings":{
         "welcomeBack": "Welcome back",

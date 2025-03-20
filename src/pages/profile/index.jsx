@@ -12,6 +12,7 @@ export default function Profile() {
   const router = useRouter();
   const { locale, pathname, asPath, query } = router;
   const { profile, isLoading, error, updateProfile } = useProfile();
+  const [loaded, setLoaded] = useState(true);
 
   const toggleLanguage = () => {
     const newLocale = locale === "en" ? "fr" : "en";
@@ -43,11 +44,14 @@ export default function Profile() {
   };
 
   const handleSaveChanges = async () => {
+    setLoaded(false);
     try {
       await updateProfile(formData);
       setEditMode(false);
     } catch (error) {
       console.error("Erreur lors de la sauvegarde:", error);
+    }finally{
+      setLoaded(true);
     }
   };
 
@@ -79,7 +83,6 @@ export default function Profile() {
     },
   ];
 
-  // Extra Items (More Section)
   const extraItems = [
     {
       id: "added-recently",
@@ -212,6 +215,7 @@ export default function Profile() {
               </button>
             )}
             <button
+            disabled={!loaded}
               onClick={() => {
                 if (editMode) {
                   handleSaveChanges();
@@ -219,9 +223,9 @@ export default function Profile() {
                   setEditMode(true);
                 }
               }}
-              className="bg-teal-600 text-white px-6 p-2 rounded-full"
+              className="bg-teal-600 disabled:bg-teal-400 text-white px-6 p-2 rounded-full"
             >
-              {editMode === false ? t("edit") : t("saveChanges")}
+              {!loaded ? t("loading") : editMode === false ? t("edit") : t("saveChanges")}
             </button>
             {editMode && (
               <button

@@ -325,7 +325,9 @@
         "occupation": "Occupation",
         "myEmailAddress": "Mon Adresse E-mail",
         "addEmailAddress": "+ Ajouter une adresse e-mail", 
-        "Loading": "Chargement en cours..."
+        "Loading": "Chargement en cours...",
+        "profileUpdated": "Profil mis à jour",
+        "loading":"Chargement..."
 
     },
     "Settings":{
