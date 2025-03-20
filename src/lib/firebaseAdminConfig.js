@@ -1,21 +1,13 @@
 import admin from "firebase-admin";
 
-const serviceAccount = {
-  type: "service_account",
-  project_id: process.env.FIREBASE_PROJECT_ID,
-  private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
-  // private_key: process.env.FIREBASE_PRIVATE_KEY ? 
-  // process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n") : undefined,
-  private_key: process.env.FIREBASE_PRIVATE_KEY.split(String.raw`\n`).join('\n'), 
-  client_email: process.env.FIREBASE_CLIENT_EMAIL,
-  client_id: process.env.FIREBASE_CLIENT_ID,
-  auth_uri: process.env.FIREBASE_AUTH_URI,
-  token_uri : process.env.FIREBASE_TOKEN_URI,
-  auth_provider_x509_cert_url: process.env.FIREBASE_AUTH_PROVIDER_X509_CERT_URL,
-  client_x509_cert_url: process.env.FIREBASE_CLIENT_X509_CERT_URL,
-  universe_domain: process.env.FIREBASE_UNIVERSE_DOMAIN,
+const base64EncodedServiceAccount = process.env.BASE64_ENCODED_SERVICE_ACCOUNT;
+if (!base64EncodedServiceAccount) {
+  throw new Error("Missing BASE64_ENCODED_SERVICE_ACCOUNT environment variable");
+}
 
-};
+const decodedServiceAccount = Buffer.from(base64EncodedServiceAccount, 'base64').toString('utf-8');
+const serviceAccount = JSON.parse(decodedServiceAccount);
+
 
 if (!admin.apps.length) {
   admin.initializeApp({
