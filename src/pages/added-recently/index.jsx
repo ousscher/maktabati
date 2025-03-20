@@ -240,7 +240,19 @@ export default function Recent() {
                     {/* Menu déroulant */}
                     {showMenu?.display && showMenu?.id === file.id && (
                       <div className="absolute top-10 right-2 bg-white shadow-lg rounded-md p-2 border z-50">
-                        <button className="flex items-center w-full px-3 py-2 hover:bg-gray-100">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const link = document.createElement("a");
+                            link.href = file.fileUrl;
+                            link.download = file.name;
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            setShowMenu(null)
+                          }}
+                          className="flex items-center w-full px-3 py-2 hover:bg-gray-100"
+                        >
                           <Image
                             src="/images/icons/download.svg"
                             alt="Download"

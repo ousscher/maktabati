@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import ChatbotSection from "@/components/mylibrary/chatbot";
 import ConfirmationModal from "@/components/myfolders/confirmation";
 import API from "@/utils/api-client";
+import { toast } from "react-toastify";
 
 export default function Trash() {
   const t = useTranslations("Library");
@@ -76,7 +77,7 @@ export default function Trash() {
         data,
       });
 
-      setFiles(files.filter((file) => file.id !== fileId));
+      setFiles(files.filter((file) => file.id !== fileToDelete.id));
     } catch (error) {
       console.error("Error deleting file:", error);
     }
@@ -131,9 +132,10 @@ export default function Trash() {
       setConfirmModal({
         isOpen: true,
         message: t("restoreConfirmationMessage"),
-        onConfirm: () => {
+        onConfirm: async () => {
           const fileToRestore = files.find((file) => file.id === fileId);
-          restoreFile(fileToRestore);
+          await restoreFile(fileToRestore);
+          toast.success(t("fileRestored"));
           setConfirmModal({ ...confirmModal, isOpen: false });
         },
         type: "restore",
@@ -142,9 +144,10 @@ export default function Trash() {
       setConfirmModal({
         isOpen: true,
         message: t("deleteConfirmationMessage"),
-        onConfirm: () => {
+        onConfirm: async () => {
           const fileToDelete = files.find((file) => file.id === fileId);
-          deleteFile(fileToDelete);
+          await deleteFile(fileToDelete);
+          toast.success(t("fileDeleted"));
           setConfirmModal({ ...confirmModal, isOpen: false });
         },
         type: "delete",
@@ -286,14 +289,9 @@ export default function Trash() {
 
           {/* Loading State */}
           {isLoading ? (
-            <div className="flex justify-center items-center h-64">
-              <Image
-                src="/images/icons/loading.svg"
-                alt="Loading"
-                width={32}
-                height={32}
-                className="animate-spin"
-              />
+            <div className="flex flex-col items-center justify-center h-64">
+              <div className="w-16 h-16 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
+              <p className="mt-4 text-gray-600">{t("loading")}</p>
             </div>
           ) : (
             <>

@@ -15,13 +15,12 @@ export default function Starred() {
   const tr = useTranslations("Sidebar");
   const [sortBy, setSortBy] = useState("name");
   const [currentPage, setCurrentPage] = useState(1);
-  const [foldersPerPage, setFoldersPerPage] = useState(5);
-  const [newFolderName, setNewFolderName] = useState("");
   const [showChat, setShowChat] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [fileToRemove, setFileToRemove] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     async function fetchStarredFiles() {
@@ -48,7 +47,6 @@ export default function Starred() {
   const paginatedFiles = files.slice(startIndex, endIndex);
 
   const [isUploading, setIsUploading] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -160,7 +158,12 @@ export default function Starred() {
               {t("files")}
             </h3>
 
-            {paginatedFiles.length === 0 ? (
+            {isLoading ? (
+              <div className="flex flex-col items-center justify-center h-64">
+                <div className="w-16 h-16 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
+                <p className="mt-4 text-gray-600">{t("loading")}</p>
+              </div>
+            ) : paginatedFiles.length === 0 ? (
               // État vide pour les fichiers
               <div className="bg-gray-50 rounded-lg p-4 sm:p-6 flex flex-col items-center justify-center">
                 <div className="w-12 h-12 sm:w-16 sm:h-16">
@@ -288,11 +291,13 @@ export default function Starred() {
           />
 
           {/* Pagination Component */}
-          <Pagination
-            totalPages={totalPages}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-          />
+          {!isLoading && files.length > 0 && (
+            <Pagination
+              totalPages={totalPages}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          )}
         </div>
       </div>
     </ProtectedLayout>

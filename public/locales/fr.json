@@ -151,7 +151,8 @@
         "confirmDeleteFile" : "Êtes-vous sûr de vouloir supprimer ce fichier?",
         "emptyTrash":"Corbeille vide",
         "restoreConfirmationMessage": "Ce fichier sera restauré dans votre bibliothèque.",
-        "fileDeleted": "Fichier supprimé"
+        "fileDeleted": "Fichier supprimé",
+        "fileRestored": "Fichier restauré"
 
     },
     "Search": {
