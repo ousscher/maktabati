@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { FaTwitter, FaLinkedinIn, FaFacebookF } from "react-icons/fa";
+import { FaTwitter, FaLinkedinIn, FaInstagram } from "react-icons/fa";
 
 export default function Footer() {
   const t = useTranslations("Footer");
@@ -24,14 +24,14 @@ export default function Footer() {
 
       {/* Right - Social Media Icons */}
       <div className="flex space-x-2 py-5">
+        <Link href="https://www.instagram.com/maktabati.app/" className="w-9 h-9 flex items-center justify-center border-2 border-teal-500 rounded-full hover:bg-teal-500 hover:text-white transition">
+          <FaInstagram className="text-teal-800" size={14} />
+        </Link>
         <Link href="https://twitter.com" className="w-9 h-9 flex items-center justify-center border-2 border-teal-500 rounded-full hover:bg-teal-500 hover:text-white transition">
           <FaTwitter className="text-teal-800" size={14} />
         </Link>
         <Link href="https://linkedin.com" className="w-9 h-9 flex items-center justify-center border-2 border-teal-500 rounded-full hover:bg-teal-500 hover:text-white transition">
           <FaLinkedinIn className="text-teal-800" size={14} />
-        </Link>
-        <Link href="https://facebook.com" className="w-9 h-9 flex items-center justify-center border-2 border-teal-500 rounded-full hover:bg-teal-500 hover:text-white transition">
-          <FaFacebookF className="text-teal-800" size={14} />
         </Link>
       </div>
 
