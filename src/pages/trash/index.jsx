@@ -315,7 +315,10 @@ export default function Trash() {
                     {paginatedFiles.map((file, index) => (
                       <div
                         key={file.id}
-                        className="relative flex flex-col items-center text-center p-4 rounded-lg cursor-pointer transition hover:shadow-lg"
+                        onDoubleClick={() =>
+                          window.open(file.fileUrl, "_blank")
+                        }
+                        className="relative cursor-pointer flex flex-col items-center p-3 sm:p-4 rounded-lg transition hover:shadow-lg"
                       >
                         <Image
                           src={file.icon || "/images/icons/file.svg"}

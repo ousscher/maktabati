@@ -22,7 +22,6 @@ export default function Starred() {
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [fileToRemove, setFileToRemove] = useState(null);
-  
 
   useEffect(() => {
     async function fetchStarredFiles() {
@@ -182,7 +181,8 @@ export default function Starred() {
                 {paginatedFiles.map((file) => (
                   <div
                     key={file.id}
-                    className="relative flex flex-col items-center p-3 sm:p-4 rounded-lg transition hover:shadow-lg"
+                    onDoubleClick={() => window.open(file.fileUrl, "_blank")}
+                    className="relative cursor-pointer flex flex-col items-center p-3 sm:p-4 rounded-lg transition hover:shadow-lg"
                   >
                     {/* Taille d'icône réduite sur mobile */}
                     <div className="w-12 h-12 sm:w-16 sm:h-16">
@@ -282,7 +282,9 @@ export default function Starred() {
                 setIsConfirmModalOpen(false);
               }
             }}
-            message={tr("removeFavorisConfirmation", { name: fileToRemove?.name })}
+            message={tr("removeFavorisConfirmation", {
+              name: fileToRemove?.name,
+            })}
           />
 
           {/* Pagination Component */}

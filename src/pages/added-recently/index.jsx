@@ -63,7 +63,7 @@ export default function Recent() {
     };
   }, []);
 
-  const deleteFile = async (fileId,sectionId) => {
+  const deleteFile = async (fileId, sectionId) => {
     try {
       const data = {
         sectionId: sectionId,
@@ -81,7 +81,6 @@ export default function Recent() {
       setShowDeleteAlert(false);
     }
   };
-
 
   // Pagination Logic
   const totalPages = Math.ceil(files.length / itemsPerPage);
@@ -216,7 +215,8 @@ export default function Recent() {
                 {paginatedFiles.map((file) => (
                   <div
                     key={file.id}
-                    className="relative flex flex-col items-center p-3 sm:p-4 rounded-lg transition hover:shadow-lg"
+                    onDoubleClick={() => window.open(file.fileUrl, "_blank")}
+                    className="relative cursor-pointer flex flex-col items-center p-3 sm:p-4 rounded-lg transition hover:shadow-lg"
                   >
                     {/* Taille d'icône réduite sur mobile */}
                     <div className="w-12 h-12 sm:w-16 sm:h-16">
@@ -251,7 +251,11 @@ export default function Recent() {
                             sectionId: file.sectionId,
                           });
                           setFiles((prevFiles) =>
-                            prevFiles.map((f) => (f.id === file.id ? { ...f, favorite: !f.favorite } : f))
+                            prevFiles.map((f) =>
+                              f.id === file.id
+                                ? { ...f, favorite: !f.favorite }
+                                : f
+                            )
                           );
                         } catch (e) {
                           console.error(e);
@@ -339,21 +343,21 @@ export default function Recent() {
           </div>
 
           <ConfirmationModal
-          isOpen={showDeleteAlert}
-          onClose={() => setShowDeleteAlert(false)}
-          onConfirm={() => {
-            if (showMenu?.type === "folder") {
-              // deleteFolder(showMenu.id);
-            } else {
-              deleteFile(showMenu.id, showMenu.sectionId);
+            isOpen={showDeleteAlert}
+            onClose={() => setShowDeleteAlert(false)}
+            onConfirm={() => {
+              if (showMenu?.type === "folder") {
+                // deleteFolder(showMenu.id);
+              } else {
+                deleteFile(showMenu.id, showMenu.sectionId);
+              }
+            }}
+            message={
+              showMenu?.type === "folder"
+                ? t("confirmDeleteFolder")
+                : t("confirmDeleteFile")
             }
-          }}
-          message={
-            showMenu?.type === "folder"
-              ? t("confirmDeleteFolder")
-              : t("confirmDeleteFile")
-          }
-        />
+          />
 
           {/* Pagination Component */}
           <Pagination

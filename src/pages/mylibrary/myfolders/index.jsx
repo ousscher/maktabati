@@ -700,7 +700,7 @@ export default function MyFolders() {
                     <div
                       key={file.id}
                       onDoubleClick={() => window.open(file.fileUrl, "_blank")}
-                      className="relative flex flex-col items-center p-3 sm:p-4 rounded-lg transition hover:shadow-lg"
+                      className="relative cursor-pointer flex flex-col items-center p-3 sm:p-4 rounded-lg transition hover:shadow-lg"
                     >
                       {/* Taille d'icône réduite sur mobile */}
                       <div className="w-12 h-12 sm:w-16 sm:h-16">
