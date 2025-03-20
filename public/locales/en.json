@@ -324,7 +324,7 @@
         "delete": "Delete",
         "addAccount": "Add account",
         "profileInformations": "Profile Informations",
-        "profileDescription": "Lorem ipsum dolor sit amet",
+        "profileDescription": "Check and update your profile informations.",
         "completeYourProfile": "Complete your profile",
         "whiteMode": "White mode",
         "darkMode": "Dark mode",
@@ -333,6 +333,12 @@
         "newPassword": "New password",
         "updatePassword": "Update password",
         "activated": "Activated",
-        "deleted": "Deleted"
+        "deleted": "Deleted",
+        "googleAuthMessage": "You are currently using Google authentication.", 
+        "passwordLength": "Password must be at least 6 characters long",
+        "passwordMatch": "Passwords do not match", 
+        "passwordChanged":"Password changed successfully!",
+        "errorChangingPassword":"An error occurred while changing the password",
+        "loading": "Loading..."
     }
 }

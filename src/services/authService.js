@@ -1,24 +1,25 @@
 // src/services/authService.js
-import axios from 'axios';
-import { 
-  auth, 
-  GoogleAuthProvider, 
-  signInWithPopup, 
-  signInWithEmailAndPassword, 
+import axios from "axios";
+import API from "@/utils/api-client";
+import {
+  auth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  signOut
+  signOut,
 } from "@/lib/firebaseConfig";
 
 const setToken = (token) => {
-  localStorage.setItem('token', token);
+  localStorage.setItem("token", token);
 };
 
 const getToken = () => {
-  return localStorage.getItem('token');
+  return localStorage.getItem("token");
 };
 
 const removeToken = () => {
-  localStorage.removeItem('token');
+  localStorage.removeItem("token");
 };
 
 const loginWithEmail = async (email, password) => {
@@ -27,7 +28,7 @@ const loginWithEmail = async (email, password) => {
       email,
       password,
     });
-    
+
     const { token } = response.data;
     if (token) {
       setToken(token);
@@ -45,7 +46,7 @@ const signupWithEmail = async (email, password) => {
       email,
       password,
     });
-    
+
     const { token } = response.data;
     if (token) {
       setToken(token);
@@ -61,11 +62,11 @@ const loginWithGoogle = async () => {
   try {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
-    
+
     const token = await result.user.getIdToken();
-    
+
     const response = await axios.post("/api/auth/google", { token });
-    
+
     if (response.data.token) {
       setToken(response.data.token);
       return response.data;
@@ -73,6 +74,18 @@ const loginWithGoogle = async () => {
     throw new Error("Authentification Google échouée");
   } catch (error) {
     console.error("Erreur Google Auth:", error);
+    throw error;
+  }
+};
+
+const changePassword = async (newPassword) => {
+  try {
+    const token = getToken();
+    if (!token) throw new Error("Unauthorized");
+    const response = await API.post("/auth/change-password", { newPassword });
+    return response.data;
+  } catch (error) {
+    console.error("Error :", error);
     throw error;
   }
 };
@@ -98,5 +111,6 @@ export {
   loginWithGoogle,
   logout,
   isAuthenticated,
-  getToken
+  getToken,
+  changePassword
 };

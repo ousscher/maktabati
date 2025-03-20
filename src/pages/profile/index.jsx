@@ -25,7 +25,7 @@ export default function Profile() {
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
-        if (profile) {
+    if (profile) {
       setFormData({
         name: profile.name,
         occupation: profile.occupation,

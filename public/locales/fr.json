@@ -325,7 +325,7 @@
         "delete": "Supprimer",
         "addAccount": "Ajouter un compte",
         "profileInformations": "Informations du profil",
-        "profileDescription": "Lorem ipsum dolor sit amet",
+        "profileDescription": "Ajoutez des informations à votre profil ici",
         "completeYourProfile": "Complétez votre profil",
         "whiteMode": "Mode clair",
         "darkMode": "Mode sombre",
@@ -334,6 +334,12 @@
         "newPassword": "Nouveau mot de passe",
         "updatePassword": "Mettre à jour le mot de passe",
         "activated": "Activer",
-        "deleted": "Supprimé"
+        "deleted": "Supprimé",
+        "googleAuthMessage": "Vous utilisez actuellement l'authentification Google.",
+        "passwordLength": "Le mot de passe doit contenir au moins 6 caractères",
+        "passwordMatch": "Les mots de passe ne correspondent pas",
+        "passwordChanged":"Mot de passe changé avec succès",
+        "errorChangingPassword":"Erreur lors du changement de mot de passe",
+        "loading": "Chargement..."
     }
 }
