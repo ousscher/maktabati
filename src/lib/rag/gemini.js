@@ -105,5 +105,46 @@ async function generateFilenameSuggestions(query) {
   }
 }
 
+/**
+ * Generate assisted text using the Gemini model based on document contexts and initial query
+ * @param {Array<string>} contexts - The text extracted from the documents
+ * @param {string} query - The initial query/text to continue from
+ * @returns {Promise<string>} Generated continuation text
+ */
+async function generateAssistedText(contexts, query) {
+  try {
+    // Initialize chat session with the model
+    const chatSession = model.startChat({
+      generationConfig,
+      history: [],
+    });
 
-export { generateResponse, generateEmbeddings, generateFilenameSuggestions };
+    // Combine contexts into a single context string
+    const combinedContext = contexts.join("\n\n");
+    
+    // Create a prompt that includes both the document contexts and the initial query
+    const prompt = `
+      I need to continue writing based on the following context and initial text.
+
+      CONTEXT:
+      ${combinedContext}
+
+      INITIAL TEXT:
+      ${query}
+
+      Please generate a coherent and relevant continuation of the initial text based on the provided context.
+    `;
+
+    // Send the prompt to the model
+    const result = await chatSession.sendMessage(prompt);
+    const assistedText = result.response.text();
+    
+    return assistedText;
+  } catch (error) {
+    console.error("Error generating assisted text:", error);
+    throw new Error("Failed to generate assisted text from Gemini API");
+  }
+}
+
+
+export { generateResponse, generateEmbeddings, generateFilenameSuggestions, generateAssistedText };

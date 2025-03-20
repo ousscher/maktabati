@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.0",
+    "@langchain/community": "^0.3.36",
+    "@langchain/core": "^0.3.42",
     "@pinecone-database/pinecone": "^5.1.1",
     "axios": "^1.8.3",
     "firebase": "^11.4.0",
@@ -22,6 +24,7 @@
     "langchain": "^0.3.19",
     "next": "^15.2.3",
     "next-intl": "^3.24.0",
+    "pdf-parse": "^1.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-icons": "^5.5.0",

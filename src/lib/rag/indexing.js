@@ -25,9 +25,8 @@ async function indexDocument(filePath, metadata = {}) {
       const chunkId = uuidv4();
       
       // Store the embedding directly using Pinecone's inference
-      const result = await storeEmbedding(chunkId, chunk.pageContent, {
+      const result = await storeEmbedding(chunkId, chunk, {
         ...metadata,
-        ...chunk.metadata,
         indexedAt: new Date().toISOString()
       });
       console.log("the results we got : ",result);
