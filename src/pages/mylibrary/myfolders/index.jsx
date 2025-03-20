@@ -262,11 +262,11 @@ export default function MyFolders() {
                 {t("myLibrary")}
               </h1>
               <Image
-                    src="/images/icons/chevron-down.svg"
-                    alt="Dropdown"
-                    width={12}
-                    height={12}
-                  />
+                src="/images/icons/chevron-down.svg"
+                alt="Dropdown"
+                width={12}
+                height={12}
+              />
               {currentPath.map((id, index) => (
                 <div key={id} className="flex items-center">
                   <span
@@ -719,6 +719,44 @@ export default function MyFolders() {
                         {formatFileSize(file.fileSize)}
                       </p>
 
+                      {/* Bouton favori/étoile */}
+                      <button
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          try {
+                            console.log(file); 
+                            const data = {
+                              ...file,
+                              favorite: !file.favorite,
+                            }
+                            const response = await API.put("/files", {
+                              file: data,
+                              sectionId: currentPath[0],
+                            });
+                            refreshLibrary();
+                            
+                          } catch (e) {
+                            console.error(e); 
+                          }
+                        }}
+                        className="absolute top-2 left-2 p-1 hover:bg-gray-200 rounded-full"
+                      >
+                        <Image
+                          src={
+                            file.favorite
+                              ? "/images/icons/star-filled.svg"
+                              : "/images/icons/star.svg"
+                          }
+                          alt={
+                            file.favorite
+                              ? "Remove from shortcuts"
+                              : "Add to shortcuts"
+                          }
+                          width={20}
+                          height={20}
+                        />
+                      </button>
+
                       <button
                         onClick={() => {
                           const menu = {
@@ -811,7 +849,7 @@ export default function MyFolders() {
           }
         />
 
-        {showChat && <ChatbotSection sectionId={currentPath[0]}/>} 
+        {showChat && <ChatbotSection sectionId={currentPath[0]} />}
       </div>
     </ProtectedLayout>
   );

@@ -107,4 +107,6 @@ export const useLibraryStore = create((set, get) => ({
 
     return { folders: [], files: [] };
   },
+
+  
 }));

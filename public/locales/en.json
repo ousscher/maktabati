@@ -65,7 +65,8 @@
         "starred": "Starred",
         "trash": "Trash",
         "settings": "Settings",
-        "logout": "Logout"
+        "logout": "Logout",
+        "removeFavorisConfirmation":"Are you sure you want to remove {name} from favoris ?"
     },
     "Library": {
         "myLibrary": "My Library",
@@ -139,6 +140,7 @@
         "fileUploadFailed": "File upload failed",
         "uploading": "Uploading...", 
         "noFilesFound" : "No files Found", 
+        "noStarredFound": "No starred files found",
         "totalItems": "Total : {folders} folders and {files} files",
         "createFirstSection": "Create your first section",
         "createSection": "Create a section",

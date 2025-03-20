@@ -111,9 +111,10 @@ export default async function handler(req, res) {
 
     // PUT - Update a file record
     else if (req.method === "PUT") {
-      const { sectionId, fileId, name, folderId } = req.body;
+      const { sectionId, file } = req.body;
+      console.log(file); 
 
-      if (!sectionId || !fileId || !name) {
+      if (!sectionId || !file.id || !file.name) {
         return res
           .status(400)
           .json({ error: "Section ID, file ID, and name are required" });
@@ -126,7 +127,7 @@ export default async function handler(req, res) {
         .collection("sections")
         .doc(sectionId)
         .collection("files")
-        .doc(fileId);
+        .doc(file.id);
 
       const fileDoc = await fileRef.get();
       if (!fileDoc.exists) {
@@ -135,9 +136,9 @@ export default async function handler(req, res) {
 
       // If changing folderId, verify new folder exists
       if (
-        folderId !== undefined &&
-        folderId !== null &&
-        folderId !== fileDoc.data().folderId
+        file.parentId !== undefined &&
+        file.parentId !== null &&
+        file.parentId !== fileDoc.data().file.parentId
       ) {
         const folderDoc = await db
           .collection("users")
@@ -145,7 +146,7 @@ export default async function handler(req, res) {
           .collection("sections")
           .doc(sectionId)
           .collection("folders")
-          .doc(folderId)
+          .doc(file.parentId)
           .get();
 
         if (!folderDoc.exists) {
@@ -157,21 +158,20 @@ export default async function handler(req, res) {
 
       // Update data
       const updateData = {
-        name,
+        ...file,
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       };
 
       // Only include folderId in update if it's explicitly provided
-      if (folderId !== undefined) {
-        updateData.folderId = folderId;
+      if (file.parentId !== undefined) {
+        updateData.parentId = file.parentId;
       }
 
       // Update file record
       await fileRef.update(updateData);
 
       return res.status(200).json({
-        id: fileId,
-        name,
+        ...file,
         message: "File updated successfully",
       });
     }
@@ -185,7 +185,6 @@ export default async function handler(req, res) {
           .status(400)
           .json({ error: "Section ID and file ID are required" });
       }
-
       // Check if file exists
       const fileRef = db
         .collection("users")
