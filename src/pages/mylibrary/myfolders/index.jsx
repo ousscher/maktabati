@@ -241,7 +241,7 @@ export default function MyFolders() {
 
   return (
     <ProtectedLayout>
-      <SearchBar />
+      <SearchBar sectionId={currentPath[0]} />
       <div className="p-6 flex max-md:pt-14 w-full ">
         <div
           className={`transition-all duration-500 w-full ${
@@ -261,6 +261,12 @@ export default function MyFolders() {
               >
                 {t("myLibrary")}
               </h1>
+              <Image
+                    src="/images/icons/chevron-down.svg"
+                    alt="Dropdown"
+                    width={12}
+                    height={12}
+                  />
               {currentPath.map((id, index) => (
                 <div key={id} className="flex items-center">
                   <span
@@ -633,7 +639,8 @@ export default function MyFolders() {
                           </button>
                           <button
                             className="flex items-center w-full px-3 py-2 hover:bg-gray-100 text-red-600"
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.stopPropagation();
                               setShowDeleteAlert(true);
                               const item = {
                                 ...showMenu,
@@ -747,7 +754,8 @@ export default function MyFolders() {
                           </button>
                           <button
                             className="flex items-center w-full px-3 py-2 hover:bg-gray-100 text-red-600"
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.stopPropagation();
                               setShowDeleteAlert(true);
                               const item = {
                                 ...showMenu,

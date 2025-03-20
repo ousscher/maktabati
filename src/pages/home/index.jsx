@@ -71,7 +71,7 @@ export default function Hero() {
                     Authorization: `Bearer ${token}`
                 }
             });
-    
+            setTriggerFetch(true);
         } catch (err) {
             console.log("Error creating section:", err.response?.data || err.message);
         }

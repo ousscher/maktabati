@@ -5,13 +5,19 @@ import Link from "next/link";
 import { useState } from "react";
 import { FiX, FiSettings, FiGlobe } from "react-icons/fi"; // Import icons
 import { motion } from "framer-motion";
+import axios from "axios";
 
 
-export default function SearchBar() {
+export default function SearchBar({ sectionId }) {
     const tr = useTranslations("Search");
     const t = useTranslations("Sidebar");
     const router = useRouter();
     const [menu , showMenu] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [searchResults, setSearchResults] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [showResults, setShowResults] = useState(false);
     const { locale, pathname, asPath, query } = router;
     const menuItems = [
         { id: 'home', label: t('home'), path: '/home', icon: '/images/icons/home.svg' },
@@ -32,43 +38,99 @@ export default function SearchBar() {
         localStorage.removeItem('token');
         router.push('/login');
     };
-
+ 
     // Function to toggle between English and French
     const toggleLanguage = () => {
         const newLocale = locale === "en" ? "fr" : "en";
         router.replace({ pathname, query }, asPath, { locale: newLocale });
     };
 
+    const handleSearch = async () => {
+        if (!searchQuery.trim()) return;
+
+        setLoading(true);
+        setError(null);
+        setShowResults(true);
+
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.error("No authentication token found");
+                setError(tr("authError"));
+                setLoading(false);
+                return;
+            }
+
+            const response = await axios.post("/api/search", {
+                query: searchQuery,
+                sectionId: sectionId,
+            }, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            });
+
+            setSearchResults(response.data.files || []);
+        } catch (error) {
+            console.error("Search error:", error.response?.data || error.message);
+            setError(tr("searchError"));
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
     return (
-        <div className="max-md:fixed max-md:bg-white max-md:z-10 top-0 left-0  flex items-center justify-between px-4 py-6 md:py-2 w-full">
+        <div className={sectionId == null ? "max-md:fixed max-md:bg-white max-md:z-10 top-0 left-0  flex items-center justify-between md:justify-end px-4 py-6 md:py-2 w-full" : "max-md:fixed max-md:bg-white max-md:z-10 top-0 left-0  flex items-center justify-between px-4 py-6 md:py-2 w-full"}>
             <button className="md:hidden "
             onClick={()=>showMenu(true)}
             >
                 <Image src="/images/icons/menu.svg" width={26} height={26}/>
             </button>
-            {/* Search Bar */}
-            <div className="relative flex items-center w-56 md:w-[35%] rounded-lg border border-gray-200 p-3">
-                {/* Search Icon */}
-                <Image
-                    src="/images/icons/search.svg"
-                    alt="Search Icon"
-                    width={16}
-                    height={16}
-                    className="absolute left-4 text-gray-400"
-                />
-
-                {/* Search Input */}
+            {/* Search Input */}
+            <div className={sectionId == null ? `hidden` : `relative flex items-center w-56 md:w-[35%] rounded-lg border border-gray-200 p-3`}>
+                <Image src="/images/icons/search.svg" alt="Search Icon" width={16} height={16} className="absolute left-4 text-gray-400" />
                 <input
                     type="text"
                     placeholder={tr("placeholder")}
                     className="w-full bg-transparent border-none pl-10 pr-8 text-gray-500 placeholder-gray-400 text-sm focus:outline-none"
+                    value={searchQuery}
+                    onChange={(e) => {
+                        setSearchQuery(e.target.value);
+                        if (!e.target.value.trim()) {
+                            setShowResults(false); // Clear search results when input is empty
+                        }
+                    }}
+                    onKeyPress={(e) => e.key === "Enter" && handleSearch()}
                 />
-
-                {/* Voice Search Icon */}
-                <button className="absolute right-4 text-gray-500 hover:text-teal-600">
+                <button onClick={handleSearch} className="absolute right-4 text-gray-500 hover:text-teal-600">
                     <Image src="/images/icons/mic.svg" alt="Voice Search" width={18} height={18} />
                 </button>
+                {/* Search Results */}
+                {showResults && (
+                    <div className="absolute top-12 left-0 w-full bg-white shadow-lg rounded-lg p-4 z-50">
+                        {loading ? (
+                            <div className="flex justify-center items-center py-4">
+                                <div className="w-6 h-6 border-4 border-gray-300 border-t-teal-500 rounded-full animate-spin"></div>
+                            </div>
+                        ) : error ? (
+                            <p className="text-red-500">Sorry something went wrong</p>
+                        ) : searchResults.length > 0 ? (
+                            searchResults.map((file) => (
+                                <div key={file.id} className="flex items-center p-2 border-b border-gray-200">
+                                    <Image src="/images/icons/file.svg" alt="File" width={20} height={20} />
+                                    <span className="ml-2 text-gray-700">{file.name}</span>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-gray-500">{tr("noResults")}</p>
+                        )}
+                    </div>
+                )}
             </div>
+
+            
 
             {/* Action Icons */}
             <div className="max-md:hidden flex items-center space-x-4 ml-4">

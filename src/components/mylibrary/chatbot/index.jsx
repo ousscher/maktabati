@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import axios from "axios";
 
 export default function ChatbotSection({ sectionId }) {
     const t = useTranslations("Chatbot");
+    const tr = useTranslations("Library");
     const [isChatting, setIsChatting] = useState(false);
+    const [deleteChatHistory, setDeleteChatHistory] = useState(false);
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
     const [loading, setLoading] = useState(false);
@@ -56,6 +58,59 @@ export default function ChatbotSection({ sectionId }) {
         }
     };
 
+    const deleteChat = async () => {
+        try {
+            const response = await axios.delete(`/api/rag/conversation`, {
+                params: { sectionId },  
+                headers: {
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                    "Content-Type": "application/json"
+                }
+            });
+    
+            if (response.status === 200) {
+                console.log("Chat history deleted successfully");
+                setMessages([]); // Clear the chat in the frontend
+            }
+        } catch (error) {
+            console.error("Error deleting chat history:", error.response?.data || error.message);
+        }
+    };
+
+    useEffect(() => {
+        const fetchMessages = async () => {
+            if (!sectionId) return;
+            try {
+                const response = await axios.post("/api/rag/conversation", {
+                    sectionId: sectionId,
+                    limit: 50,  // Adjust limit if needed
+                }, {
+                    headers: {
+                        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+    
+                console.log("API Response:", response.data); // Debugging
+    
+                // Convert Firestore format to match messages array
+                const formattedMessages = response.data.conversations.map(convo => [
+                    { role: "user", content: convo.query },
+                    { role: "assistant", content: convo.response, sources: convo.sources || [] }
+                ]).flat(); // Flatten array to avoid nested arrays
+    
+                setMessages(formattedMessages);
+            } catch (error) {
+                console.error("Error fetching messages:", error.response?.data || error.message);
+            }
+        };
+    
+        fetchMessages();
+    }, [sectionId]);
+    
+    
+    
+
     return (
         <div className="fixed bottom-0 left-0 w-full h-screen md:h-[640px] md:w-2/3 lg:w-1/3 bg-white shadow-lg md:relative p-4 md:p-6 max-h-screen overflow-hidden transition-transform duration-300 transform">
             {/* Chat Window */}
@@ -67,6 +122,41 @@ export default function ChatbotSection({ sectionId }) {
                         <button className="absolute left-0 p-2 text-gray-700 hover:bg-gray-200 rounded-full" onClick={() => setIsChatting(false)}>
                             <Image src="/images/icons/back.svg" alt="Back" width={24} height={24} />
                         </button>
+                        <button 
+                        className="absolute right-0 p-2 text-gray-700 hover:bg-gray-200 rounded-full" onClick={() => setDeleteChatHistory(true)}>
+                            <Image src="/images/icons/x.png" alt="Back" width={20} height={20} />
+                        </button>
+                        {deleteChatHistory && <div className="fixed inset-0 flex items-center justify-center z-50">
+                            <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                                <h3 className="text-lg font-semibold">
+                                    {tr("deleteConfirmation")}
+                                </h3>
+                                <p className="text-gray-600 mt-2">
+                                    {tr("deleteWarning")}
+                                </p>
+                                <div className="flex justify-end mt-4 space-x-2">
+                                    <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setDeleteChatHistory(null);
+                                    }}
+                                    className="px-4 py-2 text-gray-600 border rounded-md hover:bg-gray-100"
+                                    >
+                                    {tr("cancel")}
+                                    </button>
+                                    <button
+                                        className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            deleteChat();
+                                            setDeleteChatHistory(false);
+                                        }}
+                                    >
+                                        {tr("continue")}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>}
                     </div>
 
                     {/* Messages */}
@@ -78,7 +168,7 @@ export default function ChatbotSection({ sectionId }) {
                                     {/* Show sources if available */}
                                     {msg.sources && msg.sources.length > 0 && (
                                         <div className="mt-1 text-xs text-gray-500">
-                                            {t("sources")}: {msg.sources.join(", ")}
+                                            sources: {msg.sources.join(", ")}
                                         </div>
                                     )}
                                 </div>
