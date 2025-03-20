@@ -23,7 +23,6 @@ export default async function handler(req, res) {
       
       return res.status(200).json({ sections });
     } catch (error) {
-      // Si une erreur a été renvoyée par le middleware, elle a déjà été gérée
       if (res.statusCode === 401) return;
       
     console.error("Error while retrieving sections:", error);
