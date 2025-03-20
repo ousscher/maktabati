@@ -10,6 +10,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@firebase/auth": "^1.9.1",
+    "@firebase/firestore": "^4.7.10",
     "@google/generative-ai": "^0.24.0",
     "@langchain/community": "^0.3.36",
     "@langchain/core": "^0.3.42",
