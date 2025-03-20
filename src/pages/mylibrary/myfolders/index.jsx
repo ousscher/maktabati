@@ -699,6 +699,7 @@ export default function MyFolders() {
                   {currentContent.files.map((file) => (
                     <div
                       key={file.id}
+                      onDoubleClick={() => window.open(file.fileUrl, "_blank")}
                       className="relative flex flex-col items-center p-3 sm:p-4 rounded-lg transition hover:shadow-lg"
                     >
                       {/* Taille d'icône réduite sur mobile */}
@@ -724,19 +725,18 @@ export default function MyFolders() {
                         onClick={async (e) => {
                           e.stopPropagation();
                           try {
-                            console.log(file); 
+                            console.log(file);
                             const data = {
                               ...file,
                               favorite: !file.favorite,
-                            }
+                            };
                             const response = await API.put("/files", {
                               file: data,
                               sectionId: currentPath[0],
                             });
                             refreshLibrary();
-                            
                           } catch (e) {
-                            console.error(e); 
+                            console.error(e);
                           }
                         }}
                         className="absolute top-2 left-2 p-1 hover:bg-gray-200 rounded-full"
