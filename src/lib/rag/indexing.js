@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { processDocument } from './documentLoader';
 import { generateEmbeddings } from './gemini';
-import { storeEmbedding } from './pinecone';
+import { storeEmbedding,storeNameEmbedding } from './pinecone';
 
 /**
  * Index a document file
@@ -80,4 +80,33 @@ async function indexText(text, metadata = {}) {
   }
 }
 
-export { indexDocument, indexText };
+
+/**
+ * Index a text string
+ * @param {string} fileName - file name to index
+ * @param {Object} metadata - Additional metadata for the text
+ * @returns {Promise<Object>} Result of the indexing operation
+ */
+async function indexDocumentName(fileName, metadata = {}) {
+  try {
+    // Generate a unique ID for this text
+    const fileNameID = uuidv4();
+    
+    
+    // Combine metadata
+    const combinedMetadata = {
+      ...metadata,
+      indexedAt: new Date().toISOString()
+    };
+    
+    // Store the embedding in Pinecone
+    const result = await storeNameEmbedding(fileNameID, fileName, combinedMetadata);
+    
+    return true
+  } catch (error) {
+    console.error("Error indexing text:", error);
+    throw new Error(`Failed to index text: ${error.message}`);
+  }
+}
+
+export { indexDocument, indexText, indexDocumentName};

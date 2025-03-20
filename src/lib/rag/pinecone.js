@@ -9,6 +9,7 @@ const pinecone = new Pinecone({
 // Set your index name and namespace
 const INDEX_NAME = 'salam-hack';
 const NAMESPACE = 'ns1';
+const FILENAMES_NAMESPACE = 'salam-hack-file-names';
 const MODEL_NAME = 'llama-text-embed-v2';
 
 /**
@@ -18,6 +19,10 @@ const MODEL_NAME = 'llama-text-embed-v2';
 async function getIndex() {
   return pinecone.index(INDEX_NAME).namespace(NAMESPACE);
 }
+async function getNmaesIndex() {
+  return pinecone.index(FILENAMES_NAMESPACE).namespace(NAMESPACE);
+}
+
 
 /**
  * Store document embeddings using Pinecone's inference service
@@ -95,4 +100,74 @@ async function deleteDocument(documentId) {
   }
 }
 
-export { storeEmbedding, querySimilarDocuments, deleteDocument };
+
+
+/**
+ * Store document embeddings using Pinecone's inference service
+ * @param {string} documentId - Unique identifier for the document
+ * @param {string} fileName - The file's name to embed
+ * @param {Object} metadata - Document metadata
+ * @returns {Promise<Object>} Result of the upsert operation
+ */
+async function storeNameEmbedding(documentId, fineName, metadata) {
+  try {
+    const index = await getNmaesIndex();
+    // Generate embedding using Pinecone Inference
+    const embedding = await pinecone.inference.embed(MODEL_NAME, [fineName], { inputType: 'passage', truncate: 'END' });
+    await index.upsert([
+      {
+        id: documentId,
+        values: embedding.data[0].values,
+        metadata: metadata 
+      }
+    ]);
+    return true;
+  } catch (error) {
+    console.error("Error storing embedding:", error);
+    throw new Error("Failed to store embedding in Pinecone");
+  }
+}
+
+/**
+ * Query Pinecone for similar documents based on multiple name suggestions.
+ * @param {Array<string>} suggestions - Array of suggested filenames
+ * @param {string} sectionId - Section ID for filtering
+ * @param {number} topK - Number of results per query
+ * @returns {Promise<Array<Object>>} Array of similar documents
+ */
+async function querySimilarNames(suggestions, sectionId, topK = 2) {
+  try {
+    const index = await getNmaesIndex();
+    
+    let allMatches = [];
+    
+    for (const suggestion of suggestions) {
+      // Get embedding for the individual suggestion
+      const queryEmbeddings = await pinecone.inference.embed(MODEL_NAME, [suggestion], { inputType: 'query' });
+
+      // Perform query on Pinecone
+      const queryResponse = await index.namespace(NAMESPACE).query({
+        vector: queryEmbeddings.data[0].values,
+        topK: topK,
+        includeValues: false,
+        includeMetadata: true,
+        filter: { "sectionId": sectionId }
+      });
+
+      console.log(`Query response for "${suggestion}":`, queryResponse);
+      // Extracting IDs correctly
+      const matchIds = queryResponse.matches.map(match => match.metadata.fileId);
+
+      // Pushing extracted IDs into allMatches array
+      allMatches.push(...matchIds);
+    }
+
+    return allMatches;
+
+  } catch (error) {
+    console.error("Error querying Pinecone:", error);
+    throw new Error("Failed to query similar documents");
+  }
+}
+
+export { storeEmbedding, querySimilarDocuments, deleteDocument, querySimilarNames, storeNameEmbedding };
