@@ -91,4 +91,24 @@ async function processDocument(filePath) {
   }
 }
 
-export { processDocument };
+/**
+ * Load and process a document file
+ * @param {Array<string>} filesPath - Array of document file paths
+ * @returns {Promise<Array<Object>>} Array of document chunks
+ */
+async function processDocuments(filesPath) {
+  const totalDocs = [];
+  try {
+    for (const filePath of filesPath) {
+      totalDocs.push(await loadDocument(filePath));
+    }
+  } catch (error) {
+    console.error("Error loading document:", error);
+    throw new Error(`Failed to load document: ${error.message}`);
+  }
+  return totalDocs;
+}
+
+export {processDocument , processDocuments}
+
+
