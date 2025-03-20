@@ -150,7 +150,8 @@
         "confirmDeleteFolder" : "Are you sure you want to delete this folder?",
         "confirmDeleteFile" : "Are you sure you want to delete this file?", 
         "emptyTrash":"Empty Trash",
-        "restoreConfirmationMessage": "This action will restore the file to its original location."
+        "restoreConfirmationMessage": "This action will restore the file to its original location.", 
+        "fileDeleted": "File deleted successfully"
     },
     "Search": {
         "placeholder": "Search by lorem ipsum lorem..."

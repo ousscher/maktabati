@@ -8,24 +8,16 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
 import API from "@/utils/api-client";
 import ConfirmationModal from "@/components/myfolders/confirmation";
+import { toast } from "react-toastify";
 
 export default function Recent() {
   const t = useTranslations("Library");
   const tr = useTranslations("Sidebar");
-  const { switchLocale } = useSwitchLang();
   const [sortBy, setSortBy] = useState("name");
   const [currentPage, setCurrentPage] = useState(1);
-  const [foldersPerPage, setFoldersPerPage] = useState(5);
-  const router = useRouter();
-  const { folderName } = router.query;
-  const [isFirstModalOpen, setIsFirstModalOpen] = useState(false);
-  const [isSecondModalOpen, setIsSecondModalOpen] = useState(false);
-  const [newFolderName, setNewFolderName] = useState("");
   const firstModalRef = useRef(null);
   const secondModalRef = useRef(null);
-  const [showChat, setShowChat] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [showMenu, setShowMenu] = useState(null);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -74,6 +66,7 @@ export default function Recent() {
         data,
       });
       setFiles((prevFiles) => prevFiles.filter((f) => f.id !== fileId));
+      toast.success(t("fileDeleted"));
     } catch (error) {
       // console.error(error);
     } finally {
@@ -89,16 +82,6 @@ export default function Recent() {
   const paginatedFiles = files.slice(startIndex, endIndex);
 
   const [isUploading, setIsUploading] = useState(false);
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setIsUploading(true); // Show loading popup
-
-      setTimeout(() => {
-        setIsUploading(false); // Hide loading popup after upload
-      }, 3000);
-    }
-  };
   return (
     <ProtectedLayout>
       {/* Search Bar */}
@@ -142,54 +125,20 @@ export default function Recent() {
                 <option value="name">{t("sortByName")}</option>
                 <option value="date">{t("sortByDate")}</option>
               </select>
-              {/* <button
-                className="p-2 relative"
-                onClick={() => setIsFirstModalOpen(true)}
-              >
-                <Image
-                  src="/images/icons/add.svg"
-                  alt="Grid View"
-                  width={15}
-                  height={15}
-                />
-              </button> */}
-              {/* Step 1: First Modal - "Create a New Section" */}
-              {/* {isFirstModalOpen && (
-                <div
-                  ref={firstModalRef}
-                  className="absolute top-44 right-10 bg-white shadow-lg rounded-md p-4 w-64 border z-50 space-y-2"
-                >
-                  <label
-                    htmlFor="file-upload"
-                    className="w-full flex items-center justify-between px-3 py-2 border rounded-md hover:bg-gray-100"
-                  >
-                    <Image
-                      src="/images/icons/folder-add.svg"
-                      alt="Upload Icon"
-                      width={18}
-                      height={18}
-                    />
-                    <span className="text-sm">{t("uploadNewFile")}</span>
-                    <input
-                      id="file-upload"
-                      type="file"
-                      className="hidden"
-                      onChange={handleFileUpload}
-                    />
-                  </label>
-                </div>
-              )} */}
             </div>
           </div>
 
-          {/* Section des fichiers */}
           <div className="mb-6 sm:mb-8">
             <h3 className="text-base sm:text-lg font-medium text-gray-700 mb-3 sm:mb-4">
               {t("files")}
             </h3>
 
-            {paginatedFiles.length === 0 ? (
-              // État vide pour les fichiers
+            {isLoading ? (
+              <div className="flex flex-col items-center justify-center h-64">
+                <div className="w-16 h-16 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
+                <p className="mt-4 text-gray-600">{t("loading")}</p>
+              </div>
+            ) : paginatedFiles.length === 0 ? (
               <div className="bg-gray-50 rounded-lg p-4 sm:p-6 flex flex-col items-center justify-center">
                 <div className="w-12 h-12 sm:w-16 sm:h-16">
                   <Image
@@ -199,18 +148,11 @@ export default function Recent() {
                     height={64}
                   />
                 </div>
-                <p className="mt-16 sm:mt-8 text-sm sm:text-base text-gray-500 ">
+                <p className="mt-16 sm:mt-8 text-sm sm:text-base text-gray-500">
                   {t("noFilesFound")}
                 </p>
-                {/* <button
-                  onClick={() => setIsFileModalOpen(true)}
-                  className="mt-2 sm:mt-3 px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-teal-500 text-white rounded-md hover:bg-teal-600 transition"
-                >
-                  {t("uploadFile")}
-                </button> */}
               </div>
             ) : (
-              // Grille des fichiers
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {paginatedFiles.map((file) => (
                   <div
@@ -218,7 +160,6 @@ export default function Recent() {
                     onDoubleClick={() => window.open(file.fileUrl, "_blank")}
                     className="relative cursor-pointer flex flex-col items-center p-3 sm:p-4 rounded-lg transition hover:shadow-lg"
                   >
-                    {/* Taille d'icône réduite sur mobile */}
                     <div className="w-12 h-12 sm:w-16 sm:h-16">
                       <Image
                         src="/images/icons/file.svg"
@@ -236,17 +177,13 @@ export default function Recent() {
                       {formatFileSize(file.fileSize)}
                     </p>
 
-                    {/* Bouton favori/étoile */}
+                    {/* Bouton favori */}
                     <button
                       onClick={async (e) => {
                         e.stopPropagation();
                         try {
-                          console.log(file);
-                          const data = {
-                            ...file,
-                            favorite: !file.favorite,
-                          };
-                          const response = await API.put("/files", {
+                          const data = { ...file, favorite: !file.favorite };
+                          await API.put("/files", {
                             file: data,
                             sectionId: file.sectionId,
                           });
@@ -279,6 +216,7 @@ export default function Recent() {
                       />
                     </button>
 
+                    {/* Bouton menu */}
                     <button
                       onClick={() => {
                         const menu = {
@@ -287,9 +225,7 @@ export default function Recent() {
                           display: true,
                           sectionId: file.sectionId,
                         };
-                        setShowMenu(
-                          showMenu && showMenu?.id == file.id ? null : menu
-                        );
+                        setShowMenu(showMenu?.id === file.id ? null : menu);
                       }}
                       className="absolute top-2 right-2 p-1 hover:bg-gray-200 rounded-full"
                     >
@@ -301,6 +237,7 @@ export default function Recent() {
                       />
                     </button>
 
+                    {/* Menu déroulant */}
                     {showMenu?.display && showMenu?.id === file.id && (
                       <div className="absolute top-10 right-2 bg-white shadow-lg rounded-md p-2 border z-50">
                         <button className="flex items-center w-full px-3 py-2 hover:bg-gray-100">
@@ -318,11 +255,7 @@ export default function Recent() {
                           onClick={(e) => {
                             e.stopPropagation();
                             setShowDeleteAlert(true);
-                            const item = {
-                              ...showMenu,
-                              display: false,
-                            };
-                            setShowMenu(item);
+                            setShowMenu({ ...showMenu, display: false });
                           }}
                         >
                           <Image
@@ -358,13 +291,13 @@ export default function Recent() {
                 : t("confirmDeleteFile")
             }
           />
-
-          {/* Pagination Component */}
-          <Pagination
-            totalPages={totalPages}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-          />
+          {!isLoading && files.length > 0 && (
+            <Pagination
+              totalPages={totalPages}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          )}
         </div>
       </div>
     </ProtectedLayout>

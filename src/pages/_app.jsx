@@ -16,7 +16,7 @@ export default function App({ Component, pageProps }) {
         messages={pageProps.messages}
       >
         <Component {...pageProps} />
-        <ToastContainer />
+        <ToastContainer position="top-center" />
       </NextIntlClientProvider>
     </ProfileProvider>
   );
