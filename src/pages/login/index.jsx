@@ -8,8 +8,10 @@ import Image from "next/image";
 import Link from "next/link";
 import GoogleAuthButton from "@/components/GoogleAuthButton";
 import { loginWithEmail } from "@/services/authService";
+import { useProfile } from "@/contexts/ProfileContext"
 
 export default function SignIn() {
+  const { refreshProfile } = useProfile();
   const t = useTranslations("SignIn");
   const { isAuthenticated, setAuthToken } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -50,6 +52,7 @@ export default function SignIn() {
         loginForm.password
       );
       if (response.token) {
+        refreshProfile();
         router.push("/home");
       }
     } catch (err) {
