@@ -12,9 +12,8 @@ async function processAsistanceQuery(filesPath,query) {
   try {
     // Process the document into chunks
     const extractedText = await processDocuments(filesPath);
-    const contexts = extractedText.flat().map(doc => doc.pageContent);
-    console.log("THE Extracted text : ", contexts);
-    const assistedText = await generateAssistedText(contexts,query);
+    console.log("THE Extracted text : ", extractedText);
+    const assistedText = await generateAssistedText(extractedText,query);
     return assistedText;
     
   } catch (error) {
