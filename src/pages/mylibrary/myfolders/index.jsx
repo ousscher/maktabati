@@ -703,8 +703,7 @@ export default function MyFolders() {
             </div>
           </div>
         </div>
-
-        {showChat && <ChatbotSection />}
+        {showChat && <ChatbotSection sectionId={currentPath[0]}/>} 
       </div>
     </ProtectedLayout>
   );

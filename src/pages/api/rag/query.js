@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     const userId = req.user.uid;
     
     const { query, sectionId, useRAG = true, topK = 5, historyLimit = 5 } = req.body;
-    
+    console.log("Passing Section ID:", sectionId);
     if (!query) {
       return res.status(400).json({ error: "Query is required" });
     }
