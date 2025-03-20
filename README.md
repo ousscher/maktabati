@@ -1,4 +1,6 @@
-# ![Maktabati Logo](/images/logo.png)
+<p align="center"> 
+  <img src="./public/images/logo.png" width="200" alt="Maktabati Logo"/>
+</p>
 
 # Maktabati 📚 
 
@@ -36,4 +38,4 @@ Stay connected and follow us on social media:
 - [SOLTANI Mohamed Elamine](https://github.com/soltaniamine)
 - [Akeb AbdelAziz](https://github.com/4zz0u4k)
 - [Cherguelaine Oussama](https://github.com/ousscher)
-- Lamrri Meriem
+- Lamri Meriem
