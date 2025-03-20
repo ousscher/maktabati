@@ -142,7 +142,8 @@
         "totalItems": "Total : {folders} folders and {files} files",
         "createFirstSection": "Create your first section",
         "createSection": "Create a section",
-        "loading":"Loading..."
+        "loading":"Loading...",
+        "createFolder": "Create a folder"
     },
     "Search": {
         "placeholder": "Search by lorem ipsum lorem..."

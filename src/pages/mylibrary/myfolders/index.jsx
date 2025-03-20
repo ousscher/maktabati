@@ -58,7 +58,6 @@ export default function MyFolders() {
     return findFolderName(hierarchy.section.folders, id) || id;
   };
 
-  // File upload states
   const [isFileModalOpen, setIsFileModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -189,9 +188,9 @@ export default function MyFolders() {
   return (
     <ProtectedLayout>
       <SearchBar />
-      <div className="p-6 flex max-md:pt-14">
+      <div className="p-6 flex max-md:pt-14 w-full ">
         <div
-          className={`transition-all duration-500 ${
+          className={`transition-all duration-500 w-full ${
             showChat ? "max-md:hidden md:w-2/3" : "md:w-full "
           }`}
         >
@@ -466,156 +465,243 @@ export default function MyFolders() {
           </div>
 
           {/* Content Grids */}
-          <div className="mb-6 text-sm text-gray-500">
-            <p>
-              {t("totalItems", {
-                folders: hierarchy?.counts.totalFolders,
-                files: hierarchy?.counts.totalFiles,
-              })}
-            </p>
-          </div>
+          <div className="flex flex-col min-h-[600px] w-[100%">
+            {/* Info sur le nombre total d'éléments */}
+            <div className="mb-4 sm:mb-6 text-xs sm:text-sm text-gray-500">
+              <p>
+                {t("totalItems", {
+                  folders: hierarchy?.counts.totalFolders || 0,
+                  files: hierarchy?.counts.totalFiles || 0,
+                })}
+              </p>
+            </div>
 
-          <div
-            className={`grid grid-cols-2 ${
-              showChat ? "md:grid-cols-4" : "md:grid-cols-5"
-            } gap-x-6 gap-y-6 mb-4`}
-          >
-            {paginatedFolders.map((folder) => (
-              <div
-                key={folder.id}
-                className="relative flex flex-col items-center p-4 rounded-lg cursor-pointer transition hover:shadow-lg"
-                onClick={() => setCurrentPath([...currentPath, folder.id])}
-              >
-                <Image
-                  src="/images/icons/folder-large.svg"
-                  alt="Folder"
-                  width={100}
-                  height={100}
-                />
-                <h2 className="text-gray-800 font-medium mt-2">
-                  {folder.name}
-                </h2>
-                <p className="text-gray-500 text-sm">
-                  {folder.files.length} {t("files")}
-                </p>
-                <p className="text-gray-500 text-sm">
-                  {folder.folders.length} {t("folders")}
-                </p>
+            {/* Section des dossiers */}
+            <div className="mb-6 sm:mb-8">
+              <h3 className="text-base sm:text-lg font-medium text-gray-700 mb-3 sm:mb-4">
+                {t("folders")}
+              </h3>
 
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowMenu(folder.id);
-                  }}
-                  className="absolute top-3 right-3 p-1 hover:bg-gray-200 rounded-full"
-                >
-                  <Image
-                    src="/images/icons/threedots.svg"
-                    alt="Menu"
-                    width={20}
-                    height={20}
-                  />
-                </button>
-
-                {showMenu === folder.id && (
-                  <div className="absolute top-10 right-3 bg-white shadow-lg rounded-md p-2 border z-50">
-                    <button className="flex items-center w-full px-3 py-2 hover:bg-gray-100">
-                      <Image
-                        src="/images/icons/download.svg"
-                        alt="Download"
-                        width={16}
-                        height={16}
-                        className="mr-2"
-                      />
-                      {t("download")}
-                    </button>
-                    <button
-                      className="flex items-center w-full px-3 py-2 hover:bg-gray-100 text-red-600"
-                      onClick={() => {
-                        setShowDeleteAlert(true);
-                        setShowMenu(null);
-                      }}
-                    >
-                      <Image
-                        src="/images/icons/trash.svg"
-                        alt="Delete"
-                        width={16}
-                        height={16}
-                        className="mr-2"
-                      />
-                      {t("delete")}
-                    </button>
+              {paginatedFolders.length === 0 ? (
+                <div className="bg-gray-50 rounded-lg p-4 sm:p-6 flex flex-col items-center justify-center">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16">
+                    <Image
+                      src="/images/icons/folder-large.svg"
+                      alt="No Folders"
+                      width={64}
+                      height={64}
+                      className="w-full h-full"
+                    />
                   </div>
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* Files Section */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {currentContent.files.map((file) => (
-              <div
-                key={file.id}
-                className="relative flex flex-col items-center p-4 rounded-lg transition hover:shadow-lg"
-              >
-                <Image
-                  src="/images/icons/file.svg"
-                  alt="File"
-                  width={80}
-                  height={80}
-                />
-                <h2 className="text-gray-800 font-medium mt-2 truncate max-w-full">
-                  {file.name}
-                </h2>
-                <p className="text-gray-500 text-sm">
-                  {file.fileType?.toUpperCase()} •{" "}
-                  {formatFileSize(file.fileSize)}
-                </p>
-
-                <button
-                  onClick={() => setShowMenu(file.id)}
-                  className="absolute top-2 right-2 p-1 hover:bg-gray-200 rounded-full"
+                  <p className="mt-3 sm:mt-4 text-sm sm:text-base text-gray-500">
+                    {t("noFoldersFound")}
+                  </p>
+                  <button
+                    onClick={() => setIsSecondModalOpen(true)}
+                    className="mt-2 sm:mt-3 px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-teal-500 text-white rounded-md hover:bg-teal-600 transition"
+                  >
+                    {t("createFolder")}
+                  </button>
+                </div>
+              ) : (
+                // Grille des dossiers
+                <div
+                  className={`grid grid-cols-1 sm:grid-cols-2 ${
+                    showChat
+                      ? "md:grid-cols-3 lg:grid-cols-4"
+                      : "md:grid-cols-4 lg:grid-cols-5"
+                  } gap-x-4 gap-y-4 sm:gap-x-6 sm:gap-y-6 mb-4`}
                 >
-                  <Image
-                    src="/images/icons/threedots.svg"
-                    alt="Menu"
-                    width={20}
-                    height={20}
-                  />
-                </button>
-
-                {showMenu === file.id && (
-                  <div className="absolute top-10 right-2 bg-white shadow-lg rounded-md p-2 border z-50">
-                    <button className="flex items-center w-full px-3 py-2 hover:bg-gray-100">
-                      <Image
-                        src="/images/icons/download.svg"
-                        alt="Download"
-                        width={16}
-                        height={16}
-                        className="mr-2"
-                      />
-                      {t("download")}
-                    </button>
-                    <button
-                      className="flex items-center w-full px-3 py-2 hover:bg-gray-100 text-red-600"
-                      onClick={() => deleteFile(file.id)}
+                  {paginatedFolders.map((folder) => (
+                    <div
+                      key={folder.id}
+                      className="relative flex flex-col items-center p-3 sm:p-4 rounded-lg cursor-pointer transition hover:shadow-lg"
                     >
-                      <Image
-                        src="/images/icons/trash.svg"
-                        alt="Delete"
-                        width={16}
-                        height={16}
-                        className="mr-2"
-                      />
-                      {t("delete")}
-                    </button>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+                      {/* Taille d'icône responsive */}
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24">
+                        <Image
+                          src="/images/icons/folder-large.svg"
+                          alt="Folder"
+                          width={100}
+                          height={100}
+                          className="w-full h-full"
+                        />
+                      </div>
 
-          <Pagination {...{ totalPages, currentPage, setCurrentPage }} />
+                      <h2 className="text-sm sm:text-base text-gray-800 font-medium mt-1 sm:mt-2 text-center">
+                        {folder.name}
+                      </h2>
+                      <p className="text-xs sm:text-sm text-gray-500">
+                        {folder.files.length} {t("files")}
+                      </p>
+                      <p className="text-xs sm:text-sm text-gray-500">
+                        {folder.folders.length} {t("folders")}
+                      </p>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowMenu(folder.id);
+                        }}
+                        className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1 hover:bg-gray-200 rounded-full"
+                      >
+                        <div className="w-5 h-5">
+                          <Image
+                            src="/images/icons/threedots.svg"
+                            alt="Menu"
+                            width={20}
+                            height={20}
+                            className="w-full h-full"
+                          />
+                        </div>
+                      </button>
+
+                      {showMenu === folder.id && (
+                        <div className="absolute top-10 right-3 bg-white shadow-lg rounded-md p-2 border z-50">
+                          <button className="flex items-center w-full px-3 py-2 hover:bg-gray-100">
+                            <Image
+                              src="/images/icons/download.svg"
+                              alt="Download"
+                              width={16}
+                              height={16}
+                              className="mr-2"
+                            />
+                            {t("download")}
+                          </button>
+                          <button
+                            className="flex items-center w-full px-3 py-2 hover:bg-gray-100 text-red-600"
+                            onClick={() => {
+                              setShowDeleteAlert(true);
+                              setShowMenu(null);
+                            }}
+                          >
+                            <Image
+                              src="/images/icons/trash.svg"
+                              alt="Delete"
+                              width={16}
+                              height={16}
+                              className="mr-2"
+                            />
+                            {t("delete")}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Section des fichiers */}
+            <div className="mb-6 sm:mb-8">
+              <h3 className="text-base sm:text-lg font-medium text-gray-700 mb-3 sm:mb-4">
+                {t("files")}
+              </h3>
+
+              {currentContent.files.length === 0 ? (
+                // État vide pour les fichiers
+                <div className="bg-gray-50 rounded-lg p-4 sm:p-6 flex flex-col items-center justify-center">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16">
+                    <Image
+                      src="/images/icons/file.svg"
+                      alt="No Files"
+                      width={64}
+                      height={64}
+                    />
+                  </div>
+                  <p className="mt-8 sm:mt-4 text-sm sm:text-base text-gray-500 ">
+                    {t("noFilesFound")}
+                  </p>
+                  <button
+                    onClick={() => setIsFileModalOpen(true)}
+                    className="mt-2 sm:mt-3 px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-teal-500 text-white rounded-md hover:bg-teal-600 transition"
+                  >
+                    {t("uploadFile")}
+                  </button>
+                </div>
+              ) : (
+                // Grille des fichiers
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {currentContent.files.map((file) => (
+                    <div
+                      key={file.id}
+                      className="relative flex flex-col items-center p-3 sm:p-4 rounded-lg transition hover:shadow-lg"
+                    >
+                      {/* Taille d'icône réduite sur mobile */}
+                      <div className="w-12 h-12 sm:w-16 sm:h-16">
+                        <Image
+                          src="/images/icons/file.svg"
+                          alt="File"
+                          width={80}
+                          height={80}
+                          className="w-full h-full"
+                        />
+                      </div>
+                      <h2 className="text-sm sm:text-base text-gray-800 font-medium mt-1 sm:mt-2 truncate max-w-[90%]">
+                        {file.name}
+                      </h2>
+                      <p className="text-gray-500 text-sm">
+                        {file.fileType?.toUpperCase()} •{" "}
+                        {formatFileSize(file.fileSize)}
+                      </p>
+
+                      <button
+                        onClick={() => setShowMenu(file.id)}
+                        className="absolute top-2 right-2 p-1 hover:bg-gray-200 rounded-full"
+                      >
+                        <Image
+                          src="/images/icons/threedots.svg"
+                          alt="Menu"
+                          width={20}
+                          height={20}
+                        />
+                      </button>
+
+                      {showMenu === file.id && (
+                        <div className="absolute top-10 right-2 bg-white shadow-lg rounded-md p-2 border z-50">
+                          <button className="flex items-center w-full px-3 py-2 hover:bg-gray-100">
+                            <Image
+                              src="/images/icons/download.svg"
+                              alt="Download"
+                              width={16}
+                              height={16}
+                              className="mr-2"
+                            />
+                            {t("download")}
+                          </button>
+                          <button
+                            className="flex items-center w-full px-3 py-2 hover:bg-gray-100 text-red-600"
+                            onClick={() => deleteFile(file.id)}
+                          >
+                            <Image
+                              src="/images/icons/trash.svg"
+                              alt="Delete"
+                              width={16}
+                              height={16}
+                              className="mr-2"
+                            />
+                            {t("delete")}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Pagination toujours en bas */}
+            <div className="mt-auto pt-4">
+              {(paginatedFolders.length > 0 ||
+                currentContent.files.length > 0) && (
+                <Pagination
+                  totalPages={totalPages}
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
+                />
+              )}
+            </div>
+          </div>
         </div>
 
         {showChat && <ChatbotSection />}
@@ -624,7 +710,6 @@ export default function MyFolders() {
   );
 }
 
-// Helper functions
 function formatFileSize(bytes) {
   if (bytes < 1024) return bytes + " B";
   if (bytes < 1048576) return (bytes / 1024).toFixed(1) + " KB";

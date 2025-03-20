@@ -141,7 +141,8 @@
         "totalItems": "Total :  {folders} dossiers et {files} fichiers",
         "createFirstSection": "Créez votre première section pour commencer.",
         "createSection": "Créer une section",
-        "loading":"Chargement..."
+        "loading":"Chargement...",
+        "createFolder": "Créer un dossier"
 
     },
     "Search": {
