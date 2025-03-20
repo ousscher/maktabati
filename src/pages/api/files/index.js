@@ -157,6 +157,9 @@ export default async function handler(req, res) {
       }
 
       // Update data
+      if (file.createdAt){
+        delete file.createdAt;
+      }
       const updateData = {
         ...file,
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),

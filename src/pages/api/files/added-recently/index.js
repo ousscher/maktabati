@@ -8,6 +8,10 @@ export default async function handler(req, res) {
 
     if (req.method === "GET") {
       try {
+        const twoDaysAgo = admin.firestore.Timestamp.fromDate(
+          new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
+        );
+
         const sectionsSnapshot = await db
           .collection("users")
           .doc(userId)
@@ -15,7 +19,7 @@ export default async function handler(req, res) {
           .get();
 
         let allStarredFiles = [];
-        console.log("allStarredFiles", allStarredFiles);
+        console.log("date", twoDaysAgo);
 
         for (const sectionDoc of sectionsSnapshot.docs) {
           const sectionId = sectionDoc.id;
@@ -26,7 +30,7 @@ export default async function handler(req, res) {
             .collection("sections")
             .doc(sectionId)
             .collection("files")
-            .where("favorite", "==", true)
+            .where("createdAt", ">=", twoDaysAgo)
             .get();
 
           filesSnapshot.forEach((fileDoc) => {
@@ -37,6 +41,7 @@ export default async function handler(req, res) {
             });
           });
         }
+
         return res.status(200).json({ files: allStarredFiles });
       } catch (error) {
         return res.status(500).json({ error: error.message });

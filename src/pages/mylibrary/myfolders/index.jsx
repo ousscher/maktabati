@@ -819,7 +819,6 @@ export default function MyFolders() {
               )}
             </div>
 
-            {/* Pagination toujours en bas */}
             <div className="mt-auto pt-4">
               {(paginatedFolders.length > 0 ||
                 currentContent.files.length > 0) && (
