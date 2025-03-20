@@ -142,8 +142,9 @@
         "createFirstSection": "Créez votre première section pour commencer.",
         "createSection": "Créer une section",
         "loading":"Chargement...",
-        "createFolder": "Créer un dossier"
-
+        "createFolder": "Créer un dossier",
+        "confirmDeleteFolder" : "Êtes-vous sûr de vouloir supprimer ce dossier?",
+        "confirmDeleteFile" : "Êtes-vous sûr de vouloir supprimer ce fichier?"
     },
     "Search": {
         "placeholder": "Rechercher par lorem ipsum lorem..."
