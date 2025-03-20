@@ -143,7 +143,11 @@
         "createFirstSection": "Create your first section",
         "createSection": "Create a section",
         "loading":"Loading...",
-        "createFolder": "Create a folder"
+        "createFolder": "Create a folder", 
+        "confirmDeleteFolder" : "Are you sure you want to delete this folder?",
+        "confirmDeleteFile" : "Are you sure you want to delete this file?", 
+        "emptyTrash":"Empty Trash",
+        "restoreConfirmationMessage": "This action will restore the file to its original location."
     },
     "Search": {
         "placeholder": "Search by lorem ipsum lorem..."
@@ -344,5 +348,8 @@
         "passwordChanged":"Password changed successfully!",
         "errorChangingPassword":"An error occurred while changing the password",
         "loading": "Loading..."
+    }, 
+    "trash":{
+        "emptyTrash": "Empty Trash"
     }
 }

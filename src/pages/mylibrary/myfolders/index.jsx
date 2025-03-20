@@ -9,6 +9,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { useLibraryStore } from "@/store/libraryStore";
 import API from "@/utils/api-client";
+import ConfirmationModal from "@/components/myfolders/confirmation";
 
 export default function MyFolders() {
   const router = useRouter();
@@ -153,6 +154,25 @@ export default function MyFolders() {
     }
   };
 
+  const deleteFile = async (fileId) => {
+    try {
+      const data = {
+        sectionId: currentPath[0],
+        fileId: fileId,
+        confirmation: false,
+      };
+      await API.delete(`/files`, {
+        data,
+      });
+      await refreshLibrary();
+    } catch (error) {
+      // console.error(error);
+    } finally {
+      setShowMenu(null);
+      setShowDeleteAlert(false);
+    }
+  };
+
   // Folder creation
   const createFolder = async () => {
     if (!newFolderName.trim() || folderExists) return;
@@ -177,8 +197,42 @@ export default function MyFolders() {
     }
   };
 
-  // Responsive design elements from amine
+  const deleteFolder = async (folderId) => {
+    try {
+      const data = {
+        sectionId: currentPath[0],
+        folderId: folderId,
+        confirmation: false,
+      };
+      await API.delete("/folders", { data });
+      await refreshLibrary();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setShowMenu(null);
+      setShowDeleteAlert(false);
+    }
+  };
+
   const currentContent = getCurrentFolderContent();
+  const handleFolderClick = (folderId) => {
+    // Add the folder ID to the current path
+    setCurrentPath([...currentPath, folderId]);
+  };
+  const navigateBack = () => {
+    if (currentPath.length > 1) {
+      setCurrentPath(currentPath.slice(0, -1));
+    } else {
+      router.push("/mylibrary");
+    }
+  };
+
+  const navigateToPathLevel = (index) => {
+    if (index === currentPath.length - 1) return;
+    const newPath = currentPath.slice(0, index + 1);
+    setCurrentPath(newPath);
+  };
+
   const totalPages = Math.ceil(currentContent.folders.length / foldersPerPage);
   const paginatedFolders = currentContent.folders.slice(
     (currentPage - 1) * foldersPerPage,
@@ -515,6 +569,8 @@ export default function MyFolders() {
                   {paginatedFolders.map((folder) => (
                     <div
                       key={folder.id}
+                      onClick={() => handleFolderClick(folder.id)}
+                      onDoubleClick={() => handleFolderClick(folder.id)}
                       className="relative flex flex-col items-center p-3 sm:p-4 rounded-lg cursor-pointer transition hover:shadow-lg"
                     >
                       {/* Taille d'icône responsive */}
@@ -541,7 +597,14 @@ export default function MyFolders() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          setShowMenu(folder.id);
+                          const item = {
+                            id: folder.id,
+                            type: "folder",
+                            display: true,
+                          };
+                          setShowMenu(
+                            showMenu && showMenu?.id === folder.id ? null : item
+                          );
                         }}
                         className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1 hover:bg-gray-200 rounded-full"
                       >
@@ -556,7 +619,7 @@ export default function MyFolders() {
                         </div>
                       </button>
 
-                      {showMenu === folder.id && (
+                      {showMenu?.display && showMenu?.id === folder.id && (
                         <div className="absolute top-10 right-3 bg-white shadow-lg rounded-md p-2 border z-50">
                           <button className="flex items-center w-full px-3 py-2 hover:bg-gray-100">
                             <Image
@@ -572,7 +635,11 @@ export default function MyFolders() {
                             className="flex items-center w-full px-3 py-2 hover:bg-gray-100 text-red-600"
                             onClick={() => {
                               setShowDeleteAlert(true);
-                              setShowMenu(null);
+                              const item = {
+                                ...showMenu,
+                                display: false,
+                              };
+                              setShowMenu(item);
                             }}
                           >
                             <Image
@@ -646,7 +713,16 @@ export default function MyFolders() {
                       </p>
 
                       <button
-                        onClick={() => setShowMenu(file.id)}
+                        onClick={() => {
+                          const menu = {
+                            id: file.id,
+                            type: "file",
+                            display: true,
+                          };
+                          setShowMenu(
+                            showMenu && showMenu?.id == file.id ? null : menu
+                          );
+                        }}
                         className="absolute top-2 right-2 p-1 hover:bg-gray-200 rounded-full"
                       >
                         <Image
@@ -657,7 +733,7 @@ export default function MyFolders() {
                         />
                       </button>
 
-                      {showMenu === file.id && (
+                      {showMenu?.display && showMenu?.id === file.id && (
                         <div className="absolute top-10 right-2 bg-white shadow-lg rounded-md p-2 border z-50">
                           <button className="flex items-center w-full px-3 py-2 hover:bg-gray-100">
                             <Image
@@ -671,7 +747,14 @@ export default function MyFolders() {
                           </button>
                           <button
                             className="flex items-center w-full px-3 py-2 hover:bg-gray-100 text-red-600"
-                            onClick={() => deleteFile(file.id)}
+                            onClick={() => {
+                              setShowDeleteAlert(true);
+                              const item = {
+                                ...showMenu,
+                                display: false,
+                              };
+                              setShowMenu(item);
+                            }}
                           >
                             <Image
                               src="/images/icons/trash.svg"
@@ -703,6 +786,23 @@ export default function MyFolders() {
             </div>
           </div>
         </div>
+        <ConfirmationModal
+          isOpen={showDeleteAlert}
+          onClose={() => setShowDeleteAlert(false)}
+          onConfirm={() => {
+            if (showMenu?.type === "folder") {
+              deleteFolder(showMenu.id);
+            } else {
+              deleteFile(showMenu.id);
+            }
+          }}
+          message={
+            showMenu?.type === "folder"
+              ? t("confirmDeleteFolder")
+              : t("confirmDeleteFile")
+          }
+        />
+
         {showChat && <ChatbotSection sectionId={currentPath[0]}/>} 
       </div>
     </ProtectedLayout>

@@ -4,7 +4,7 @@ import fs from "fs";
 import axios from "axios";
 // import formidable from 'formidable';
 import { Readable } from "stream";
-import { indexDocument } from "@/lib/rag/indexing";
+import { indexDocument, indexDocumentName} from "@/lib/rag/indexing";
 import FormData from "form-data";
 const formidable = require("formidable");
 
@@ -135,10 +135,11 @@ export default async function handler(req, res) {
 
 
 
-    // Upserting to Pinecone
+    // Upserting document content & name to Pinecone
     const vectdb_metadata = {
       userId,
       sectionId,
+      fileId : fileRef.id,
       documentId: `doc_${Date.now()}`,
       documentName: file ? file.originalFilename : (fields.title || "Text Document"),
       documentType: file ? file.mimetype : "text/plain",
@@ -146,16 +147,17 @@ export default async function handler(req, res) {
     };
 
     await indexDocument(file.filepath, vectdb_metadata);
+    await indexDocumentName(vectdb_metadata.documentName,vectdb_metadata)
 
-      // Nettoyage du fichier temporaire
-      fs.unlinkSync(file.filepath);
+    // Nettoyage du fichier temporaire
+    fs.unlinkSync(file.filepath);
     return res.status(201).json({
       id: fileRef.id,
       name: file.originalFilename || file.newFilename,
       fileUrl: fileUrl,
       fileType: file.mimetype,
       fileSize: file.size,
-      folderId: folderId,
+      parentId: folderId,
       message: "File uploaded successfully",
     });
   } catch (error) {

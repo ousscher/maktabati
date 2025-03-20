@@ -111,3 +111,13 @@ Content-Type: application/json
     "sectionId" : "TS3pRA3xJ9iuSLNa3xXe",
     "limit" : 10 
 }
+
+### Natural Language Search
+POST http://localhost:3000/api/serach
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "query" : "the book about the scicilian openining",
+    "sectionId" : "PMRAwS0mTdlVUn0NSbU3"
+}

@@ -73,4 +73,37 @@ async function generateEmbeddings(text) {
   }
 }
 
-export { generateResponse, generateEmbeddings };
+
+/**
+ * Generate filename suggestions using the Gemini model
+ * @param {string} query - The search query describing the document
+ * @returns {Promise<Array<string>>} Suggested filenames
+ */
+async function generateFilenameSuggestions(query) {
+  try {
+    const chatSession = model.startChat({
+      generationConfig,
+      history: [],
+    });
+
+    const fullPrompt = `Generate concise and relevant filenames based on the following document description: "${query}". Provide 3-5 filename suggestions in a list format.`;
+    
+    // Send prompt to chat model
+    const result = await chatSession.sendMessage(fullPrompt);
+    const responseText = result.response.text();
+    
+    // Extract filenames from the response
+    const filenames = responseText
+      .split("\n")
+      .map(line => line.trim().replace(/^[-*]\s*/, "")) // Remove list markers
+      .filter(line => line.length > 0); // Ensure no empty lines
+
+    return filenames;
+  } catch (error) {
+    console.error("Error generating filename suggestions:", error);
+    throw new Error("Failed to generate filename suggestions from Gemini API");
+  }
+}
+
+
+export { generateResponse, generateEmbeddings, generateFilenameSuggestions };
