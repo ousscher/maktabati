@@ -16,7 +16,7 @@ export default function Library() {
   const [deleteSection, setDeleteSection] = useState(null);
   const [menuSection, setMenuSection] = useState(null);
   const { switchLocale } = useSwitchLang();
-  const [sortBy, setSortBy] = useState("name");
+  const [sortBy, setSortBy] = useState("Name");
   const sectionsPerPage = 12;
   const [currentPage, setCurrentPage] = useState(1);
   const [Form, setForm] = useState({
@@ -139,8 +139,8 @@ export default function Library() {
 
   // Sorting and pagination
   const sortedSections = [...sections].sort((a, b) => {
-    if (sortBy === "name") return a.name.localeCompare(b.name);
-    if (sortBy === "date") return new Date(a.createdAt) - new Date(b.createdAt);
+    if (sortBy === "Name") return a.name.localeCompare(b.name);
+    if (sortBy === "Date") return new Date(a.createdAt) - new Date(b.createdAt);
     return 0;
   });
 
@@ -186,8 +186,8 @@ export default function Library() {
               onChange={(e) => setSortBy(e.target.value)}
               className="bg-gray-100 text-gray-700 text-xs px-2 py-1 md:text-sm md:py-2 md:px-5 rounded-md focus:ring-2 focus:ring-teal-500 outline-none"
             >
-              <option value="name">{t("sortByName")}</option>
-              <option value="date">{t("sortByDate")}</option>
+              <option value="Name">{t("sortByName")}</option>
+              <option value="Date">{t("sortByDate")}</option>
             </select>
 
             <button
