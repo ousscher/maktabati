@@ -803,7 +803,7 @@ export default function MyFolders() {
           }
         />
 
-        {showChat && <ChatbotSection />}
+        {showChat && <ChatbotSection sectionId={currentPath[0]}/>} 
       </div>
     </ProtectedLayout>
   );

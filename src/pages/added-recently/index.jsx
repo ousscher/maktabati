@@ -82,7 +82,7 @@ export default function Recent() {
             {/* Search Bar */}
             <SearchBar />
             <div className="p-6 flex max-md:pt-14">
-                <div className={`transition-all duration-500 ${showChat ? "w-2/3" : "w-full"}`}>
+                <div className={`transition-all duration-500 w-full`}>
                     
 
                     {/* Header Section */}
@@ -95,13 +95,6 @@ export default function Recent() {
 
                         {/* Right Side - Sorting & View Options */}
                         <div className="flex items-center md:space-x-4">
-                            {/* AI Assistant Button */}
-                            <button className="p-2" onClick={() => {
-                                setShowChat(!showChat);
-                                setFoldersPerPage(8);
-                            }}>
-                                <Image src="/images/icons/ai-assistant.svg" alt="AI Assistant" width={20} height={20} />
-                            </button>
 
                             {/* Grid View Button */}
                             <button className="p-2">
@@ -221,7 +214,7 @@ export default function Recent() {
                     </div>
                 
                     {/* Files Grid */}
-                    <div className={`grid grid-cols-2 ${showChat ? 'md:grid-cols-4' : 'md:grid-cols-5'} gap-x-8 gap-y-8 mb-4`}>
+                    <div className={`grid grid-cols-2 md:grid-cols-5 gap-x-8 gap-y-8 mb-4`}>
                         {paginatedFiles.map((file, index) => (
                             <div key={index} className="relative flex flex-col items-center text-center p-4 rounded-lg cursor-pointer transition hover:shadow-lg">
                                 <Image src={file.icon} alt={t("fileIconAlt")} width={80} height={80} />
@@ -291,9 +284,7 @@ export default function Recent() {
                         setCurrentPage={setCurrentPage}
                     />
                     </div>
-                {showChat && (
-                    <ChatbotSection/>
-                )}
+                
             </div>
         </ProtectedLayout>
     );
