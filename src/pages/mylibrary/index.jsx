@@ -342,7 +342,7 @@ export default function Library() {
                           {section.name}
                         </h2>
                         <p className="text-gray-500">
-                          {section.folders || `XX ${t("folders")}`}
+                          {section.folders || `----`}
                         </p>
                       </div>
                     </div>

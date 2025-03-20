@@ -627,7 +627,7 @@ export default function MyFolders() {
 
                       {showMenu?.display && showMenu?.id === folder.id && (
                         <div className="absolute top-10 right-3 bg-white shadow-lg rounded-md p-2 border z-50">
-                          <button className="flex items-center w-full px-3 py-2 hover:bg-gray-100">
+                          {/* <button className="flex items-center w-full px-3 py-2 hover:bg-gray-100">
                             <Image
                               src="/images/icons/download.svg"
                               alt="Download"
@@ -636,7 +636,7 @@ export default function MyFolders() {
                               className="mr-2"
                             />
                             {t("download")}
-                          </button>
+                          </button> */}
                           <button
                             className="flex items-center w-full px-3 py-2 hover:bg-gray-100 text-red-600"
                             onClick={(e) => {
@@ -780,7 +780,19 @@ export default function MyFolders() {
 
                       {showMenu?.display && showMenu?.id === file.id && (
                         <div className="absolute top-10 right-2 bg-white shadow-lg rounded-md p-2 border z-50">
-                          <button className="flex items-center w-full px-3 py-2 hover:bg-gray-100">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const link = document.createElement("a");
+                              link.href = file.fileUrl;
+                              link.download = file.name;
+                              document.body.appendChild(link);
+                              link.click();
+                              document.body.removeChild(link);
+                              setShowMenu(null);
+                            }}
+                            className="flex items-center w-full px-3 py-2 hover:bg-gray-100"
+                          >
                             <Image
                               src="/images/icons/download.svg"
                               alt="Download"

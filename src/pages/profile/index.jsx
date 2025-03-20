@@ -7,11 +7,15 @@ import { useRouter } from "next/router";
 import { FiX, FiSettings, FiGlobe } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { useProfile } from "@/contexts/ProfileContext";
+import axios from "axios";
+import FormData from "form-data";
+
 
 export default function Profile() {
   const router = useRouter();
   const { locale, pathname, asPath, query } = router;
   const { profile, isLoading, error, updateProfile } = useProfile();
+  const [tempProfileImage, setTempProfileImage] = useState(null);
   const [loaded, setLoaded] = useState(true);
 
   const toggleLanguage = () => {
@@ -31,6 +35,7 @@ export default function Profile() {
         name: profile.name,
         occupation: profile.occupation,
         email: profile.email,
+        profileImage: profile?.profileImage,
       });
     }
   }, [profile]);
@@ -42,6 +47,52 @@ export default function Profile() {
       [name]: value,
     });
   };
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Afficher l'image sélectionnée temporairement
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setTempProfileImage(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSave = async () => {
+    if (tempProfileImage) {
+      try {
+        // 1. Upload de l'image
+        const formData = new FormData();
+        formData.append("image", dataURItoBlob(tempProfileImage));
+        const uploadResponse = await fetch("/api/upload-image", {
+          method: "POST",
+          body: formData,
+        });
+        const { imageUrl } = await uploadResponse.json();
+
+        // 2. Mise à jour du profil avec la nouvelle URL d'image
+        const updateResponse = await fetch("/api/update-profile", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...updatedProfileData,
+            profileImage: imageUrl,
+          }),
+        });
+
+        // Sortir du mode édition après la sauvegarde
+        setEditMode(false);
+      } catch (error) {
+        console.error("Error saving profile:", error);
+      }
+    } else {
+      // Si aucune nouvelle image n'a été choisie, mettre à jour juste les autres données
+      // ... le reste de votre code de sauvegarde
+    }
+  };
 
   const handleSaveChanges = async () => {
     setLoaded(false);
@@ -49,8 +100,9 @@ export default function Profile() {
       await updateProfile(formData);
       setEditMode(false);
     } catch (error) {
+      alert("error");
       console.error("Erreur lors de la sauvegarde:", error);
-    }finally{
+    } finally {
       setLoaded(true);
     }
   };
@@ -193,13 +245,54 @@ export default function Profile() {
       <section className="p-6">
         <div className="md:flex justify-between items-center my-8 rounded-lg">
           <div className="flex items-center space-x-4">
-            <Image
-              src={profile?.profileImage ?? "/images/profile.jpg"}
-              alt={profile?.name}
-              width={80}
-              height={80}
-              className="rounded-full"
-            />
+            {editMode ? (
+              <div className="relative">
+                <Image
+                  src={
+                    tempProfileImage ||
+                    profile?.profileImage ||
+                    "/images/profile.jpg"
+                  }
+                  alt={profile?.name}
+                  width={80}
+                  height={80}
+                  className="rounded-full"
+                />
+                <input
+                  type="file"
+                  id="profileImageUpload"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageChange}
+                />
+                <label
+                  htmlFor="profileImageUpload"
+                  className="absolute bottom-0 right-0 bg-blue-500 text-white p-1 rounded-full cursor-pointer hover:bg-blue-600"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M16 16v1a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2m5.66 0H14a2 2 0 0 1 2 2v3.34l1 1L23 7v10"></path>
+                  </svg>
+                </label>
+              </div>
+            ) : (
+              <Image
+                src={profile?.profileImage ?? "/images/profile.jpg"}
+                alt={profile?.name}
+                width={80}
+                height={80}
+                className="rounded-full"
+              />
+            )}
             <div>
               <h1 className="text-xl font-semibold">{profile?.name}</h1>
               <p className="text-gray-600">{profile?.email}</p>
@@ -215,7 +308,7 @@ export default function Profile() {
               </button>
             )}
             <button
-            disabled={!loaded}
+              disabled={!loaded}
               onClick={() => {
                 if (editMode) {
                   handleSaveChanges();
@@ -225,7 +318,11 @@ export default function Profile() {
               }}
               className="bg-teal-600 disabled:bg-teal-400 text-white px-6 p-2 rounded-full"
             >
-              {!loaded ? t("loading") : editMode === false ? t("edit") : t("saveChanges")}
+              {!loaded
+                ? t("loading")
+                : editMode === false
+                ? t("edit")
+                : t("saveChanges")}
             </button>
             {editMode && (
               <button
@@ -417,6 +514,18 @@ export default function Profile() {
       )}
     </ProtectedLayout>
   );
+}
+function dataURItoBlob(dataURI) {
+  const byteString = atob(dataURI.split(",")[1]);
+  const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
+  const ab = new ArrayBuffer(byteString.length);
+  const ia = new Uint8Array(ab);
+
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+
+  return new Blob([ab], { type: mimeString });
 }
 
 export async function getStaticProps(context) {
