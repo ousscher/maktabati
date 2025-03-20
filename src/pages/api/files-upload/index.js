@@ -155,7 +155,7 @@ export default async function handler(req, res) {
       fileUrl: fileUrl,
       fileType: file.mimetype,
       fileSize: file.size,
-      folderId: folderId,
+      parentId: folderId,
       message: "File uploaded successfully",
     });
   } catch (error) {

@@ -161,7 +161,7 @@ export default async function handler(req, res) {
           .collection("sections")
           .doc(sectionId)
           .collection("files")
-          .where("folderId", "==", folderId);
+          .where("parentId", "==", folderId);
 
         const filesSnapshot = await filesQuery.get();
 
@@ -181,7 +181,22 @@ export default async function handler(req, res) {
       } else {
         // Marquer le dossier comme supprimé (soft delete)
         await folderRef.update({ deleted: true });
+        const filesQuery = db
+          .collection("users")
+          .doc(userId)
+          .collection("sections")
+          .doc(sectionId)
+          .collection("files")
+          .where("parentId", "==", folderId);
 
+        const filesSnapshot = await filesQuery.get();
+
+        // Supprimer tous les fichiers appartenant au dossier
+        const batch = db.batch();
+        filesSnapshot.forEach((doc) => {
+          batch.update(doc.ref, { deleted: true });
+        });
+        await batch.commit();
         return res.status(200).json({
           message: "Folder marked as deleted",
         });

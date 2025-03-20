@@ -144,7 +144,9 @@
         "loading":"Chargement...",
         "createFolder": "Créer un dossier",
         "confirmDeleteFolder" : "Êtes-vous sûr de vouloir supprimer ce dossier?",
-        "confirmDeleteFile" : "Êtes-vous sûr de vouloir supprimer ce fichier?"
+        "confirmDeleteFile" : "Êtes-vous sûr de vouloir supprimer ce fichier?",
+        "emptyTrash":"Corbeille vide",
+        "restoreConfirmationMessage": "Ce fichier sera restauré dans votre bibliothèque."
     },
     "Search": {
         "placeholder": "Rechercher par lorem ipsum lorem..."
@@ -346,5 +348,8 @@
         "passwordChanged":"Mot de passe changé avec succès",
         "errorChangingPassword":"Erreur lors du changement de mot de passe",
         "loading": "Chargement..."
+    },
+    "trash":{
+        "emptyTrash": "Corbeille vide"
     }
 }

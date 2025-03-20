@@ -161,8 +161,8 @@ export default function MyFolders() {
         fileId: fileId,
         confirmation: false,
       };
-      await API.delete(`/files`,{
-        data
+      await API.delete(`/files`, {
+        data,
       });
       await refreshLibrary();
     } catch (error) {
@@ -204,7 +204,7 @@ export default function MyFolders() {
         folderId: folderId,
         confirmation: false,
       };
-      await API.delete("/folders",{ data });
+      await API.delete("/folders", { data });
       await refreshLibrary();
     } catch (error) {
       console.error(error);
@@ -214,8 +214,25 @@ export default function MyFolders() {
     }
   };
 
-  // Responsive design elements from amine
   const currentContent = getCurrentFolderContent();
+  const handleFolderClick = (folderId) => {
+    // Add the folder ID to the current path
+    setCurrentPath([...currentPath, folderId]);
+  };
+  const navigateBack = () => {
+    if (currentPath.length > 1) {
+      setCurrentPath(currentPath.slice(0, -1));
+    } else {
+      router.push("/mylibrary");
+    }
+  };
+
+  const navigateToPathLevel = (index) => {
+    if (index === currentPath.length - 1) return;
+    const newPath = currentPath.slice(0, index + 1);
+    setCurrentPath(newPath);
+  };
+
   const totalPages = Math.ceil(currentContent.folders.length / foldersPerPage);
   const paginatedFolders = currentContent.folders.slice(
     (currentPage - 1) * foldersPerPage,
@@ -552,6 +569,8 @@ export default function MyFolders() {
                   {paginatedFolders.map((folder) => (
                     <div
                       key={folder.id}
+                      onClick={() => handleFolderClick(folder.id)}
+                      onDoubleClick={() => handleFolderClick(folder.id)}
                       className="relative flex flex-col items-center p-3 sm:p-4 rounded-lg cursor-pointer transition hover:shadow-lg"
                     >
                       {/* Taille d'icône responsive */}
