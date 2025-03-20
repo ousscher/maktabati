@@ -79,6 +79,7 @@
         "chooseFile": "Choisissez un fichier dans votre bibliothèque ou téléchargez-le depuis votre propre appareil",
         "uploadFromLibrary": "Télécharger depuis votre bibliothèque",
         "uploadFromDevice": "Télécharger depuis votre appareil",
+        "checkItOut": "Découvrez-le",
         "sortByName": "Nom",
         "sortByDate": "Date",
         "myFiles": "Mes Documents",
@@ -179,7 +180,14 @@
         "uploadedFilesLabel": "Téléchargé",
         "uploadSuccess": "Fichiers téléchargés avec succès !",
         "uploadedCount": "Téléchargé - {count} fichiers",
-        "trainModel": "Entraîner votre modèle"
+        "trainModel": "Entraîner votre modèle",
+        "uploadDocuments": "Télécharger des documents",
+        "uploadHint": "Téléchargez des documents pour entraîner le modèle IA, affinant sa capacité à vous assister avec votre style.",
+        "startYourText": "Commencez votre texte ici...",
+        "enterTextPrompt": "Entrez votre texte ici...",
+        "generateText": "Générer du texte",
+        "generating": "Génération en cours...",
+        "generatedText": "Texte généré"
     },
     "Training": {
         "inProgress": "En cours, veuillez patienter...",

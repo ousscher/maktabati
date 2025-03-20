@@ -1,11 +1,5 @@
-import { admin, db } from "@/lib/firebaseAdminConfig";
 import { verifyToken, runMiddleware } from "@/lib/authMiddleware";
 import fs from "fs";
-import axios from "axios";
-// import formidable from 'formidable';
-import { Readable } from "stream";
-import { indexDocument, indexDocumentName} from "@/lib/rag/indexing";
-import FormData from "form-data";
 import { processAsistanceQuery } from "@/lib/rag/wrtittingAssistant";
 const formidable = require("formidable");
 

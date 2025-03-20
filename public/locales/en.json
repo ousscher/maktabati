@@ -79,6 +79,7 @@
         "chooseFile": "Choose a file from your library or upload it from your own device",
         "uploadFromLibrary": "Upload from your library",
         "uploadFromDevice": "Upload from your device",
+        "checkItOut": "Check it out",
         "seeMore": "See More",
         "sortByName": "Name",
         "sortByDate": "Date",
@@ -179,7 +180,14 @@
         "uploadedFilesLabel": "Uploaded",
         "uploadSuccess": "Files Uploaded Successfully!",
         "uploadedCount": "Uploaded - {count} files",
-        "trainModel": "Train Your Model"
+        "trainModel": "Train Your Model",
+        "uploadDocuments": "Upload Documents",
+        "uploadHint": "Upload your documents to train the AI model and enhance your writing experience.",
+        "startYourText": "Start your text",
+        "enterTextPrompt": "Enter your text here...",
+        "generateText": "Generate Text",
+        "generating": "Generating...",
+        "generatedText": "Generated Text"
     },
     "Training": {
         "inProgress": "In progress, please wait...",

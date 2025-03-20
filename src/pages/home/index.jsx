@@ -288,7 +288,7 @@ export default function Hero() {
                                         <Image src={section.icon || "/images/icons/folder.svg"} alt="Folder Icon" className="ml-4" width={24} height={24} />
                                         <div className="ml-6">
                                             <h2 className="text-teal-600 font-semibold">{section.name}</h2>
-                                            <p className="text-gray-500">{section.folders ? section.folders : `XX ${t("folders")}`}</p>
+                                            <p className="text-gray-500">{section.folders ? section.folders : ``}</p>
                                         </div>
                                     </div>
                                     
@@ -377,13 +377,16 @@ export default function Hero() {
                     <p className="max-md:text-xs text-gray-500 mb-4">{t("chooseFile")}</p>
 
                     <div className="flex space-x-4">
-                        <button className="max-md:text-xs flex items-center  text-teal-600 px-4 py-2 rounded-lg" style={{ backgroundColor: "#E7F4F3" }}>
+                        {/* <button className="max-md:text-xs flex items-center  text-teal-600 px-4 py-2 rounded-lg" style={{ backgroundColor: "#E7F4F3" }}>
                             <Image src="/images/icons/upload.svg" alt="Upload Icon" width={20} height={20} className="mr-2" />
                             {t("uploadFromLibrary")}
-                        </button>
-                        <button className="max-md:text-xs flex items-center bg-teal-600 text-white px-4 py-2 rounded-lg">
+                        </button> */}
+                        <button 
+                        onClick={() => router.push('/writing-assistant')}
+                        className="max-md:text-xs flex items-center bg-teal-600 text-white px-4 py-2 rounded-lg">
                             <Image src="/images/icons/device.svg" alt="Device Icon" width={20} height={20} className="mr-2" />
-                            {t("uploadFromDevice")}
+                            {t("checkItOut")}
+
                         </button>
                     </div>
                 </div>
