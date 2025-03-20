@@ -118,7 +118,9 @@ export default function SearchBar({ sectionId }) {
                             <p className="text-red-500">Sorry something went wrong</p>
                         ) : searchResults.length > 0 ? (
                             searchResults.map((file) => (
-                                <div key={file.id} className="flex items-center p-2 border-b border-gray-200">
+                                <div
+                                onClick={() => window.open(file.fileUrl, "_blank")}
+                                key={file.id} className="cursor-pointer flex items-center p-2 border-b border-gray-200">
                                     <Image src="/images/icons/file.svg" alt="File" width={20} height={20} />
                                     <span className="ml-2 text-gray-700">{file.name}</span>
                                 </div>
