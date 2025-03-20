@@ -63,6 +63,7 @@ export default function Library() {
       });
       setTriggerFetch((prev) => !prev);
       setIsFirstModalOpen(false);
+      setIsSecondModalOpen(false);
       setForm({ name: "" });
       setCreationError(null);
     } catch (err) {
@@ -293,121 +294,157 @@ export default function Library() {
           </div>
         </div>
 
-        {/* Sections Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-6 mb-4">
-          {paginatedSections.map((section) => (
-            <div
-              key={section.id}
-              className="relative bg-gray-50 p-4 rounded-lg shadow flex items-center justify-between transition hover:shadow-md cursor-pointer"
-              onClick={() => handleSectionClick(section)}
-            >
-              <div className="flex">
-                <Image
-                  src={section.icon || "/images/icons/folder.svg"}
-                  alt="Folder Icon"
-                  className="ml-4"
-                  width={24}
-                  height={24}
-                />
-                <div className="ml-6">
-                  <h2 className="text-teal-600 font-semibold">
-                    {section.name}
-                  </h2>
-                  <p className="text-gray-500">
-                    {section.folders || `XX ${t("folders")}`}
-                  </p>
-                </div>
+        <div className="flex flex-col min-h-[450px]">
+          <div className="flex-grow">
+            {isLoading ? (
+              <div className="flex flex-col items-center justify-center h-64">
+                <div className="w-16 h-16 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
+                <p className="mt-4 text-gray-600">{t("loading")}</p>
               </div>
-
-              <button
-                className="text-teal-500 font-bold mr-3"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setMenuSection(
-                    menuSection === section.id ? null : section.id
-                  );
-                }}
-              >
+            ) : sections.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-64 bg-gray-50 rounded-lg">
                 <Image
-                  src="/images/icons/threedots.svg"
-                  width={20}
-                  height={20}
-                  alt="Menu"
+                  src="/images/icons/folder-large.svg"
+                  alt="Empty"
+                  width={64}
+                  height={64}
                 />
-              </button>
-
-              {menuSection === section.id && (
-                <div className="absolute top-14 right-4 bg-white shadow-lg rounded-md p-2 border z-50">
-                  <button className="flex items-center w-full px-3 py-2 hover:bg-gray-100">
-                    <Image
-                      src="/images/icons/download.svg"
-                      alt={t("download")}
-                      width={16}
-                      height={16}
-                      className="mr-2"
-                    />
-                    {t("downloadFile")}
-                  </button>
-                  <button
-                    className="flex items-center w-full px-3 py-2 hover:bg-gray-100"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setMenuSection(null);
-                      setDeleteSection(section.id);
-                    }}
+                <h3 className="mt-4 text-lg font-medium text-gray-700">
+                  {t("noSectionsFound")}
+                </h3>
+                <p className="mt-2 text-gray-500">{t("createFirstSection")}</p>
+                <button
+                  onClick={() => setIsSecondModalOpen(true)}
+                  className="mt-4 px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition"
+                >
+                  {t("createSection")}
+                </button>
+              </div>
+            ) : (
+              // Sections grid with max height and scroll if needed
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-6 mb-4  overflow-y-auto">
+                {paginatedSections.map((section) => (
+                  <div
+                    key={section.id}
+                    className="relative bg-gray-50 p-4 rounded-lg shadow flex items-center justify-between transition hover:shadow-md cursor-pointer"
+                    onClick={() => handleSectionClick(section)}
                   >
-                    <Image
-                      src="/images/icons/trash.svg"
-                      alt={t("delete")}
-                      width={16}
-                      height={16}
-                      className="mr-2"
-                    />
-                    {t("deleteFile")}
-                  </button>
-                </div>
-              )}
-
-              {deleteSection === section.id && (
-                <div className="fixed inset-0 flex items-center justify-center z-50">
-                  <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-                    <h3 className="text-lg font-semibold">
-                      {t("deleteConfirmation")}
-                    </h3>
-                    <p className="text-gray-600 mt-2">{t("deleteWarning")}</p>
-                    <div className="flex justify-end mt-4 space-x-2">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setDeleteSection(null);
-                        }}
-                        className="px-4 py-2 text-gray-600 border rounded-md hover:bg-gray-100"
-                      >
-                        {t("cancel")}
-                      </button>
-                      <button
-                        className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteSection(section.id);
-                          setDeleteSection(null);
-                        }}
-                      >
-                        {t("continue")}
-                      </button>
+                    <div className="flex">
+                      <Image
+                        src={section.icon || "/images/icons/folder.svg"}
+                        alt="Folder Icon"
+                        className="ml-4"
+                        width={24}
+                        height={24}
+                      />
+                      <div className="ml-6">
+                        <h2 className="text-teal-600 font-semibold">
+                          {section.name}
+                        </h2>
+                        <p className="text-gray-500">
+                          {section.folders || `XX ${t("folders")}`}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
 
-        <Pagination
-          totalPages={totalPages}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-        />
+                    <button
+                      className="text-teal-500 font-bold mr-3"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setMenuSection(
+                          menuSection === section.id ? null : section.id
+                        );
+                      }}
+                    >
+                      <Image
+                        src="/images/icons/threedots.svg"
+                        width={20}
+                        height={20}
+                        alt="Menu"
+                      />
+                    </button>
+
+                    {menuSection === section.id && (
+                      <div className="absolute top-14 right-4 bg-white shadow-lg rounded-md p-2 border z-50">
+                        <button className="flex items-center w-full px-3 py-2 hover:bg-gray-100">
+                          <Image
+                            src="/images/icons/download.svg"
+                            alt={t("download")}
+                            width={16}
+                            height={16}
+                            className="mr-2"
+                          />
+                          {t("downloadFile")}
+                        </button>
+                        <button
+                          className="flex items-center w-full px-3 py-2 hover:bg-gray-100"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setMenuSection(null);
+                            setDeleteSection(section.id);
+                          }}
+                        >
+                          <Image
+                            src="/images/icons/trash.svg"
+                            alt={t("delete")}
+                            width={16}
+                            height={16}
+                            className="mr-2"
+                          />
+                          {t("deleteFile")}
+                        </button>
+                      </div>
+                    )}
+
+                    {deleteSection === section.id && (
+                      <div className="fixed inset-0 flex items-center justify-center z-50">
+                        <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                          <h3 className="text-lg font-semibold">
+                            {t("deleteConfirmation")}
+                          </h3>
+                          <p className="text-gray-600 mt-2">
+                            {t("deleteWarning")}
+                          </p>
+                          <div className="flex justify-end mt-4 space-x-2">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDeleteSection(null);
+                              }}
+                              className="px-4 py-2 text-gray-600 border rounded-md hover:bg-gray-100"
+                            >
+                              {t("cancel")}
+                            </button>
+                            <button
+                              className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteSection(section.id);
+                                setDeleteSection(null);
+                              }}
+                            >
+                              {t("continue")}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className=" pt-4">
+            {!isLoading && sections.length > 0 && (
+              <Pagination
+                totalPages={totalPages}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+              />
+            )}
+          </div>
+        </div>
       </div>
     </ProtectedLayout>
   );
